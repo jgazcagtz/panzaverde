@@ -54,7 +54,35 @@
             font-weight: 700;
             margin: 20px 0;
         }
+ .catalog-btn {
+        background-color: green;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        margin-top: 10px;
+    }
 
+    .catalog-btn:focus + .category-menu,
+    .catalog-btn:active + .category-menu {
+        display: block;
+    }
+
+    .category-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid green;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+    }
         .menu-title-container {
             display: flex;
             justify-content: center;
@@ -444,6 +472,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+          
             const products = [
                 { name: "Aderezo Panza Verde (500ml)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Especial para pizzas, hamburguesas, sushi, milanesas, alitas. etc.", category: "Otros" },             
                 { name: "Ate de fruta", img: "https://i.imgur.com/YDjR9QQ.png", price: 70, includes: "Guayaba (350g aprox)", category: "Dulces" },
@@ -615,6 +644,18 @@
                 modal.style.display = 'none';
             }
         }
+      const catalogBtn = document.querySelector('.catalog-btn');
+        const categoryMenu = document.querySelector('.category-menu');
+
+        catalogBtn.addEventListener('click', () => {
+            categoryMenu.style.display = categoryMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!catalogBtn.contains(event.target) && !categoryMenu.contains(event.target)) {
+                categoryMenu.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
