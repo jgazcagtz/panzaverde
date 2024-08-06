@@ -69,11 +69,12 @@
         }
 
         .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            justify-content: center;
-        }
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+    gap: 20px;
+    justify-content: center;
+}
+
 
         .product-item {
             text-align: center;
@@ -216,9 +217,9 @@
             position: fixed;
             bottom: 80px;
             right: 20px;
-            background-color: green;
+            background-color: white;
             color: white;
-            border: none;
+            border: green;
             border-radius: 50%;
             width: 60px;
             height: 60px;
@@ -232,7 +233,7 @@
         }
 
         #cart-btn:hover {
-            background-color: white;
+            background-color: yellow;
             color: black;
         }
 
@@ -345,7 +346,7 @@
         <div id="menu" class="product-grid"></div>
     </main>
     <footer>
-        <p>¡Gracias por tu compra! - Panza Verde ®</p>
+        <p>Panza Verde ® 2024</p>
     </footer>
 
     <div id="edit-modal" class="modal">
