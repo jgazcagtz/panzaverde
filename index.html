@@ -69,12 +69,11 @@
         }
 
         .product-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Dos columnas */
-    gap: 20px;
-    justify-content: center;
-}
-
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
 
         .product-item {
             text-align: center;
@@ -179,7 +178,7 @@
             position: fixed;
             width: 100%;
             bottom: 0;
-            
+
         }
 
         #whatsapp-btn {
@@ -217,9 +216,9 @@
             position: fixed;
             bottom: 80px;
             right: 20px;
-            background-color: white;
+            background-color: green;
             color: white;
-            border: green;
+            border: none;
             border-radius: 50%;
             width: 60px;
             height: 60px;
@@ -233,7 +232,7 @@
         }
 
         #cart-btn:hover {
-            background-color: yellow;
+            background-color: white;
             color: black;
         }
 
@@ -320,7 +319,7 @@
     <header>
         <img src="https://i.imgur.com/yQ3EUIR.png" alt="Logo">
         <h1>Panza Verde </h1><br>
-    
+
         <p>Sabor y Tradición</p>
     </header>
     <main>
@@ -330,12 +329,12 @@
             <p id="cart-total">Total: $0.00</p>
           <p>Pagar con PayPal</p><br>
          <p> <div id="paypal-form"></div></p><br>
-      
+
             <a id="whatsapp-btn" href="#" target="_blank" style="display: none;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
                Confirmar pedido por Whatsapp.
             </a><br>
-      
+
             <br><p><button id="refresh-btn" onclick="clearCart()">Borrar Carrito</button>
       </p>
         </div>
@@ -346,7 +345,7 @@
         <div id="menu" class="product-grid"></div>
     </main>
     <footer>
-        <p>Panza Verde ® 2024</p>
+        <p>¡Gracias por tu compra! - Panza Verde ®</p>
     </footer>
 
     <div id="edit-modal" class="modal">
