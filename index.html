@@ -6,313 +6,355 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
         body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background-color: #f9f9f9;
-            background-size: 30%;
-            background-position: center;
-            color: #333;
-        }
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    background-size: 30%;
+    background-position: center;
+    color: #333;
+}
 
-        header {
-            text-align: center;
-            padding: 30px;
-            background-color: white;
-            color: green;
-            border-bottom: 4px solid green;
-        }
+header {
+    text-align: center;
+    padding: 15px;
+    background-color: white;
+    color: green;
+    border-bottom: 4px solid green;
+}
 
-        header img {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 0
-              px;
-        }
+header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
 
-        h1 {
-            margin: 0;
-            font-size: 2.5em;
-            font-weight: 700;
-        }
+h1 {
+    margin: 0;
+    font-size: 2em;
+    font-weight: 700;
+}
 
-        p {
-            margin: 0;
-            font-size: 1.2em;
-        }
+p {
+    margin: 0;
+    font-size: 1em;
+}
 
-        main {
-            padding: 20px;
-            padding-bottom: 80px;
-        }
+main {
+    padding: 15px;
+    padding-bottom: 80px;
+}
 
-        h2 {
-            text-align: center;
-            color: white;
-            font-weight: 700;
-            margin: 30px 0;
-        }
+h2 {
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    margin: 20px 0;
+}
 
-        .menu-title-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: green;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            margin: 20px auto;
-            width: fit-content;
-        }
+.menu-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: green;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 50px;
+    margin: 20px auto;
+    width: fit-content;
+}
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            justify-content: center;
-        }
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    justify-content: center;
+}
 
-        .product-item {
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 12px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+.product-item {
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .product-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
+.product-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
 
-        .product-item img {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
+.product-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+}
 
-        .product-item h3 {
-            margin: 10px 0;
-            font-size: 1.3em;
-            color: #333;
-        }
+.product-item h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+    color: #333;
+}
 
-        .product-item p {
-            margin: 5px 0;
-            color: #555;
-        }
+.product-item p {
+    margin: 5px 0;
+    color: #555;
+}
 
-        .choose-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: green;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            text-decoration: none;
-        }
+.choose-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+}
 
-        .choose-btn:hover {
-            background-color: white;
-            color: black;
-            transform: scale(1.1);
-        }
+.choose-btn:hover {
+    background-color: white;
+    color: black;
+    transform: scale(1.1);
+}
 
-        select {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid green;
-            border-radius: 5px;
-            background-color: white;
-            color: #333;
-            font-size: 1em;
-            font-family: 'Montserrat', sans-serif;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
+select {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid green;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    font-size: 0.9em;
+    font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
 
-        select:focus {
-            outline: none;
-            border-color: #ffdd00;
-            box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
-        }
+select:focus {
+    outline: none;
+    border-color: #ffdd00;
+    box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
+}
 
-        #cart {
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 20px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: none;
-        }
+#cart {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: none;
+}
 
-        #cart-items {
-            margin-bottom: 10px;
-        }
+#cart-items {
+    margin-bottom: 10px;
+}
 
-        #cart-total {
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
+#cart-total {
+    font-weight: 700;
+    margin-bottom: 10px;
+}
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: green;
-            color: white;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: green;
+    color: white;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
 
-        }
+#whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: black;
+    text-decoration: none;
+    font-size: 1em;
+}
 
-        #whatsapp-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: black;
-            text-decoration: none;
-            font-size: 1.2em;
-        }
+#whatsapp-btn img {
+    width: 20px;
+    height: 20px;
+}
 
-        #whatsapp-btn img {
-            width: 24px;
-            height: 24px;
-        }
+#refresh-btn {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
 
-        #refresh-btn {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: green;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
+#refresh-btn:hover {
+    background-color: #ffdd00;
+    color: black;
+}
 
-        #refresh-btn:hover {
-            background-color: #ffdd00;
-            color: black;
-        }
+#cart-btn {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    background-color: yellow;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+}
 
-        #cart-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background-color: yellow;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 1.5em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1001;
-        }
+#cart-btn:hover {
+    background-color: green;
+    color: black;
+}
 
-        #cart-btn:hover {
-            background-color: green;
-            color: black;
-        }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1002;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1002;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-        }
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 15px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+}
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 12px;
-            position: relative;
-        }
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+}
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.modal-header h2 {
+    margin: 0;
+}
 
-        .modal-header h2 {
-            margin: 0;
-        }
+.modal-body {
+    margin-top: 10px;
+}
 
-        .modal-body {
-            margin-top: 10px;
-        }
+.modal-body p {
+    margin: 5px 0;
+}
 
-        .modal-body p {
-            margin: 5px 0;
-        }
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
 
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 10px;
-        }
+.edit-btn {
+    padding: 8px 15px;
+    background-color: #e3240b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
 
-        .edit-btn {
-            padding: 10px 20px;
-            background-color: #e3240b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
+.edit-btn:hover {
+    background-color: #ffdd00;
+    color: black;
+}
 
-        .edit-btn:hover {
-            background-color: #ffdd00;
-            color: black;
-        }
+/* Media Queries */
+@media (max-width: 600px) {
+    header img {
+        width: 120px;
+        height: 120px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .product-item img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .product-item h3 {
+        font-size: 1em;
+    }
+
+    .choose-btn {
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+
+    select {
+        font-size: 0.8em;
+    }
+
+    #cart-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1em;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+
+    #refresh-btn {
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+}
     </style>
 </head>
 <body>
@@ -381,7 +423,7 @@
     { name: "Nueces de la india enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "" },
     { name: "Nueces de la india saladas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "" },
     { name: "Obleas rellenas de coco y cajeta, Ate de fruta", img: "https://i.imgur.com/YDjR9QQ.png", price: 70, includes: "" },
-    { name: "Palomas (350g aproximadamente)", img: "https://i.imgur.com/YDjR9QQ.png", price: 25, includes: "" },
+    { name: "Palomas (350g aprox.)", img: "https://i.imgur.com/YDjR9QQ.png", price: 25, includes: "" },
     { name: "Piñas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "" },
     { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Con ajo" },
     { name: "Suspiros (50g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo" },
