@@ -6,366 +6,398 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
         body {
-    font-family: 'Montserrat', sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background-color: #f9f9f9;
-    background-size: 30%;
-    background-position: center;
-    color: #333;
-}
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            background-size: 30%;
+            background-position: center;
+            color: #333;
+        }
 
-header {
-    text-align: center;
-    padding: 15px;
-    background-color: white;
-    color: green;
-    border-bottom: 4px solid green;
-}
+        header {
+            text-align: center;
+            padding: 15px;
+            background-color: white;
+            color: green;
+            border-bottom: 4px solid green;
+        }
 
-header img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
+        header img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
 
-h1 {
-    margin: 0;
-    font-size: 2em;
-    font-weight: 700;
-}
+        h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 700;
+        }
 
-p {
-    margin: 0;
-    font-size: 1em;
-}
+        p {
+            margin: 0;
+            font-size: 1em;
+        }
 
-main {
-    padding: 15px;
-    padding-bottom: 80px;
-}
+        main {
+            padding: 15px;
+            padding-bottom: 80px;
+        }
 
-h2 {
-    text-align: center;
-    color: white;
-    font-weight: 700;
-    margin: 20px 0;
-}
+        h2 {
+            text-align: center;
+            color: white;
+            font-weight: 700;
+            margin: 20px 0;
+        }
 
-.menu-title-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: green;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 50px;
-    margin: 20px auto;
-    width: fit-content;
-}
+        .menu-title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: green;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            margin: 20px auto;
+            width: fit-content;
+            position: relative;
+        }
 
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    justify-content: center;
-}
+        .menu-title-container:hover .category-menu {
+            display: block;
+        }
 
-.product-item {
-    text-align: center;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+        .category-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border: 1px solid green;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
 
-.product-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
+        .category-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: green;
+            text-decoration: none;
+            font-weight: 700;
+            text-align: center;
+        }
 
-.product-item img {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-    object-fit: cover;
-}
+        .category-menu a:hover {
+            background-color: green;
+            color: white;
+        }
 
-.product-item h3 {
-    margin: 10px 0;
-    font-size: 1.2em;
-    color: #333;
-}
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            justify-content: center;
+        }
 
-.product-item p {
-    margin: 5px 0;
-    color: #555;
-}
+        .product-item {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-.choose-btn {
-    display: inline-block;
-    padding: 8px 15px;
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    text-decoration: none;
-}
+        .product-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
 
-.choose-btn:hover {
-    background-color: white;
-    color: black;
-    transform: scale(1.1);
-}
+        .product-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
 
-select {
-    display: block;
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid green;
-    border-radius: 5px;
-    background-color: white;
-    color: #333;
-    font-size: 0.9em;
-    font-family: 'Montserrat', sans-serif;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
+        .product-item h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+            color: #333;
+        }
 
-select:focus {
-    outline: none;
-    border-color: #ffdd00;
-    box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
-}
+        .product-item p {
+            margin: 5px 0;
+            color: #555;
+        }
 
-#cart {
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    padding: 15px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    display: none;
-}
+        .choose-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
 
-#cart-items {
-    margin-bottom: 10px;
-}
+        .choose-btn:hover {
+            background-color: white;
+            color: black;
+            transform: scale(1.1);
+        }
 
-#cart-total {
-    font-weight: 700;
-    margin-bottom: 10px;
-}
+        select {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid green;
+            border-radius: 5px;
+            background-color: white;
+            color: #333;
+            font-size: 0.9em;
+            font-family: 'Montserrat', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-footer {
-    text-align: center;
-    padding: 15px;
-    background-color: green;
-    color: white;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
+        select:focus {
+            outline: none;
+            border-color: #ffdd00;
+            box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
+        }
 
-#whatsapp-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: white;
-    text-decoration: none;
-    font-size: 1em;
-  margin-top: 10px;
-    padding: 8px 15px;
-    background-color: green;
-  border-radius: 5px;
-}
+        #cart {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+        }
 
-#whatsapp-btn img {
-    width: 20px;
-    height: 20px;
-}
+        #cart-items {
+            margin-bottom: 10px;
+        }
 
-#refresh-btn {
-    margin-top: 10px;
-    padding: 8px 15px;
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-}
+        #cart-total {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
 
-#refresh-btn:hover {
-    background-color: #ffdd00;
-    color: black;
-}
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: green;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
 
-#cart-btn {
-    position: fixed;
-    bottom: 70px;
-    right: 20px;
-    background-color: yellow;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 1.2em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
-}
+        #whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: green;
+            border-radius: 5px;
+        }
 
-#cart-btn:hover {
-    background-color: white;
-    color: black;
-}
+        #whatsapp-btn img {
+            width: 20px;
+            height: 20px;
+        }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1002;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
+        #refresh-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 15px;
-    border: 1px solid #888;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 8px;
-    position: relative;
-}
+        #refresh-btn:hover {
+            background-color: #ffdd00;
+            color: black;
+        }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
-}
+        #cart-btn {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background-color: yellow;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+        }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+        #cart-btn:hover {
+            background-color: white;
+            color: black;
+        }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
 
-.modal-header h2 {
-    margin: 0;
-}
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 15px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+            position: relative;
+        }
 
-.modal-body {
-    margin-top: 10px;
-}
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-.modal-body p {
-    margin: 5px 0;
-}
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
-}
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.edit-btn {
-    padding: 8px 15px;
-    background-color: #e3240b;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-}
+        .modal-header h2 {
+            margin: 0;
+        }
 
-.edit-btn:hover {
-    background-color: #ffdd00;
-    color: black;
-}
+        .modal-body {
+            margin-top: 10px;
+        }
 
-/* Media Queries */
-@media (max-width: 600px) {
-    header img {
-        width: 120px;
-        height: 120px;
-    }
+        .modal-body p {
+            margin: 5px 0;
+        }
 
-    h1 {
-        font-size: 1.8em;
-    }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
 
-    .product-item img {
-        width: 70px;
-        height: 70px;
-    }
+        .edit-btn {
+            padding: 8px 15px;
+            background-color: #e3240b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
 
-    .product-item h3 {
-        font-size: 1em;
-    }
+        .edit-btn:hover {
+            background-color: #ffdd00;
+            color: black;
+        }
 
-    .choose-btn {
-        padding: 8px 10px;
-        font-size: 0.8em;
-    }
+        /* Media Queries */
+        @media (max-width: 600px) {
+            header img {
+                width: 120px;
+                height: 120px;
+            }
 
-    select {
-        font-size: 0.8em;
-    }
+            h1 {
+                font-size: 1.8em;
+            }
 
-    #cart-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 1em;
-    }
+            .product-item img {
+                width: 70px;
+                height: 70px;
+            }
 
-    .modal-content {
-        width: 95%;
-    }
+            .product-item h3 {
+                font-size: 1em;
+            }
 
-    #refresh-btn {
-        padding: 8px 10px;
-        font-size: 0.8em;
-    }
-}
+            .choose-btn {
+                padding: 8px 10px;
+                font-size: 0.8em;
+            }
+
+            select {
+                font-size: 0.8em;
+            }
+
+            #cart-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1em;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+
+            #refresh-btn {
+                padding: 8px 10px;
+                font-size: 0.8em;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <img src="https://i.imgur.com/yQ3EUIR.png" alt="Logo">
         <h1>Panza Verde </h1><br>
-
         <p>Sabor y Tradición</p>
     </header>
     <main>
@@ -373,20 +405,23 @@ footer {
             <h3>🛒 Carrito</h3>
             <div id="cart-items"></div>
             <p id="cart-total">Total: $0.00</p>
-          <p>Pagar con PayPal:</p><br>
-         <p> <div id="paypal-form"></div></p><br>
-
+            <p>Pagar con PayPal:</p><br>
+            <p><div id="paypal-form"></div></p><br>
             <a id="whatsapp-btn" href="#" target="_blank" style="display: none;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-               Confirmar pedido - Whatsapp
+                Confirmar pedido - Whatsapp
             </a><br>
-
-            <br><p><button id="refresh-btn" onclick="clearCart()">Borrar Carrito</button>
-      </p>
+            <br><p><button id="refresh-btn" onclick="clearCart()">Borrar Carrito</button></p>
         </div>
         <button id="cart-btn" onclick="toggleCart()">🛒</button>
         <div class="menu-title-container">
             <h2>🍬 Catálogo </h2>
+            <div class="category-menu">
+                <a href="#" onclick="filterProducts('Dulces')">Dulces</a>
+                <a href="#" onclick="filterProducts('Dulces picositos')">Dulces picositos</a>
+                <a href="#" onclick="filterProducts('Botanas')">Botanas</a>
+              <a href="#" onclick="filterProducts('Otros')">Otros</a>
+            </div>
         </div>
         <div id="menu" class="product-grid"></div>
     </main>
@@ -409,39 +444,37 @@ footer {
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-               const products = [
-    { name: "Aderezo Panza Verde (500ml)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Especial para pizzas, hamburguesas, sushi, milanesas, alitas. etc." },             
-    { name: "Ate de fruta", img: "https://i.imgur.com/YDjR9QQ.png", price: 70, includes: "Guayaba (350g aprox)" },
-    { name: "Alfajor argentino", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Hecho con dulce de leche auténtico" },
-    { name: "Almendras cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "" },
-    { name: "Almendras cubiertas de Matcha (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "con chocolate blanco" },
-    { name: "Arándanos enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 35, includes: "Arándanos deshidratados con chile" },
-    { name: "Arrayanes (250g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Arrayanes con azúcar" },
-    { name: "Botana Gourmet enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Mezcla de nueces enchiladas" },
-    { name: "Botana Gourmet salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Mezcla de nueces" },
-    { name: "Botana Panza Verde (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 120, includes: "Nuez de la india, pretzels, arándanos enchilados" },
-    { name: "Churritos de amaranto (500g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "Nopal, limón y sal o chipotle" },
-    { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar" },
-    { name: "Fresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Deshidratadas" },             { name: "Gomitas (250g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Hierbas, frutos, Sandía c/chile, Mango c/chile" },
-    { name: "Gomitas de corazón (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Hechas con amor" },
-    { name: "Gomitas de frutas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "" },
-    { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "" },
-    { name: "Guayabate con nuez o piñón", img: "https://i.imgur.com/YDjR9QQ.png", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez o piñón" },
-    { name: "Macadamias cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 60, includes: "" },
-    { name: "Mangomitas (100g) cubiertas de chile", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "" },
-    { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "" },
-    { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "" },
-    { name: "Palomas (350g aprox.)", img: "https://i.imgur.com/YDjR9QQ.png", price: 25, includes: "Obleas rellenas de coco y cajeta" },
-    { name: "Piñas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "" },
-    { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Con ajo" },
-    { name: "Suspiros (50g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo" },
-    { name: "Suaves de coco (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "" },
-    { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "" },
-    { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "" }
-];
-
-
-
+            const products = [
+                { name: "Aderezo Panza Verde (500ml)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Especial para pizzas, hamburguesas, sushi, milanesas, alitas. etc.", category: "Otros" },             
+                { name: "Ate de fruta", img: "https://i.imgur.com/YDjR9QQ.png", price: 70, includes: "Guayaba (350g aprox)", category: "Dulces" },
+                { name: "Alfajor argentino", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Hecho con dulce de leche auténtico", category: "Dulces" },
+                { name: "Almendras cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "", category: "Dulces" },
+                { name: "Almendras cubiertas de Matcha (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "con chocolate blanco", category: "Dulces" },
+                { name: "Arándanos enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 35, includes: "Arándanos deshidratados con chile", category: "Dulces picositos" },
+                { name: "Arrayanes (250g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Arrayanes con azúcar", category: "Dulces" },
+                { name: "Botana Gourmet enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Mezcla de nueces enchiladas", category: "Botanas" },
+                { name: "Botana Gourmet salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Mezcla de nueces", category: "Botanas" },
+                { name: "Botana Panza Verde (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 120, includes: "Nuez de la india, pretzels, arándanos enchilados", category: "Botanas" },
+                { name: "Churritos de amaranto (500g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "Nopal, limón y sal o chipotle", category: "Botanas" },
+                { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar", category: "Dulces" },
+                { name: "Fresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Deshidratadas", category: "Dulces" },
+                { name: "Gomitas (250g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Hierbas, frutos, Sandía c/chile, Mango c/chile", category: "Dulces" },
+                { name: "Gomitas de corazón (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Hechas con amor", category: "Dulces" },
+                { name: "Gomitas de frutas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces" },
+                { name: "Guayabate con nuez o piñón", img: "https://i.imgur.com/YDjR9QQ.png", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez o piñón", category: "Dulces" },
+                { name: "Macadamias cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 60, includes: "", category: "Dulces" },
+                { name: "Mangomitas (100g) cubiertas de chile", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "", category: "Botanas" },
+                { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "", category: "Botanas" },
+                { name: "Palomas (350g aprox.)", img: "https://i.imgur.com/YDjR9QQ.png", price: 25, includes: "Obleas rellenas de coco y cajeta", category: "Dulces" },
+                { name: "Piñas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" },
+                { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Con ajo", category: "Botanas" },
+                { name: "Suspiros (50g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
+                { name: "Suaves de coco (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "", category: "Dulces" },
+                { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" }
+            ];
 
             const cart = [];
             let total = 0;
@@ -469,6 +502,14 @@ footer {
                     <p><button class="choose-btn" onclick="window.addToCart(${index}, ${product.price})">Elegir</button></p>
                 `;
                 return productItem;
+            }
+
+            function displayProducts(filteredProducts) {
+                const menu = document.getElementById('menu');
+                menu.innerHTML = '';
+                filteredProducts.forEach((product, index) => {
+                    menu.appendChild(createProductElement(product, index));
+                });
             }
 
             window.addToCart = function(index, price) {
@@ -550,9 +591,12 @@ footer {
                 updateCart();
             };
 
-            products.forEach((product, index) => {
-                document.getElementById('menu').appendChild(createProductElement(product, index));
-            });
+            window.filterProducts = function(category) {
+                const filteredProducts = products.filter(product => product.category === category);
+                displayProducts(filteredProducts);
+            };
+
+            displayProducts(products);
         });
 
         function toggleCart() {
