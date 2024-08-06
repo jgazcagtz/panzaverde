@@ -1,0 +1,526 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panza Verde</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            background-size: 30%;
+            background-position: center;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            color: green;
+            border-bottom: 4px solid green;
+        }
+
+        header img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 0
+              px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        main {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+            font-weight: 700;
+            margin: 30px 0;
+        }
+
+        .menu-title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin: 20px auto;
+            width: fit-content;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .product-item {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .product-item h3 {
+            margin: 10px 0;
+            font-size: 1.3em;
+            color: #333;
+        }
+
+        .product-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .choose-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .choose-btn:hover {
+            background-color: white;
+            color: black;
+            transform: scale(1.1);
+        }
+
+        select {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid green;
+            border-radius: 5px;
+            background-color: white;
+            color: #333;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #ffdd00;
+            box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
+        }
+
+        #cart {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+        }
+
+        #cart-items {
+            margin-bottom: 10px;
+        }
+
+        #cart-total {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: green;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            
+        }
+
+        #whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        #whatsapp-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        #refresh-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        #refresh-btn:hover {
+            background-color: #ffdd00;
+            color: black;
+        }
+
+        #cart-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+        }
+
+        #cart-btn:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-body {
+            margin-top: 10px;
+        }
+
+        .modal-body p {
+            margin: 5px 0;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .edit-btn {
+            padding: 10px 20px;
+            background-color: #e3240b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            background-color: #ffdd00;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://i.imgur.com/yQ3EUIR.png" alt="Logo">
+        <h1>Panza Verde </h1><br>
+    
+        <p>Sabor y Tradición</p>
+    </header>
+    <main>
+        <div id="cart">
+            <h3>🛒 Carrito</h3>
+            <div id="cart-items"></div>
+            <p id="cart-total">Total: $0.00</p>
+          <p>Pagar con PayPal</p><br>
+         <p> <div id="paypal-form"></div></p><br>
+      
+            <a id="whatsapp-btn" href="#" target="_blank" style="display: none;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+               Confirmar pedido por Whatsapp.
+            </a><br>
+      
+            <br><p><button id="refresh-btn" onclick="clearCart()">Borrar Carrito</button>
+      </p>
+        </div>
+        <button id="cart-btn" onclick="toggleCart()">🛒</button>
+        <div class="menu-title-container">
+            <h2>🍬 Catálogo </h2>
+        </div>
+        <div id="menu" class="product-grid"></div>
+    </main>
+    <footer>
+        <p>¡Gracias por tu compra! - Panza Verde ®</p>
+    </footer>
+
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Carrito</h2>
+                <span class="close" onclick="toggleModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="edit-cart-items"></div>
+            <div class="modal-footer">
+                <button class="edit-btn" onclick="toggleModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+               const products = [
+    { name: "Alfajor argentino", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Hecho con dulce de leche auténtico" },
+    { name: "Arándanos enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 35, includes: "Arándanos deshidratados con chile" },
+    { name: "Arrayanes (250g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Arrayanes con azúcar" },
+    { name: "Botana Gourmet enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 120, includes: "Mezcla de nueces enchiladas" },
+    { name: "Botana Gourmet salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Mezcla de nueces" },
+    { name: "Botana Panza Verde (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 120, includes: "Nuez de la india, pretzels, arándanos enchilados" },
+    { name: "Churritos de amaranto (500g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "Nopal, limón y sal o chipotle" },
+    { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar" },
+    { name: "Gomitas de 💓 (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Hechas con amor" },
+    { name: "Gomitas de frutas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "" },
+    { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "" },
+    { name: "Guayabate con nuez o piñón", img: "https://i.imgur.com/YDjR9QQ.png", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez o piñón" },
+    { name: "Macadamias cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 60, includes: "" },
+    { name: "Mangomitas (100g) cubiertas de chile", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "" },
+    { name: "Nueces de la india enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "" },
+    { name: "Nueces de la india saladas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "" },
+    { name: "Obleas rellenas de coco y cajeta, Ate de fruta", img: "https://i.imgur.com/YDjR9QQ.png", price: 70, includes: "" },
+    { name: "Palomas (350g aproximadamente)", img: "https://i.imgur.com/YDjR9QQ.png", price: 25, includes: "" },
+    { name: "Piñas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "" },
+    { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Con ajo" },
+    { name: "Suspiros (50g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo" },
+    { name: "Suaves de coco (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "" },
+    { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "" },
+    { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "" }
+];
+
+
+
+
+            const cart = [];
+            let total = 0;
+
+            function createProductElement(product, index) {
+                const productItem = document.createElement('div');
+                productItem.classList.add('product-item');
+                productItem.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>$${product.price.toFixed(2)}</p>
+                    <p>${product.includes}</p>
+                    <select id="quantity-${index}">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                    <p><button class="choose-btn" onclick="window.addToCart(${index}, ${product.price})">Elegir</button></p>
+                `;
+                return productItem;
+            }
+
+            window.addToCart = function(index, price) {
+                const quantitySelect = document.getElementById(`quantity-${index}`);
+                const quantity = parseInt(quantitySelect.value);
+                const product = products[index];
+                const existingProduct = cart.find(item => item.name === product.name);
+
+                if (existingProduct) {
+                    existingProduct.quantity += quantity;
+                } else {
+                    cart.push({ name: product.name, price: price, quantity: quantity });
+                }
+                updateCart();
+            };
+
+            function updateCart() {
+                const cartItemsSection = document.getElementById('cart-items');
+                const cartTotal = document.getElementById('cart-total');
+                const paypalForm = document.getElementById('paypal-form');
+                const whatsappBtn = document.getElementById('whatsapp-btn');
+                const editCartItems = document.getElementById('edit-cart-items');
+
+                cartItemsSection.innerHTML = '';
+                editCartItems.innerHTML = '';
+                total = 0;
+
+                cart.forEach((item, index) => {
+                    cartItemsSection.innerHTML += `<p>${item.name} - $${item.price} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}</p>`;
+                    editCartItems.innerHTML += `
+                        <p>
+                            ${item.name} - $${item.price} x 
+                            <input type="number" min="1" value="${item.quantity}" onchange="updateCartItemQuantity(${index}, this.value)">
+                            = $${(item.price * item.quantity).toFixed(2)}
+                            <button onclick="removeCartItem(${index})">Eliminar</button>
+                        </p>`;
+                    total += item.price * item.quantity;
+                });
+
+                cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+                updatePayPalForm();
+                updateWhatsAppLink();
+            }
+
+            function updateCartItemQuantity(index, quantity) {
+                cart[index].quantity = parseInt(quantity);
+                updateCart();
+            }
+
+            function removeCartItem(index) {
+                cart.splice(index, 1);
+                updateCart();
+            }
+
+            function updatePayPalForm() {
+                const paypalForm = document.getElementById('paypal-form');
+                paypalForm.innerHTML = `
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+                        <input type="hidden" name="cmd" value="_xclick" />
+                        <input type="hidden" name="business" value="gascagtz@gmail.com" />
+                        <input type="hidden" name="currency_code" value="MXN" />
+                        <input type="hidden" name="amount" value="${total.toFixed(2)}" />
+                        <input type="hidden" name="item_name" value="${cart.map(item => `${item.name} (${item.quantity})`).join(', ')}" />
+                        <input type="image" src="https://www.paypalobjects.com/es_XC/i/btn/btn_cart_SM.gif" border="0" name="submit" title="PayPal es una forma segura y fácil de pagar en línea." alt="Pagar con PayPal" />
+                    </form>
+                `;
+            }
+
+            function updateWhatsAppLink() {
+                const whatsappBtn = document.getElementById('whatsapp-btn');
+                const message = `Orden de Panza Verde:\n${cart.map(item => `${item.name} (${item.quantity}) - $${item.price} c/u`).join('\n')}\nTotal: $${total.toFixed(2)}`;
+                const encodedMessage = encodeURIComponent(message);
+                whatsappBtn.href = `https://wa.me/525526627851?text=${encodedMessage}`;
+                whatsappBtn.style.display = total > 0 ? 'inline-flex' : 'none';
+            }
+
+            window.clearCart = function() {
+                cart.length = 0;
+                updateCart();
+            };
+
+            products.forEach((product, index) => {
+                document.getElementById('menu').appendChild(createProductElement(product, index));
+            });
+        });
+
+        function toggleCart() {
+            const cart = document.getElementById('cart');
+            cart.style.display = cart.style.display === 'none' || cart.style.display === '' ? 'block' : 'none';
+        }
+
+        function toggleModal() {
+            const modal = document.getElementById('edit-modal');
+            modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('edit-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
