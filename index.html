@@ -93,7 +93,8 @@
             position: relative;
         }
 
-        .menu-title-container:hover .category-menu {
+        .menu-title-container:hover .category-menu,
+        .menu-title-container:focus-within .category-menu {
             display: block;
         }
 
@@ -514,8 +515,7 @@
                 { name: "Suspiros (50g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
                 { name: "Suaves de coco (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "", category: "Dulces" },
                 { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" },
-                { name: "Vinagre de Piña (250ml)", img: "https://i.imgur.com/AaveUWs.jpeg", price: 45, includes: "", category: "" }
+                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" }
             ];
 
             const cart = [];
@@ -566,6 +566,7 @@
                     cart.push({ name: product.name, price: price, quantity: quantity });
                 }
                 updateCart();
+                alert(`Se agregó ${quantity} ${product.name} al carrito`);
             };
 
             function updateCart() {
