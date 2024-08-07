@@ -54,35 +54,32 @@
             font-weight: 700;
             margin: 20px 0;
         }
- .catalog-btn {
-        background-color: green;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-        margin-top: 10px;
-    }
 
-    .catalog-btn:focus + .category-menu,
-    .catalog-btn:active + .category-menu {
-        display: block;
-    }
+        .catalog-btn {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+        }
 
-    .category-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid green;
-        border-radius: 5px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 200px;
-    }
+        .category-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid green;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+        }
+
         .menu-title-container {
             display: flex;
             justify-content: center;
@@ -419,6 +416,22 @@
                 padding: 8px 10px;
                 font-size: 0.8em;
             }
+
+            .menu-title-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+                border-radius: 5px;
+            }
+
+            .category-menu {
+                width: 100%;
+                top: auto;
+                left: 0;
+                transform: none;
+                position: static;
+                box-shadow: none;
+            }
         }
     </style>
 </head>
@@ -448,7 +461,7 @@
                 <a href="#" onclick="filterProducts('Dulces')">Dulces</a>
                 <a href="#" onclick="filterProducts('Dulces picositos')">Dulces picositos</a>
                 <a href="#" onclick="filterProducts('Botanas')">Botanas</a>
-              <a href="#" onclick="filterProducts('Otros')">Otros</a>
+                <a href="#" onclick="filterProducts('Otros')">Otros</a>
             </div>
         </div>
         <div id="menu" class="product-grid"></div>
@@ -472,11 +485,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-          
             const products = [
-                { name: "Aderezo Panza Verde (500ml)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Especial para pizzas, hamburguesas, sushi, milanesas, alitas. etc.", category: "Otros" },             
+                { name: "Aderezo Panza Verde (500ml)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Especial para pizzas, hamburguesas, sushi, milanesas, alitas. etc.", category: "Otros" },
                 { name: "Ate de fruta", img: "https://i.imgur.com/YDjR9QQ.png", price: 70, includes: "Guayaba (350g aprox)", category: "Dulces" },
-                { name: "Alfajor argentino", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Hecho con dulce de leche auténtico", category: "Dulces" },
+                { name: "Alfajor argentino", img: "https://i.imgur.com/7zoiYN8.png", price: 50, includes: "Hecho con dulce de leche auténtico", category: "Dulces" },
                 { name: "Almendras cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "", category: "Dulces" },
                 { name: "Almendras cubiertas de Matcha (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "con chocolate blanco", category: "Dulces" },
                 { name: "Arándanos enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 35, includes: "Arándanos deshidratados con chile", category: "Dulces picositos" },
@@ -487,22 +499,23 @@
                 { name: "Churritos de amaranto (500g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "Nopal, limón y sal o chipotle", category: "Botanas" },
                 { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar", category: "Dulces" },
                 { name: "Fresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Deshidratadas", category: "Dulces" },
-                { name: "Gomitas (250g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Hierbas, frutos, Sandía c/chile, Mango c/chile", category: "Dulces" },
+                { name: "Gomitas (250g)", img: "https://i.imgur.com/twEv15D.png", price: 45, includes: "Hierbas, frutos, Sandía c/chile, Mango c/chile", category: "Dulces" },
                 { name: "Gomitas de corazón (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Hechas con amor", category: "Dulces" },
-                { name: "Gomitas de frutas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Gomitas de frutas con chile (100g)", img: "https://i.imgur.com/6hB0gJt.jpeg", price: 20, includes: "", category: "Dulces picositos" },
                 { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces" },
                 { name: "Guayabate con nuez o piñón", img: "https://i.imgur.com/YDjR9QQ.png", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez o piñón", category: "Dulces" },
                 { name: "Macadamias cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 60, includes: "", category: "Dulces" },
-                { name: "Mangomitas (100g) cubiertas de chile", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Mangomitas (100g) cubiertas de chile", img: "https://i.imgur.com/6mljk5L.png", price: 20, includes: "", category: "Dulces picositos" },
                 { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "", category: "Botanas" },
                 { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "", category: "Botanas" },
-                { name: "Palomas (350g aprox.)", img: "https://i.imgur.com/YDjR9QQ.png", price: 25, includes: "Obleas rellenas de coco y cajeta", category: "Dulces" },
+                { name: "Palomas (350g aprox.)", img: "https://i.imgur.com/wpgUaGP.jpeg", price: 25, includes: "Obleas rellenas de coco y cajeta", category: "Dulces" },
                 { name: "Piñas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" },
                 { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Con ajo", category: "Botanas" },
                 { name: "Suspiros (50g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
                 { name: "Suaves de coco (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "", category: "Dulces" },
                 { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" }
+                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" },
+                { name: "Vinagre de Piña (250ml)", img: "https://i.imgur.com/AaveUWs.jpeg", price: 45, includes: "", category: "" }
             ];
 
             const cart = [];
@@ -644,18 +657,6 @@
                 modal.style.display = 'none';
             }
         }
-      const catalogBtn = document.querySelector('.catalog-btn');
-        const categoryMenu = document.querySelector('.category-menu');
-
-        catalogBtn.addEventListener('click', () => {
-            categoryMenu.style.display = categoryMenu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', (event) => {
-            if (!catalogBtn.contains(event.target) && !categoryMenu.contains(event.target)) {
-                categoryMenu.style.display = 'none';
-            }
-        });
     </script>
     <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
 </body>
