@@ -257,16 +257,17 @@
         }
 
         #refresh-btn {
-            margin-top: 10px;
-            padding: 8px 15px;
-            background-color: green;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
-        }
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+          
+}
 
         #refresh-btn:hover {
             background-color: #ffdd00;
@@ -488,34 +489,35 @@
         document.addEventListener('DOMContentLoaded', () => {
             const products = [
                 { name: "Aderezo Panza Verde (500ml)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Especial para pizzas, hamburguesas, sushi, milanesas, alitas. etc.", category: "Otros" },
-                { name: "Ate de fruta", img: "https://i.imgur.com/YDjR9QQ.png", price: 70, includes: "Guayaba (350g aprox)", category: "Dulces" },
+                { name: "Ate de fruta", img: "https://i.imgur.com/Yk8a3AC.jpeg", price: 70, includes: "Membrillo (350g aprox)", category: "Dulces" },
                 { name: "Alfajor argentino", img: "https://i.imgur.com/7zoiYN8.png", price: 50, includes: "Hecho con dulce de leche auténtico", category: "Dulces" },
-                { name: "Almendras cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "", category: "Dulces" },
-                { name: "Almendras cubiertas de Matcha (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "con chocolate blanco", category: "Dulces" },
-                { name: "Arándanos enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 35, includes: "Arándanos deshidratados con chile", category: "Dulces picositos" },
-                { name: "Arrayanes (250g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Arrayanes con azúcar", category: "Dulces" },
-                { name: "Botana Gourmet enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Mezcla de nueces enchiladas", category: "Botanas" },
-                { name: "Botana Gourmet salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Mezcla de nueces", category: "Botanas" },
-                { name: "Botana Panza Verde (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 120, includes: "Nuez de la india, pretzels, arándanos enchilados", category: "Botanas" },
-                { name: "Churritos de amaranto (500g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "Nopal, limón y sal o chipotle", category: "Botanas" },
-                { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar", category: "Dulces" },
-                { name: "Fresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "Deshidratadas", category: "Dulces" },
+                { name: "Almendras cubiertas de cocoa (100g)", img: "https://i.imgur.com/LznPjo4.jpeg", price: 55, includes: "", category: "Dulces" },
+                { name: "Almendras cubiertas de Matcha (100g)", img: "https://i.imgur.com/WDPDcq1.jpeg", price: 55, includes: "con chocolate blanco", category: "Dulces" },
+                { name: "Arándanos enchilados (100g)", img: "https://i.imgur.com/pLKUISA.jpeg", price: 35, includes: "Arándanos deshidratados con chile", category: "Dulces picositos" },
+                { name: "Arrayanes (250g)", img: "https://i.imgur.com/PQNiYFI.jpeg", price: 50, includes: "Arrayanes con azúcar", category: "Dulces" },
+                { name: "Botana Gourmet enchilada (100g)", img: "https://i.imgur.com/Yo5R1in.jpeg", price: 50, includes: "Mezcla de nueces enchiladas", category: "Botanas" },
+                { name: "Botana Gourmet salada (100g)", img: "https://i.imgur.com/jhlGdSc.jpeg", price: 50, includes: "Mezcla de nueces", category: "Botanas" },
+                { name: "Botana Panza Verde (300g)", img: "https://i.imgur.com/Sp53Fq9.jpeg", price: 120, includes: "Nuez de la india, pretzels, arándanos enchilados", category: "Botanas" },
+                { name: "Churritos de amaranto (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "Nopal, limón y sal o chipotle", category: "Botanas" },
+                { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/EBqMxqr.jpeg", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar", category: "Dulces" },
+                { name: "Fresas (100g)", img: "https://i.imgur.com/0SK8MuI.jpeg", price: 50, includes: "Deshidratadas", category: "Dulces" },
                 { name: "Gomitas (250g)", img: "https://i.imgur.com/twEv15D.png", price: 45, includes: "Hierbas, frutos, Sandía c/chile, Mango c/chile", category: "Dulces" },
-                { name: "Gomitas de corazón (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Hechas con amor", category: "Dulces" },
-                { name: "Gomitas de frutas con chile (100g)", img: "https://i.imgur.com/6hB0gJt.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces" },
-                { name: "Guayabate con nuez o piñón", img: "https://i.imgur.com/YDjR9QQ.png", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez o piñón", category: "Dulces" },
-                { name: "Macadamias cubiertas de cacao (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 60, includes: "", category: "Dulces" },
+                { name: "Gomitas de corazón (100g)", img: "https://i.imgur.com/CAtOzlA.jpeg", price: 20, includes: "Hechas con amor", category: "Dulces" },
+                { name: "Gomitas de frutas con chile (100g)", img: "https://i.imgur.com/HN5cFUm.jpeg", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/ODAIYHh.jpeg", price: 45, includes: "", category: "Dulces" },
+                { name: "Guayabate con nuez o piñón", img: "https://i.imgur.com/jrJlWHl.jpeg", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez o piñón", category: "Dulces" },
+                { name: "Macadamias cubiertas de cocoa (100g)", img: "https://i.imgur.com/jehZ5Bu.jpeg", price: 60, includes: "", category: "Dulces" },
                 { name: "Mangomitas (100g) cubiertas de chile", img: "https://i.imgur.com/6mljk5L.png", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "", category: "Botanas" },
-                { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 50, includes: "", category: "Botanas" },
+                { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/5kbXrDR.png", price: 55, includes: "", category: "Botanas" },
+                { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/N49fDtW.jpeg", price: 50, includes: "", category: "Botanas" },
                 { name: "Palomas (350g aprox.)", img: "https://i.imgur.com/wpgUaGP.jpeg", price: 25, includes: "Obleas rellenas de coco y cajeta", category: "Dulces" },
-                { name: "Piñas con chile (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" },
-                { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Con ajo", category: "Botanas" },
-                { name: "Suspiros (50g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
-                { name: "Suaves de coco (300g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 80, includes: "", category: "Dulces" },
-                { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/YDjR9QQ.png", price: 45, includes: "", category: "Dulces picositos" }
+                { name: "Piñas con chile (100g)", img: "https://i.imgur.com/gRCANyj.jpeg", price: 45, includes: "", category: "Dulces picositos" },
+                { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/FxIyawD.png", price: 55, includes: "Con ajo", category: "Botanas" },
+              { name: "Queso de Almendras ", img: "https://i.imgur.com/CuhnSD3.jpeg", price: 25, includes: "Dulce fino de Almendra con un toque de limón", category: "Botanas" },
+                { name: "Suspiros (50g)", img: "https://i.imgur.com/6uZUzF8.jpeg", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
+                { name: "Suaves de coco (300g)", img: "https://i.imgur.com/CtURNmF.jpeg", price: 80, includes: "", category: "Dulces" },
+                { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/iXCpNDz.jpeg", price: 45, includes: "", category: "Dulces picositos" }
             ];
 
             const cart = [];
