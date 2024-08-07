@@ -216,7 +216,7 @@
 
         footer {
             text-align: center;
-            padding: 15px;
+            padding: 5px;
             background-color: green;
             color: white;
             position: fixed;
@@ -242,7 +242,7 @@
             height: 20px;
         }
       
-      #whatsapp-btn:hover {
+        #whatsapp-btn:hover {
             background-color: #ffdd00;
             color: black;
         }
@@ -365,6 +365,22 @@
             color: black;
         }
 
+        .quantity-btn {
+            border: none;
+            background-color: green;
+            color: white;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+        }
+
+        .quantity-btn:hover {
+            background-color: #ffdd00;
+            color: black;
+        }
+
         /* Media Queries */
         @media (max-width: 600px) {
             header img {
@@ -428,10 +444,9 @@
     </style>
 </head>
 <body>
-  
     <header>
         <img src="https://i.imgur.com/yQ3EUIR.png" alt="Logo">
-        <h1>Panza Verde </h1><br>
+        <h1>Panza Verde</h1>
         <p>Sabor y Tradición</p>
     </header>
     <main>
@@ -439,17 +454,17 @@
             <h3>🛒 Carrito</h3>
             <div id="cart-items"></div>
             <p id="cart-total">Total: $0.00</p>
-            <br><p><button id="refresh-btn" onclick="clearCart()">Borrar Carrito</button></p><br>
+          <p> <button id="refresh-btn" onclick="clearCart()">Borrar Carrito</button> </p><br>
             <p>Pagar con PayPal:</p><br>
-            <p><div id="paypal-form"></div></p><br>
-            <a id="whatsapp-btn" href="#" target="_blank" style="display: none;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+            <div id="paypal-form"></div><br>
+            <a id="whatsapp-btn" href="#" target="_blank" style="display: none;"><br>
+               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
                 Confirmar pedido - Whatsapp
-            </a><br>
+            </a>
         </div>
         <button id="cart-btn" onclick="toggleCart()">🛒</button>
         <div class="menu-title-container">
-            <h2>🍬 Catálogo </h2>
+            <h2>🍬 Catálogo</h2>
             <div class="category-menu">
                 <a href="#" onclick="filterProducts('Dulces')">Dulces</a>
                 <a href="#" onclick="filterProducts('Dulces picositos')">Dulces picositos</a>
@@ -458,23 +473,22 @@
             </div>
         </div>
         <div id="menu" class="product-grid"></div>
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Editar Carrito</h2>
+                    <span class="close" onclick="toggleModal()">&times;</span>
+                </div>
+                <div class="modal-body" id="edit-cart-items"></div>
+                <div class="modal-footer">
+                    <button class="edit-btn" onclick="toggleModal()">Cerrar</button>
+                </div>
+            </div>
+        </div>
     </main>
     <footer>
         <p>Panza Verde ® 2024</p>
     </footer>
-
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Editar Carrito</h2>
-                <span class="close" onclick="toggleModal()">&times;</span>
-            </div>
-            <div class="modal-body" id="edit-cart-items"></div>
-            <div class="modal-footer">
-                <button class="edit-btn" onclick="toggleModal()">Cerrar</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -536,7 +550,7 @@
                         <option value="9">9</option>
                         <option value="10">10</option>
                     </select>
-                    <p><button class="choose-btn" onclick="window.addToCart(${index}, ${product.price})">Elegir</button></p>
+                    <button class="choose-btn" onclick="window.addToCart(${index})">Elegir</button>
                 `;
                 return productItem;
             }
@@ -567,7 +581,6 @@
             function updateCart() {
                 const cartItemsSection = document.getElementById('cart-items');
                 const cartTotal = document.getElementById('cart-total');
-              
                 const paypalForm = document.getElementById('paypal-form');
                 const whatsappBtn = document.getElementById('whatsapp-btn');
                 const editCartItems = document.getElementById('edit-cart-items');
@@ -581,7 +594,9 @@
                     editCartItems.innerHTML += `
                         <p>
                             ${item.name} - $${item.price} x 
-                            <input type="number" min="1" value="${item.quantity}" onchange="updateCartItemQuantity(${index}, this.value)">
+                            <button class="quantity-btn" onclick="updateCartItemQuantity(${index}, -1)">-</button>
+                            ${item.quantity}
+                            <button class="quantity-btn" onclick="updateCartItemQuantity(${index}, 1)">+</button>
                             = $${(item.price * item.quantity).toFixed(2)}
                             <button onclick="removeCartItem(${index})">Eliminar</button>
                         </p>`;
@@ -593,8 +608,11 @@
                 updateWhatsAppLink();
             }
 
-            function updateCartItemQuantity(index, quantity) {
-                cart[index].quantity = parseInt(quantity);
+            function updateCartItemQuantity(index, change) {
+                cart[index].quantity += change;
+                if (cart[index].quantity <= 0) {
+                    cart[index].quantity = 1;
+                }
                 updateCart();
             }
 
@@ -655,6 +673,6 @@
             }
         }
     </script>
-    <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
+  <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
 </body>
 </html>
