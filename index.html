@@ -98,20 +98,6 @@
             display: block;
         }
 
-        .category-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: white;
-            border: 1px solid green;
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
         .category-menu a {
             display: block;
             padding: 10px 15px;
@@ -257,17 +243,16 @@
         }
 
         #refresh-btn {
-  margin-top: 10px;
-  padding: 8px 15px;
-  background-color: green;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: background-color 0.3s ease;
-          
-}
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
 
         #refresh-btn:hover {
             background-color: #ffdd00;
@@ -508,21 +493,22 @@
                 { name: "Guayabate con nuez o piñón", img: "https://i.imgur.com/jrJlWHl.jpeg", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez o piñón", category: "Dulces" },
                 { name: "Macadamias cubiertas de cocoa (100g)", img: "https://i.imgur.com/jehZ5Bu.jpeg", price: 60, includes: "", category: "Dulces" },
                 { name: "Mangomitas cubiertas de chile (100g) ", img: "https://i.imgur.com/6mljk5L.png", price: 20, includes: "", category: "Dulces picositos" },
-              { name: "Mangos enchilados (100g)", img: "https://i.imgur.com/jLK6q3R.png", price: 45, includes: "", category: "Dulces picositos" },
+                { name: "Mangos enchilados (100g)", img: "https://i.imgur.com/jLK6q3R.png", price: 45, includes: "", category: "Dulces picositos" },
                 { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/5kbXrDR.png", price: 55, includes: "", category: "Botanas" },
                 { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/N49fDtW.jpeg", price: 50, includes: "", category: "Botanas" },
                 { name: "Palomas (350g aprox.)", img: "https://i.imgur.com/wpgUaGP.jpeg", price: 25, includes: "Obleas rellenas de coco y cajeta", category: "Dulces" },
                 { name: "Piñas con chile (100g)", img: "https://i.imgur.com/gRCANyj.jpeg", price: 45, includes: "", category: "Dulces picositos" },
                 { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/FxIyawD.png", price: 55, includes: "Con ajo", category: "Botanas" },
-              { name: "Queso de Almendras ", img: "https://i.imgur.com/CuhnSD3.jpeg", price: 25, includes: "Dulce fino de Almendra con un toque de limón", category: "Botanas" },
+                { name: "Queso de Almendras ", img: "https://i.imgur.com/CuhnSD3.jpeg", price: 25, includes: "Dulce fino de Almendra con un toque de limón", category: "Botanas" },
                 { name: "Suspiros (50g)", img: "https://i.imgur.com/6uZUzF8.jpeg", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
                 { name: "Suaves de coco (300g)", img: "https://i.imgur.com/CtURNmF.jpeg", price: 80, includes: "", category: "Dulces" },
                 { name: "Tarugos rellenos de panditas o picafresas (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
                 { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/iXCpNDz.jpeg", price: 45, includes: "", category: "Dulces picositos" }
             ];
 
-            const cart = [];
+            let cart = [];
             let total = 0;
+            let filteredProducts = [...products]; // Create a copy of products to use in filtering
 
             function createProductElement(product, index) {
                 const productItem = document.createElement('div');
@@ -549,24 +535,24 @@
                 return productItem;
             }
 
-            function displayProducts(filteredProducts) {
+            function displayProducts(productsToDisplay) {
                 const menu = document.getElementById('menu');
                 menu.innerHTML = '';
-                filteredProducts.forEach((product, index) => {
+                productsToDisplay.forEach((product, index) => {
                     menu.appendChild(createProductElement(product, index));
                 });
             }
 
-            window.addToCart = function(index, price) {
+            window.addToCart = function(index) {
                 const quantitySelect = document.getElementById(`quantity-${index}`);
                 const quantity = parseInt(quantitySelect.value);
-                const product = products[index];
+                const product = filteredProducts[index];
                 const existingProduct = cart.find(item => item.name === product.name);
 
                 if (existingProduct) {
                     existingProduct.quantity += quantity;
                 } else {
-                    cart.push({ name: product.name, price: price, quantity: quantity });
+                    cart.push({ name: product.name, price: product.price, quantity: quantity });
                 }
                 updateCart();
                 alert(`Se agregó ${quantity} ${product.name} al carrito`);
@@ -638,7 +624,7 @@
             };
 
             window.filterProducts = function(category) {
-                const filteredProducts = products.filter(product => product.category === category);
+                filteredProducts = products.filter(product => product.category === category);
                 displayProducts(filteredProducts);
             };
 
