@@ -60,7 +60,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             position: relative;
-          font-weight: 700;
+            font-weight: 700;
         }
 
         .intro-section::before {
@@ -147,20 +147,20 @@
         }
 
         .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 15px;
-            justify-content: center;
         }
 
         .product-item {
-            text-align: center;
+            display: flex;
             border: 1px solid #ddd;
             padding: 10px;
             border-radius: 8px;
             background-color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            align-items: center;
         }
 
         .product-item:hover {
@@ -169,14 +169,19 @@
         }
 
         .product-item img {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 8px;
             object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .product-item-content {
+            flex-grow: 1;
         }
 
         .product-item h3 {
-            margin: 10px 0;
+            margin: 0;
             font-size: 1.2em;
             color: #333;
         }
@@ -187,7 +192,6 @@
         }
 
         .choose-btn {
-            display: inline-block;
             padding: 8px 15px;
             background-color: green;
             color: white;
@@ -427,8 +431,8 @@
             }
 
             .product-item img {
-                width: 70px;
-                height: 70px;
+                width: 80px;
+                height: 80px;
             }
 
             .product-item h3 {
@@ -497,9 +501,14 @@
             <h3>🛒 Carrito</h3>
             <div id="cart-items"></div>
             <p id="cart-total">Total: $0.00</p>
-            <p><button id="refresh-btn" onclick="clearCart()">Borrar Carrito</button></p><br>
+            <p><button id="refresh-btn" onclick="clearCart()">🗑️ Borrar Carrito</button></p><br>
             <p>Pagar con PayPal:</p><br>
             <div id="paypal-form"></div><br>
+            <div>
+                <label><input type="radio" name="payment-method" value="efectivo" onchange="updatePaymentMethod(this.value)" checked> Efectivo</label><br>
+                <label><input type="radio" name="payment-method" value="en línea" onchange="updatePaymentMethod(this.value)"> En línea</label><br>
+                <label><input type="radio" name="payment-method" value="Transferencia" onchange="updatePaymentMethod(this.value)"> Transferencia</label>
+            </div><br>
             <a id="whatsapp-btn" href="#" target="_blank" style="display: none;"><br>
                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
                 Confirmar pedido - Whatsapp
@@ -571,29 +580,37 @@
 
             let cart = [];
             let total = 0;
+            let selectedPaymentMethod = "efectivo"; // Default payment method
             let filteredProducts = [...products]; // Create a copy of products to use in filtering
+
+            window.updatePaymentMethod = function(method) {
+                selectedPaymentMethod = method;
+                updateWhatsAppLink();
+            }
 
             function createProductElement(product, index) {
                 const productItem = document.createElement('div');
                 productItem.classList.add('product-item');
                 productItem.innerHTML = `
                     <img src="${product.img}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>$${product.price.toFixed(2)}</p>
-                    <p>${product.includes}</p>
-                    <select id="quantity-${index}">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                    </select>
-                    <button class="choose-btn" onclick="window.addToCart(${index})">Elegir</button>
+                    <div class="product-item-content">
+                        <h3>${product.name}</h3>
+                        <p>$${product.price.toFixed(2)}</p>
+                        <p>${product.includes}</p>
+                        <select id="quantity-${index}">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                        <button class="choose-btn" onclick="window.addToCart(${index})">Elegir</button>
+                    </div>
                 `;
                 return productItem;
             }
@@ -680,7 +697,7 @@
 
             function updateWhatsAppLink() {
                 const whatsappBtn = document.getElementById('whatsapp-btn');
-                const message = `Orden de Panza Verde:\n${cart.map(item => `${item.name} (${item.quantity}) - $${item.price} c/u`).join('\n')}\nTotal: $${total.toFixed(2)}`;
+                const message = `Orden de Panza Verde:\n${cart.map(item => `${item.name} (${item.quantity}) - $${item.price} c/u`).join('\n')}\nTotal: $${total.toFixed(2)}\nMétodo de pago: ${selectedPaymentMethod}`;
                 const encodedMessage = encodeURIComponent(message);
                 whatsappBtn.href = `https://wa.me/525526627851?text=${encodedMessage}`;
                 whatsappBtn.style.display = total > 0 ? 'inline-flex' : 'none';
