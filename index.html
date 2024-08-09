@@ -50,18 +50,36 @@
 
         .intro-section {
             text-align: center;
-            background-color: green;
+            background-image: url('https://i.imgur.com/Vovy8fi.jpeg');
+            background-size: cover;
+            background-position: center;
             color: white;
             padding: 20px;
             margin-bottom: 20px;
             border: 1px solid green;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+          font-weight: 700;
+        }
+
+        .intro-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            z-index: 1;
         }
 
         .intro-section p {
             font-size: 1.1em;
             margin: 10px 0;
+            position: relative;
+            z-index: 2;
         }
 
         h2 {
@@ -257,7 +275,7 @@
             width: 20px;
             height: 20px;
         }
-      
+
         #whatsapp-btn:hover {
             background-color: #ffdd00;
             color: black;
@@ -469,7 +487,7 @@
     <main>
         <!-- Intro Section -->
         <div class="intro-section">
-          <p>¡Bienvenidos!</p> Disfruta de nuestra deliciosa selección de dulces artesanales y botanas.</p>
+            <p>¡Bienvenidos!</p> <p>Disfruta de nuestra deliciosa selección de dulces artesanales y botanas.</p>
             <p>Cada bocado es un viaje por sabores únicos, desde dulces picositos hasta las botanas más crujientes.</p>
             <p>Consentimos a quienes buscan revivir recuerdos o descubrir nuevas delicias, Panza Verde es tu puerta a la auténtica dulzura tradicional.</p>
             <p>¡Descubre nuestro catálogo y déjate sorprender por cada sabor!</p>
