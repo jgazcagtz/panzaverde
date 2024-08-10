@@ -22,8 +22,18 @@
             background-color: white;
             color: green;
             border-bottom: 4px solid green;
+          animation: fadeIn 2s ease-in;
+        }
+@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
+      
         header img {
             width: 150px;
             height: 150px;
@@ -87,8 +97,20 @@
             color: white;
             font-weight: 700;
             margin: 20px 0;
+          animation: bounce 1.5s 2s;
         }
-
+  @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+      
         .catalog-btn {
             background-color: green;
             color: white;
@@ -98,7 +120,10 @@
             cursor: pointer;
             font-size: 1em;
             margin-top: 10px;
+          
         }
+      
+    
 
         .category-menu {
             display: none;
@@ -491,7 +516,8 @@
     <main>
         <!-- Intro Section -->
         <div class="intro-section">
-            <p>¡Bienvenidos!</p> <p>Disfruta de nuestra deliciosa selección de dulces artesanales y botanas.</p>
+            <p>¡Bienvenidos!</p> 
+            <p>Disfruta de nuestra deliciosa selección de dulces artesanales y botanas.</p>
             <p>Cada bocado es un viaje por sabores únicos, desde dulces picositos hasta las botanas más crujientes.</p>
             <p>Consentimos a quienes buscan revivir recuerdos o descubrir nuevas delicias, Panza Verde es tu puerta a la auténtica dulzura tradicional.</p>
             <p>¡Descubre nuestro catálogo y déjate sorprender por cada sabor!</p>
@@ -505,9 +531,11 @@
             <p>Pagar con PayPal:</p><br>
             <div id="paypal-form"></div><br>
             <div>
-                <label><input type="radio" name="payment-method" value="en línea" onchange="updatePaymentMethod(this.value)" checked> En línea</label><br>
-                <label><input type="radio" name="payment-method" value="efectivo" onchange="updatePaymentMethod(this.value)"> Efectivo</label><br>
-                <label><input type="radio" name="payment-method" value="Transferencia" onchange="updatePaymentMethod(this.value)"> Transferencia</label><br>
+               <label><input type="radio" name="payment-method" value="en línea" onchange="updatePaymentMethod(this.value)"checked> En línea</label><br> 
+              
+              <label><input type="radio" name="payment-method" value="efectivo" onchange="updatePaymentMethod(this.value)" > Efectivo</label><br>
+                
+                <label><input type="radio" name="payment-method" value="Transferencia" onchange="updatePaymentMethod(this.value)"> Transferencia</label>
             </div><br>
             <a id="whatsapp-btn" href="#" target="_blank" style="display: none;"><br>
                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
@@ -585,7 +613,7 @@
 
             window.updatePaymentMethod = function(method) {
                 selectedPaymentMethod = method;
-                updateWhatsAppLink();
+                updateCart();
             }
 
             function createProductElement(product, index) {
