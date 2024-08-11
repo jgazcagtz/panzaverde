@@ -5,23 +5,33 @@
     <title>Panza Verde</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
+    :root {
+        --primary-color: green;
+        --secondary-color: #34a853;
+        --accent-color: #ffdd00;
+        --background-color: #f2f2f2;
+        --text-color: #333;
+        --white: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
     body {
         font-family: 'Montserrat', sans-serif;
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        background-color: #f2f2f2;
-        color: green;
+        background-color: var(--background-color);
+        color: var(--primary-color);
         overflow-x: hidden;
     }
 
     header {
         text-align: center;
         padding: 20px;
-        background-color: #fff;
-        color: green;
-        border-bottom: 2px solid #34a853;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: var(--white);
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--secondary-color);
+        box-shadow: 0 2px 4px var(--shadow-color);
     }
 
     header img {
@@ -36,13 +46,13 @@
         margin: 0;
         font-size: 2.5em;
         font-weight: 700;
-        color: green;
+        color: var(--primary-color);
     }
 
     p {
         margin: 0;
         font-size: 1.1em;
-        color: green;
+        color: var(--primary-color);
     }
 
     main {
@@ -57,7 +67,7 @@
         background-image: url('https://i.imgur.com/Vovy8fi.jpeg');
         background-size: cover;
         background-position: center;
-        color: white;
+        color: var(--white);
         padding: 40px;
         margin-bottom: 40px;
         border-radius: 12px;
@@ -83,12 +93,12 @@
         margin: 10px 0;
         position: relative;
         z-index: 2;
-        color: white;
+        color: var(--white);
     }
 
     h2 {
         text-align: center;
-        color: white;
+        color: var(--white);
         font-weight: 700;
         margin: 40px 0;
         font-size: 1.8em;
@@ -120,8 +130,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: green;
-        color: white;
+        background-color: var(--primary-color);
+        color: var(--white);
         padding: 12px 20px;
         border-radius: 50px;
         margin: 30px auto;
@@ -150,8 +160,8 @@
     }
 
     .catalog-btn {
-        background-color: green;
-        color: white;
+        background-color: var(--primary-color);
+        color: var(--white);
         border: none;
         padding: 12px 20px;
         border-radius: 5px;
@@ -168,8 +178,8 @@
     .category-menu {
         display: none;
         position: absolute;
-        background-color: white;
-        border: 1px solid #34a853;
+        background-color: var(--white);
+        border: 1px solid var(--secondary-color);
         border-radius: 5px;
         overflow: hidden;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
@@ -188,7 +198,7 @@
     .category-menu a {
         display: block;
         padding: 12px 20px;
-        color: #34a853;
+        color: var(--secondary-color);
         text-decoration: none;
         font-weight: 700;
         text-align: center;
@@ -196,8 +206,8 @@
     }
 
     .category-menu a:hover {
-        background-color: #34a853;
-        color: white;
+        background-color: var(--secondary-color);
+        color: var(--white);
     }
 
     .horizontal-product-grid {
@@ -214,8 +224,8 @@
         border: 1px solid #ddd;
         padding: 15px;
         border-radius: 10px;
-        background-color: white;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        background-color: var(--white);
+        box-shadow: 0 6px 12px var(--shadow-color);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         min-width: 320px;
         display: flex;
@@ -251,7 +261,7 @@
     .horizontal-product-item h3 {
         margin: 0 0 8px 0;
         font-size: 1.3em;
-        color: #333;
+        color: var(--text-color);
         font-weight: 700;
     }
 
@@ -271,8 +281,8 @@
         border: 1px solid #ddd;
         padding: 15px;
         border-radius: 10px;
-        background-color: white;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        background-color: var(--white);
+        box-shadow: 0 6px 12px var(--shadow-color);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         align-items: center;
         animation: fadeInUp 1s ease-in-out;
@@ -298,7 +308,7 @@
     .product-item h3 {
         margin: 0;
         font-size: 1.3em;
-        color: #333;
+        color: var(--text-color);
     }
 
     .product-item p {
@@ -308,8 +318,8 @@
 
     .choose-btn {
         padding: 10px 20px;
-        background-color: #34a853;
-        color: white;
+        background-color: var(--secondary-color);
+        color: var(--white);
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -328,10 +338,10 @@
         width: 100%;
         padding: 10px;
         margin: 15px 0;
-        border: 1px solid #34a853;
+        border: 1px solid var(--secondary-color);
         border-radius: 5px;
-        background-color: white;
-        color: #333;
+        background-color: var(--white);
+        color: var(--text-color);
         font-size: 1em;
         font-family: 'Montserrat', sans-serif;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -339,32 +349,32 @@
 
     select:focus {
         outline: none;
-        border-color: #ffdd00;
+        border-color: var(--accent-color);
         box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
     }
 
-      #cart {
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 15px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            z-index: 1000;
-            width: 350px;
-            max-width: 90%;
-            display: none;
-            overflow-y: auto;
-            max-height: 80vh;
-            animation: fadeInUp 0.5s ease-out;
-        }
+    #cart {
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        background-color: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 8px var(--shadow-color);
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        z-index: 1000;
+        width: 350px;
+        max-width: 90%;
+        display: none;
+        overflow-y: auto;
+        max-height: 80vh;
+        animation: fadeInUp 0.5s ease-out;
+    }
 
-        #cart h3 {
-            margin-bottom: 20px;
-        }
+    #cart h3 {
+        margin-bottom: 20px;
+    }
 
     #cart-items {
         margin-bottom: 15px;
@@ -373,28 +383,29 @@
     #cart-total {
         font-weight: 700;
         margin-bottom: 15px;
+        color: var(--text-color);
     }
 
     footer {
         text-align: center;
         padding: 15px;
-        background-color: green;
-        color: white;
+        background-color: var(--primary-color);
+        color: var(--white);
         position: fixed;
         width: 100%;
         bottom: 0;
-        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 -2px 4px var(--shadow-color);
     }
 
     #whatsapp-btn {
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        color: white;
+        color: var(--white);
         text-decoration: none;
         font-size: 1em;
         padding: 10px 20px;
-        background-color: #34a853;
+        background-color: var(--secondary-color);
         border-radius: 5px;
         transition: background-color 0.3s ease;
     }
@@ -405,15 +416,15 @@
     }
 
     #whatsapp-btn:hover {
-        background-color: #ffdd00;
-        color: black;
+        background-color: var(--accent-color);
+        color: var(--text-color);
     }
 
     #refresh-btn {
         margin-top: 10px;
         padding: 10px 20px;
         background-color: #e3240b;
-        color: white;
+        color: var(--white);
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -422,16 +433,16 @@
     }
 
     #refresh-btn:hover {
-        background-color: #ffdd00;
-        color: black;
+        background-color: var(--accent-color);
+        color: var(--text-color);
     }
 
     #cart-btn {
         position: fixed;
         bottom: 100px;
         right: 30px;
-        background-color: #ffdd00;
-        color: white;
+        background-color: var(--accent-color);
+        color: var(--white);
         border: none;
         border-radius: 50%;
         width: 60px;
@@ -447,8 +458,8 @@
     }
 
     #cart-btn:hover {
-        background-color: white;
-        color: #34a853;
+        background-color: var(--white);
+        color: var(--secondary-color);
         transform: scale(1.1);
     }
 
@@ -466,7 +477,7 @@
     }
 
     .modal-content {
-        background-color: #fff;
+        background-color: var(--white);
         margin: 15% auto;
         padding: 20px;
         border-radius: 12px;
@@ -486,7 +497,7 @@
 
     .close:hover,
     .close:focus {
-        color: black;
+        color: var(--text-color);
         text-decoration: none;
         cursor: pointer;
     }
@@ -500,7 +511,7 @@
     .modal-header h2 {
         margin: 0;
         font-size: 1.5em;
-        color: #222;
+        color: var(--text-color);
     }
 
     .modal-body {
@@ -520,8 +531,8 @@
 
     .edit-btn {
         padding: 10px 20px;
-        background-color: #34a853;
-        color: white;
+        background-color: var(--secondary-color);
+        color: var(--white);
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -530,14 +541,14 @@
     }
 
     .edit-btn:hover {
-        background-color: #ffdd00;
-        color: black;
+        background-color: var(--accent-color);
+        color: var(--text-color);
     }
 
     .quantity-btn {
         border: none;
-        background-color: #34a853;
-        color: white;
+        background-color: var(--secondary-color);
+        color: var(--white);
         padding: 5px;
         border-radius: 50%;
         cursor: pointer;
@@ -547,9 +558,29 @@
     }
 
     .quantity-btn:hover {
-        background-color: #ffdd00;
-        color: black;
+        background-color: var(--accent-color);
+        color: var(--text-color);
         transform: scale(1.1);
+    }
+
+    /* Smooth Scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--background-color);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 10px;
+        border: 3px solid var(--background-color);
     }
 
     /* Media Queries */
