@@ -1,0 +1,6 @@
+{
+  "appId": "com.panza.verde",
+  "appName": "Panza Verde",
+  "bundledWebRuntime": false,
+  "webDir": "www"
+}
