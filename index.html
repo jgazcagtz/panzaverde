@@ -146,6 +146,51 @@
             position: relative;
             animation: slideInFromLeft 1s ease-out forwards, fadeIn 2s ease-in-out;
         }
+      
+          .intro-section_2 {
+            text-align: center;
+            background-color: var(--secondary-color);
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            position: relative;
+            font-weight: 700;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .intro-section_2::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            z-index: 1;
+        }
+      
+           .intro-section_2 p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--white);
+            font-weight: 700;
+            margin: 30px 0;
+            font-size: 1.6em;
+            position: relative;
+            animation: slideInFromLeft 1s ease-out forwards, fadeIn 2s ease-in-out;
+        }
 
         @keyframes slideInFromLeft {
             0% {
@@ -697,11 +742,11 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            color: var(--white);
+            color: var(--text-color);
             text-decoration: none;
             font-size: 1em;
             padding: 10px 20px;
-            background-color: var(--secondary-color);
+            background-color: white;
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
@@ -731,25 +776,11 @@
             <p>¡Bienvenidos!</p> 
           <p>Nos especializamos en la comercialización de dulces y botanas artesanales con calidad gourmet
             de diferentes estados del país.</p> 
-            <p>Disfruta de nuestra deliciosa selección de dulces artesanales y botanas.</p>
-            <p>Cada bocado es un viaje por sabores únicos, desde dulces picositos hasta las botanas más crujientes.</p>
-            <p>Consentimos a quienes buscan revivir recuerdos o descubrir nuevas delicias, Panza Verde es tu puerta a la auténtica dulzura tradicional.</p>
-            <p>¡Descubre nuestro catálogo y déjate sorprender por cada sabor!</p>
+      
+            <p>¡Descubre nuestro catálogo y déjate sorprender!</p>
         </div>
       
-      <div class="intro-section">
-        <p>¿Quieres ser distribuidor de nuestros productos? </p>
-         <p> ¡Pregunta a nuestro Bot por el Programa de Distribuidores Panza Verde!</p>
-        <p>Mándanos un WhatsApp al +5526627851 para más información.
-    </p>
-        <p><a id="whatsapp-btn_1" href="https://wa.me/5526627851" target="https://wa.me/5526627851" style=""><br>
-               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-                Whatsapp
-            </a><p><br>
-   
-</div>
-
-
+    
         <div id="cart">
             <h3>🛒 Carrito</h3>
             <div id="cart-items"></div>
@@ -776,7 +807,18 @@
             <h2>🍬 Nuestros Favoritos</h2>
         </div>
         <div id="menu-horizontal" class="horizontal-product-grid"></div>
-        
+        <div class="intro-section_2">
+        <p>¿Quieres ser distribuidor de nuestros productos? </p>
+         <p> ¡Pregunta a nuestro Bot por el Programa de Distribuidores Panza Verde!</p>
+        <p>Mándanos un WhatsApp al +5526627851 para más información.
+    </p><br>
+        <p><a id="whatsapp-btn_1" href="https://wa.me/5526627851" target="https://wa.me/5526627851" style=""><br>
+               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+                Contáctanos por Whatsapp
+            </a><p><br>
+   
+</div><br>
+
         <div class="menu-title-container">
             <h2>🍬 Catálogo</h2>
             <div class="category-menu">
