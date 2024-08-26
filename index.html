@@ -495,6 +495,26 @@
             color: var(--text-color);
         }
 
+        #make-order-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        #make-order-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
         #cart-btn {
             position: fixed;
             bottom: 80px;
@@ -768,12 +788,15 @@
                 
                 <label><input type="radio" name="payment-method" value="Transferencia" onchange="window.updatePaymentMethod(this.value)"> Transferencia</label>
             </div><br>
+          
+            <button class="edit-btn" onclick="window.toggleModal()">Editar Carrito</button>
+            <button id="make-order-btn" onclick="window.uploadOrder()">Hacer pedido 🍬</button><br>
             <p><a id="whatsapp-btn" href="#" target="_blank" style="display: none;"><br>
                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
                 Confirmar pedido - Whatsapp
             </a><p><br>
-            <button class="edit-btn" onclick="window.toggleModal()">Editar Carrito</button>
         </div>
+      
         <button id="cart-btn" onclick="window.toggleCart()">🛒</button>
         
         <div class="menu-title-container">
@@ -866,6 +889,7 @@
 
             let cart = [];
             let total = 0;
+            let orderNumber = null;
             let selectedPaymentMethod = "efectivo"; // Default payment method
             let filteredProducts = [...products]; // Create a copy of products to use in filtering
 
@@ -988,6 +1012,38 @@
                 whatsappBtn.href = `https://wa.me/525526627851?text=${encodedMessage}`;
                 whatsappBtn.style.display = total > 0 ? 'inline-flex' : 'none';
             }
+
+            window.uploadOrder = function() {
+                if (!orderNumber) {
+                    orderNumber = Math.floor(Math.random() * 1000000) + 1;
+                }
+
+                const orderData = {
+                    timestamp: new Date().toLocaleString(),
+                    orderNumber: orderNumber,
+                    paymentMethod: selectedPaymentMethod,
+                    cart: JSON.stringify(cart),
+                    total: total.toFixed(2)
+                };
+
+                updateWhatsAppLink(); // Ensure WhatsApp link is updated before sending the order
+
+                fetch('https://script.google.com/macros/s/AKfycbzRuFIWEDIAmaWXRcEGT-N4D6PAhH35I04hAArX_-vuR2MzLpdb-4bVTCr51z8O0bGjYg/exec', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                })
+                .then(response => {
+                    alert('Pedido enviado correctamente.');
+                    document.getElementById('whatsapp-btn').style.display = 'inline-flex';  // Ensure WhatsApp button remains visible
+                })
+                .catch(error => {
+                    console.error('Error al enviar el pedido:', error);
+                });
+            };
 
             window.clearCart = function() {
                 cart.length = 0;
