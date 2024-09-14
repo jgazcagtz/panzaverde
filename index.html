@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
         :root {
-            --primary-color: green;
-            --secondary-color: #34a853;
+            --primary-color: #2e7d32;
+            --secondary-color: #388e3c;
             --accent-color: #ffdd00;
             --background-color: #f2f2f2;
             --text-color: #333;
@@ -21,7 +21,7 @@
             padding: 0;
             box-sizing: border-box;
             background-color: var(--background-color);
-            color: var(--primary-color);
+            color: var(--text-color);
             overflow-x: hidden;
         }
 
@@ -110,15 +110,36 @@
         p {
             margin: 0;
             font-size: 1em;
-            color: var(--primary-color);
+            color: var(--text-color);
             animation: fadeInUp 1s ease-out;
         }
 
         main {
             padding: 20px;
             padding-bottom: 80px;
-            max-width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-bar input {
+            width: 80%;
+            max-width: 500px;
+            padding: 10px 15px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 25px;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
         }
 
         .intro-section {
@@ -165,7 +186,7 @@
             position: relative;
             animation: slideInFromLeft 1s ease-out forwards, fadeIn 2s ease-in-out;
         }
-      
+
         .intro-section_2 {
             text-align: center;
             background-color: var(--secondary-color);
@@ -192,23 +213,13 @@
             border-radius: 12px;
             z-index: 1;
         }
-      
+
         .intro-section_2 p {
             font-size: 1.2em;
             margin: 10px 0;
             position: relative;
             z-index: 2;
             color: var(--white);
-        }
-
-        h2 {
-            text-align: center;
-            color: var(--white);
-            font-weight: 700;
-            margin: 30px 0;
-            font-size: 1.6em;
-            position: relative;
-            animation: slideInFromLeft 1s ease-out forwards, fadeIn 2s ease-in-out;
         }
 
         .menu-title-container {
@@ -302,10 +313,11 @@
             flex-direction: row;
             align-items: center;
             animation: fadeInUp 1s ease-in-out;
+            cursor: pointer;
         }
 
         .horizontal-product-item:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
@@ -330,38 +342,34 @@
         }
 
         .product-grid {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
         }
 
         .product-item {
-            display: flex;
+            text-align: center;
             border: 1px solid #ddd;
             padding: 15px;
             border-radius: 10px;
             background-color: var(--white);
             box-shadow: 0 6px 12px var(--shadow-color);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            align-items: center;
             animation: fadeInUp 1.5s ease-in-out;
+            cursor: pointer;
         }
 
         .product-item:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .product-item img {
-            width: 100px;
-            height: 100px;
+            width: 100%;
+            height: 200px;
             border-radius: 10px;
             object-fit: cover;
-            margin-right: 20px;
-        }
-
-        .product-item-content {
-            flex-grow: 1;
+            margin-bottom: 15px;
         }
 
         .product-item h3 {
@@ -385,11 +393,12 @@
             font-size: 1em;
             transition: background-color 0.3s ease, transform 0.3s ease;
             text-decoration: none;
+            margin-top: 10px;
         }
 
         .choose-btn:hover {
             background-color: #2c8a41;
-            transform: scale(1.2);
+            transform: scale(1.05);
         }
 
         select {
@@ -561,7 +570,7 @@
             padding: 20px;
             border-radius: 12px;
             width: 95%;
-            max-width: 400px;
+            max-width: 500px;
             position: relative;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
@@ -669,12 +678,11 @@
             }
 
             .product-item img {
-                width: 80px;
-                height: 80px;
+                height: 150px;
             }
 
             .product-item h3 {
-                font-size: 0.9em;
+                font-size: 1em;
             }
 
             .choose-btn {
@@ -730,8 +738,8 @@
                 font-size: 1em;
             }
         }
-      
-       #whatsapp-btn_1 {
+
+        #whatsapp-btn_1 {
             display: inline-flex;
             align-items: center;
             gap: 10px;
@@ -753,6 +761,19 @@
             background-color: var(--accent-color);
             color: var(--text-color);
         }
+
+        .product-modal-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .product-modal-details p {
+            margin: 8px 0;
+            color: #555;
+        }
     </style>
 
 </head>
@@ -764,16 +785,18 @@
     </header>
 
     <main>
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Buscar productos..." oninput="window.searchProducts(this.value)">
+        </div>
+
         <!-- Intro Section -->
         <div class="intro-section">
             <p>¡Bienvenidos!</p> 
-          <p>Nos especializamos en la comercialización de dulces y botanas artesanales con calidad gourmet
-            de diferentes estados del país.</p> 
-      
+            <p>Nos especializamos en la comercialización de dulces y botanas artesanales con calidad gourmet de diferentes estados del país.</p> 
             <p>¡Descubre nuestro catálogo y déjate sorprender!</p>
         </div>
-      
-    
+
         <div id="cart">
             <h3>🛒 Carrito</h3>
             <div id="cart-items"></div>
@@ -782,42 +805,39 @@
             <p>Pagar con PayPal:</p><br>
             <div id="paypal-form"></div><br>
             <div>
-               <label><input type="radio" name="payment-method" value="en línea" onchange="window.updatePaymentMethod(this.value)"checked> En línea</label><br> 
-              
-              <label><input type="radio" name="payment-method" value="efectivo" onchange="window.updatePaymentMethod(this.value)" > Efectivo</label><br>
-                
+                <label><input type="radio" name="payment-method" value="en línea" onchange="window.updatePaymentMethod(this.value)" checked> En línea</label><br> 
+                <label><input type="radio" name="payment-method" value="efectivo" onchange="window.updatePaymentMethod(this.value)"> Efectivo</label><br>
                 <label><input type="radio" name="payment-method" value="Transferencia" onchange="window.updatePaymentMethod(this.value)"> Transferencia</label>
             </div><br>
-          
             <button class="edit-btn" onclick="window.toggleModal()">Editar Carrito</button>
             <button id="make-order-btn" onclick="window.uploadOrder()">Hacer pedido 🍬</button><br>
             <p><a id="whatsapp-btn" href="#" target="_blank" style="display: none;"><br>
-               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
                 Confirmar pedido - Whatsapp
-            </a><p><br>
+            </a></p><br>
         </div>
-      
+
         <button id="cart-btn" onclick="window.toggleCart()">🛒</button>
-        
+
         <div class="menu-title-container">
             <h2>🍬 Nuestros Favoritos</h2>
         </div>
         <div id="menu-horizontal" class="horizontal-product-grid"></div>
+
         <div class="intro-section_2">
-        <p>¿Quieres ser distribuidor de nuestros productos? </p>
-         <p> ¡Pregunta a nuestro Bot por el Programa de Distribuidores Panza Verde!</p>
-        <p>Contáctanos al +5526627851 para más información:
-    </p><br>
-        <p><a id="whatsapp-btn_1" href="https://wa.me/5526627851" target="https://wa.me/5526627851" style=""><br>
-               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+            <p>¿Quieres ser distribuidor de nuestros productos?</p>
+            <p>¡Pregunta a nuestro Bot por el Programa de Distribuidores Panza Verde!</p>
+            <p>Contáctanos al +5526627851 para más información:</p><br>
+            <p><a id="whatsapp-btn_1" href="https://wa.me/5526627851" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
                 Escríbenos por Whatsapp
-            </a><p><br>
-   
-</div><br>
+            </a></p><br>
+        </div><br>
 
         <div class="menu-title-container">
             <h2>🍬 Catálogo</h2>
             <div class="category-menu">
+                <a href="#" onclick="window.filterProducts('Todos'); event.preventDefault();">Todos</a>
                 <a href="#" onclick="window.filterProducts('Dulces'); event.preventDefault();">Dulces</a>
                 <a href="#" onclick="window.filterProducts('Dulces picositos'); event.preventDefault();">Dulces picositos</a>
                 <a href="#" onclick="window.filterProducts('Botanas'); event.preventDefault();">Botanas</a>
@@ -825,6 +845,23 @@
             </div>
         </div>
         <div id="menu-vertical" class="product-grid"></div>
+
+        <!-- Product Modal -->
+        <div id="product-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="product-modal-title"></h2>
+                    <span class="close" onclick="window.closeProductModal()">&times;</span>
+                </div>
+                <div class="modal-body" id="product-modal-body">
+                    <!-- Product details go here -->
+                </div>
+                <div class="modal-footer">
+                    <button class="edit-btn" onclick="window.closeProductModal()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
         <div id="edit-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -838,8 +875,7 @@
             </div>
         </div>
     </main>
-    <footer style="color: white !important; background-color: var(--primary-color);">
-      
+    <footer>
         <h4>Panza Verde ® 2024</h4>
     </footer>
 
@@ -857,34 +893,34 @@
                 { name: "Botana Gourmet salada (100g)", img: "https://i.imgur.com/jhlGdSc.jpeg", price: 55, includes: "Mezcla de nueces", category: "Botanas" },
                 { name: "Botana Panza Verde (300g)", img: "https://i.imgur.com/Sp53Fq9.jpeg", price: 120, includes: "Nuez de la india, pretzels, arándanos enchilados", category: "Botanas" },
                 { name: "Churritos de amaranto con sal y un toque de limón (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
-              { name: "Churritos de amaranto con chipotle (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
-              { name: "Churritos de amaranto con nopal (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
+                { name: "Churritos de amaranto con chipotle (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
+                { name: "Churritos de amaranto con nopal (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
                 { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/EBqMxqr.jpeg", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar", category: "Dulces" },
                 { name: "Fresas Deshidratadas (100g)", img: "https://i.imgur.com/0SK8MuI.jpeg", price: 50, includes: "", category: "Dulces" },
                 { name: "Gomitas de frutos  (250g)", img: "https://i.imgur.com/kWyjWlf.jpeg", price: 45, includes: "Tutti fruti", category: "Dulces" },
                 { name: "Gomitas de corazón (100g)", img: "https://i.imgur.com/CAtOzlA.jpeg", price: 20, includes: "Hechas con amor", category: "Dulces" },
                 { name: "Gomitas de frutas con chile (250g)", img: "https://i.imgur.com/HN5cFUm.jpeg", price: 45, includes: "", category: "Dulces picositos" },
-              { name: "Gomitas de sandía con chile (250g)", img: "https://i.imgur.com/Gh1ozVF.jpeg", price: 45, includes: "", category: "Dulces picositos" },
-              { name: "Gomitas de hierbas (250g)", img: "https://i.imgur.com/rk9xzMb.jpeg", price: 45, includes: "Combinación de sabores: canela, hierbabuena, menta y anís. ", category: "Dulces" },
-              { name: "Gomitas de rompope (250g)", img: "https://i.imgur.com/TqhrfIN.jpeg", price: 45, includes: "", category: "Dulces" },
+                { name: "Gomitas de sandía con chile (250g)", img: "https://i.imgur.com/Gh1ozVF.jpeg", price: 45, includes: "", category: "Dulces picositos" },
+                { name: "Gomitas de hierbas (250g)", img: "https://i.imgur.com/rk9xzMb.jpeg", price: 45, includes: "Combinación de sabores: canela, hierbabuena, menta y anís.", category: "Dulces" },
+                { name: "Gomitas de rompope (250g)", img: "https://i.imgur.com/TqhrfIN.jpeg", price: 45, includes: "", category: "Dulces" },
                 { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/ODAIYHh.jpeg", price: 45, includes: "", category: "Dulces" },
                 { name: "Guayabate con nuez (330g aprox.)", img: "https://i.imgur.com/jrJlWHl.jpeg", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez", category: "Dulces" },
-               { name: "Guayabate con piñón (330g aprox.)", img: "https://i.imgur.com/jrJlWHl.jpeg", price: 85, includes: "Dulce de guayaba con cajeta, coco y piñón", category: "Dulces" },
+                { name: "Guayabate con piñón (330g aprox.)", img: "https://i.imgur.com/jrJlWHl.jpeg", price: 85, includes: "Dulce de guayaba con cajeta, coco y piñón", category: "Dulces" },
                 { name: "Macadamias cubiertas de cocoa (100g)", img: "https://i.imgur.com/jehZ5Bu.jpeg", price: 60, includes: "", category: "Dulces" },
-                { name: "Mangomitas cubiertas de chile (100g) ", img: "https://i.imgur.com/6mljk5L.png", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Mangomitas cubiertas de chile (100g)", img: "https://i.imgur.com/6mljk5L.png", price: 20, includes: "", category: "Dulces picositos" },
                 { name: "Mangos enchilados (100g)", img: "https://i.imgur.com/jLK6q3R.png", price: 45, includes: "", category: "Dulces picositos" },
                 { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/5kbXrDR.png", price: 55, includes: "", category: "Botanas" },
                 { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/N49fDtW.jpeg", price: 50, includes: "", category: "Botanas" },
                 { name: "Palomas (50g aprox.)", img: "https://i.imgur.com/wpgUaGP.jpeg", price: 25, includes: "Obleas rellenas de coco y cajeta", category: "Dulces" },
                 { name: "Piñas con chile (100g)", img: "https://i.imgur.com/gRCANyj.jpeg", price: 45, includes: "", category: "Dulces picositos" },
                 { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/FxIyawD.png", price: 55, includes: "Con ajo", category: "Botanas" },
-                { name: "Queso de Almendras (40g aprox) ", img: "https://i.imgur.com/CuhnSD3.jpeg", price: 25, includes: "Dulce fino de Almendra con un toque de limón", category: "Dulces" },
+                { name: "Queso de Almendras (40g aprox)", img: "https://i.imgur.com/CuhnSD3.jpeg", price: 25, includes: "Dulce fino de Almendra con un toque de limón", category: "Dulces" },
                 { name: "Suspiros (50g)", img: "https://i.imgur.com/6uZUzF8.jpeg", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
                 { name: "Suaves de coco (300g)", img: "https://i.imgur.com/CtURNmF.jpeg", price: 80, includes: "", category: "Dulces" },
                 { name: "Tarugos rellenos de panditas (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-              { name: "Tarugos rellenos de tamborcito (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-              { name: "Tarugos rellenos de picafresa (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-              { name: "Tarugos rellenos de rocaleta (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Tarugos rellenos de tamborcito (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Tarugos rellenos de picafresa (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
+                { name: "Tarugos rellenos de rocaleta (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
                 { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/iXCpNDz.jpeg", price: 45, includes: "", category: "Dulces picositos" }
             ];
 
@@ -902,27 +938,24 @@
             function createProductElement(product, index, layout = 'vertical') {
                 const productItem = document.createElement('div');
                 productItem.classList.add(layout === 'horizontal' ? 'horizontal-product-item' : 'product-item');
-                productItem.innerHTML = `
+
+                productItem.innerHTML = layout === 'horizontal' ? `
                     <img src="${product.img}" alt="${product.name}">
                     <div class="product-item-content">
                         <h3>${product.name}</h3>
                         <p>$${product.price.toFixed(2)}</p>
-                        <p>${product.includes}</p>
-                        <select id="quantity-${layout}-${index}">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                        </select>
-                        <button class="choose-btn" onclick="window.addToCart(${index}, '${layout}')">Elegir</button>
                     </div>
+                ` : `
+                    <img src="${product.img}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>$${product.price.toFixed(2)}</p>
+                    <button class="choose-btn" onclick="window.openProductModal(${index})">Ver más</button>
                 `;
+
+                productItem.addEventListener('click', () => {
+                    window.openProductModal(index);
+                });
+
                 return productItem;
             }
 
@@ -934,10 +967,10 @@
                 });
             }
 
-            window.addToCart = function(index, layout = 'vertical') {
-                const quantitySelect = document.getElementById(`quantity-${layout}-${index}`);
+            window.addToCart = function(index) {
+                const quantitySelect = document.getElementById(`quantity-${index}`);
                 const quantity = parseInt(quantitySelect.value);
-                const product = layout === 'horizontal' ? [...products].sort((a, b) => b.price - a.price)[index] : filteredProducts[index];
+                const product = filteredProducts[index];
                 const existingProduct = cart.find(item => item.name === product.name);
 
                 if (existingProduct) {
@@ -947,6 +980,7 @@
                 }
                 window.updateCart();
                 alert(`Se agregó ${quantity} ${product.name} al carrito`);
+                window.closeProductModal();
             };
 
             window.updateCart = function() {
@@ -1052,9 +1086,54 @@
             };
 
             window.filterProducts = function(category) {
-                filteredProducts = products.filter(product => product.category === category);
+                if (category === 'Todos') {
+                    filteredProducts = [...products];
+                } else {
+                    filteredProducts = products.filter(product => product.category === category);
+                }
                 displayProducts(filteredProducts, 'vertical');
             };
+
+            window.searchProducts = function(query) {
+                filteredProducts = products.filter(product => product.name.toLowerCase().includes(query.toLowerCase()));
+                displayProducts(filteredProducts, 'vertical');
+            };
+
+            window.openProductModal = function(index) {
+                const product = filteredProducts[index];
+                const modal = document.getElementById('product-modal');
+                const modalTitle = document.getElementById('product-modal-title');
+                const modalBody = document.getElementById('product-modal-body');
+
+                modalTitle.textContent = product.name;
+                modalBody.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}" class="product-modal-img">
+                    <div class="product-modal-details">
+                        <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p>
+                        <p><strong>Descripción:</strong> ${product.includes || 'N/A'}</p>
+                        <p><strong>Categoría:</strong> ${product.category}</p>
+                        <select id="quantity-${index}">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                        <button class="choose-btn" onclick="window.addToCart(${index})">Agregar al carrito</button>
+                    </div>
+                `;
+                modal.style.display = 'block';
+            }
+
+            window.closeProductModal = function() {
+                const modal = document.getElementById('product-modal');
+                modal.style.display = 'none';
+            }
 
             // Display top 6 most expensive products in horizontal layout
             const topProducts = [...products].sort((a, b) => b.price - a.price).slice(0, 6);
@@ -1075,12 +1154,17 @@
         }
 
         window.onclick = function(event) {
-            const modal = document.getElementById('edit-modal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
+            const editModal = document.getElementById('edit-modal');
+            const productModal = document.getElementById('product-modal');
+            if (event.target === editModal) {
+                editModal.style.display = 'none';
+            }
+            if (event.target === productModal) {
+                productModal.style.display = 'none';
             }
         }
     </script>
+    <!-- Chat Bot Script -->
     <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
 </body>
 </html>
