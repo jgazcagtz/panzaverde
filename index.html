@@ -1,10 +1,14 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panza Verde</title>
+    <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
+        /* Root Variables */
         :root {
             --primary-color: #2e7d32;
             --secondary-color: #388e3c;
@@ -15,6 +19,7 @@
             --shadow-color: rgba(0, 0, 0, 0.1);
         }
 
+        /* Global Styles */
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -80,6 +85,7 @@
             }
         }
 
+        /* Header */
         header {
             text-align: center;
             padding: 20px;
@@ -114,6 +120,7 @@
             animation: fadeInUp 1s ease-out;
         }
 
+        /* Main Content */
         main {
             padding: 20px;
             padding-bottom: 80px;
@@ -121,6 +128,7 @@
             margin: 0 auto;
         }
 
+        /* Search Bar */
         .search-bar {
             margin-bottom: 20px;
             text-align: center;
@@ -142,6 +150,7 @@
             box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
         }
 
+        /* Intro Section */
         .intro-section {
             text-align: center;
             background-image: url('https://i.imgur.com/Vovy8fi.jpeg');
@@ -177,6 +186,7 @@
             color: var(--white);
         }
 
+        /* Section Titles */
         h2 {
             text-align: center;
             color: var(--white);
@@ -187,6 +197,7 @@
             animation: slideInFromLeft 1s ease-out forwards, fadeIn 2s ease-in-out;
         }
 
+        /* Secondary Intro Section */
         .intro-section_2 {
             text-align: center;
             background-color: var(--secondary-color);
@@ -222,6 +233,7 @@
             color: var(--white);
         }
 
+        /* Menu Title Container */
         .menu-title-container {
             display: flex;
             justify-content: center;
@@ -239,6 +251,7 @@
             animation-fill-mode: both;
         }
 
+        /* Catalog Button */
         .catalog-btn {
             background-color: var(--primary-color);
             color: var(--white);
@@ -255,6 +268,7 @@
             background-color: #2c8a41;
         }
 
+        /* Category Menu */
         .category-menu {
             display: none;
             position: absolute;
@@ -291,6 +305,7 @@
             color: var(--white);
         }
 
+        /* Horizontal Product Grid */
         .horizontal-product-grid {
             display: flex;
             flex-wrap: nowrap;
@@ -341,6 +356,7 @@
             color: #555;
         }
 
+        /* Product Grid */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -421,6 +437,7 @@
             box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
         }
 
+        /* Footer */
         footer {
             text-align: center;
             padding: 10px;
@@ -431,6 +448,7 @@
             font-size: 0.9em;
         }
 
+        /* Cart Styles */
         #cart {
             margin-top: 20px;
             border: 1px solid #ddd;
@@ -551,6 +569,7 @@
             transform: scale(1.2);
         }
 
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -651,6 +670,33 @@
             transform: scale(1.2);
         }
 
+        /* Similar Products */
+        .similar-products {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        .similar-product-item {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: var(--white);
+            box-shadow: 0 4px 8px var(--shadow-color);
+            min-width: 150px;
+            cursor: pointer;
+        }
+
+        .similar-product-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
         /* Smooth Scrolling */
         html {
             scroll-behavior: smooth;
@@ -739,6 +785,7 @@
             }
         }
 
+        /* WhatsApp Button */
         #whatsapp-btn_1 {
             display: inline-flex;
             align-items: center;
@@ -762,6 +809,7 @@
             color: var(--text-color);
         }
 
+        /* Product Modal Image */
         .product-modal-img {
             width: 100%;
             max-height: 300px;
@@ -775,7 +823,6 @@
             color: #555;
         }
     </style>
-
 </head>
 <body>
     <header>
@@ -862,6 +909,7 @@
             </div>
         </div>
 
+        <!-- Edit Cart Modal -->
         <div id="edit-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -939,22 +987,33 @@
                 const productItem = document.createElement('div');
                 productItem.classList.add(layout === 'horizontal' ? 'horizontal-product-item' : 'product-item');
 
-                productItem.innerHTML = layout === 'horizontal' ? `
-                    <img src="${product.img}" alt="${product.name}">
-                    <div class="product-item-content">
+                if (layout === 'horizontal') {
+                    productItem.innerHTML = `
+                        <img src="${product.img}" alt="${product.name}">
+                        <div class="product-item-content">
+                            <h3>${product.name}</h3>
+                            <p>$${product.price.toFixed(2)}</p>
+                        </div>
+                    `;
+                } else {
+                    productItem.innerHTML = `
+                        <img src="${product.img}" alt="${product.name}">
                         <h3>${product.name}</h3>
                         <p>$${product.price.toFixed(2)}</p>
-                    </div>
-                ` : `
-                    <img src="${product.img}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>$${product.price.toFixed(2)}</p>
-                    <button class="choose-btn" onclick="window.openProductModal(${index})">Ver más</button>
-                `;
+                        <button class="choose-btn">Ver más</button>
+                    `;
+                }
 
                 productItem.addEventListener('click', () => {
-                    window.openProductModal(index);
+                    window.openProductModal(product);
                 });
+
+                if (layout !== 'horizontal') {
+                    productItem.querySelector('.choose-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.openProductModal(product);
+                    });
+                }
 
                 return productItem;
             }
@@ -967,10 +1026,10 @@
                 });
             }
 
-            window.addToCart = function(index) {
-                const quantitySelect = document.getElementById(`quantity-${index}`);
+            window.addToCart = function(product) {
+                const productId = product.name.replace(/\s+/g, '-').toLowerCase();
+                const quantitySelect = document.getElementById(`quantity-${productId}`);
                 const quantity = parseInt(quantitySelect.value);
-                const product = filteredProducts[index];
                 const existingProduct = cart.find(item => item.name === product.name);
 
                 if (existingProduct) {
@@ -979,8 +1038,40 @@
                     cart.push({ name: product.name, price: product.price, quantity: quantity });
                 }
                 window.updateCart();
-                alert(`Se agregó ${quantity} ${product.name} al carrito`);
-                window.closeProductModal();
+
+                // Update modal content to show confirmation and similar products
+                const modalBody = document.getElementById('product-modal-body');
+                modalBody.innerHTML = `
+                    <p>Se agregó ${quantity} ${product.name} al carrito</p>
+                    <h3>También te puede interesar:</h3>
+                    <div id="similar-products" class="similar-products"></div>
+                `;
+
+                const similarProductsContainer = document.getElementById('similar-products');
+                const similarProducts = getSimilarProducts(product);
+
+                similarProducts.forEach((similarProduct) => {
+                    const productItem = document.createElement('div');
+                    productItem.classList.add('similar-product-item');
+
+                    productItem.innerHTML = `
+                        <img src="${similarProduct.img}" alt="${similarProduct.name}">
+                        <h4>${similarProduct.name}</h4>
+                        <p>$${similarProduct.price.toFixed(2)}</p>
+                        <button class="choose-btn">Ver más</button>
+                    `;
+
+                    productItem.querySelector('img').addEventListener('click', () => {
+                        window.openProductModal(similarProduct);
+                    });
+
+                    productItem.querySelector('.choose-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.openProductModal(similarProduct);
+                    });
+
+                    similarProductsContainer.appendChild(productItem);
+                });
             };
 
             window.updateCart = function() {
@@ -1099,11 +1190,12 @@
                 displayProducts(filteredProducts, 'vertical');
             };
 
-            window.openProductModal = function(index) {
-                const product = filteredProducts[index];
+            window.openProductModal = function(product) {
                 const modal = document.getElementById('product-modal');
                 const modalTitle = document.getElementById('product-modal-title');
                 const modalBody = document.getElementById('product-modal-body');
+
+                const productId = product.name.replace(/\s+/g, '-').toLowerCase();
 
                 modalTitle.textContent = product.name;
                 modalBody.innerHTML = `
@@ -1112,27 +1204,30 @@
                         <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p>
                         <p><strong>Descripción:</strong> ${product.includes || 'N/A'}</p>
                         <p><strong>Categoría:</strong> ${product.category}</p>
-                        <select id="quantity-${index}">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
+                        <select id="quantity-${productId}" class="quantity-select">
+                            ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}
                         </select>
-                        <button class="choose-btn" onclick="window.addToCart(${index})">Agregar al carrito</button>
+                        <button class="choose-btn" id="add-to-cart-btn">Agregar al carrito</button>
                     </div>
                 `;
+
+                document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+                    window.addToCart(product);
+                });
+
                 modal.style.display = 'block';
             }
 
             window.closeProductModal = function() {
                 const modal = document.getElementById('product-modal');
                 modal.style.display = 'none';
+            }
+
+            function getSimilarProducts(currentProduct, numSimilar = 3) {
+                const similarProducts = products.filter(product => product.category === currentProduct.category && product.name !== currentProduct.name);
+                // Shuffle the similar products array
+                similarProducts.sort(() => Math.random() - 0.5);
+                return similarProducts.slice(0, numSimilar);
             }
 
             // Display top 6 most expensive products in horizontal layout
