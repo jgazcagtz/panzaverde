@@ -22,10 +22,9 @@
         /* Global Styles */
         body {
             font-family: 'Montserrat', sans-serif;
-          box-sizing: border-box;
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             background-color: var(--background-color);
             color: var(--text-color);
             overflow-x: hidden;
@@ -88,7 +87,7 @@
 
         /* Header */
         header {
-          width: 100%;
+            width: 100%;
             text-align: center;
             padding: 20px;
             background-color: var(--white);
@@ -315,6 +314,7 @@
             gap: 20px;
             margin-bottom: 30px;
             padding: 10px 0;
+            justify-content: center;
         }
 
         .horizontal-product-item {
@@ -363,6 +363,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
+            justify-items: center;
         }
 
         .product-item {
@@ -759,7 +760,7 @@
 
             .menu-title-container {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
                 padding: 12px;
                 border-radius: 5px;
             }
@@ -784,6 +785,18 @@
 
             .horizontal-product-item h3 {
                 font-size: 1em;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #cart {
+                width: 100%;
+                left: 0;
+                right: 0;
+                top: 70px;
+                margin: 0;
             }
         }
 
@@ -829,7 +842,6 @@
 <body>
     <header>
         <img src="https://i.imgur.com/8zf86ss.png" alt="Logo">
-    
     </header>
 
     <main>
