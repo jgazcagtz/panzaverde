@@ -470,6 +470,25 @@
             animation: fadeInUp 0.7s ease-out;
         }
 
+        /* Added Styles */
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-cart-btn {
+            background: none;
+            border: none;
+            font-size: 1em;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .close-cart-btn:hover {
+            color: var(--primary-color);
+        }
+
         #cart h3 {
             margin-bottom: 20px;
         }
@@ -857,7 +876,10 @@
         </div>
 
         <div id="cart">
-            <h3>🛒 Carrito</h3>
+            <div class="cart-header">
+                <h3>🛒 Carrito</h3>
+                <button class="close-cart-btn" onclick="window.toggleCart()">Cerrar Carrito</button>
+            </div>
             <div id="cart-items"></div>
             <p id="cart-total">Total: $0.00</p>
             <p><button id="refresh-btn" onclick="window.clearCart()">🗑️ Borrar Carrito</button></p><br>
