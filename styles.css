@@ -1137,3 +1137,38 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--primary-dark);
 }
+
+/* Mobile-specific hero section styles */
+@media (max-width: 768px) {
+  .hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                      url('https://i.imgur.com/Vovy8fi.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll; /* Remove fixed attachment on mobile */
+    height: auto;
+    min-height: 300px; /* Set a minimum height */
+    padding: 2rem 1rem;
+  }
+
+  .hero h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero .highlight {
+    font-size: 1.1rem;
+  }
+}
+
+/* For very small devices */
+@media (max-width: 480px) {
+  .hero {
+    min-height: 250px;
+    background-position: 60% center; /* Adjust position if needed */
+  }
+}
