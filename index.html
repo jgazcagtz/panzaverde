@@ -1,1339 +1,171 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panza Verde</title>
-    <!-- Google Fonts -->
+    <title>Panza Verde - Dulces y Botanas Artesanales</title>
+    <meta name="description" content="Tienda en línea de dulces y botanas artesanales con calidad gourmet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;900&display=swap" rel="stylesheet">
-    <style>
-        /* Root Variables */
-        :root {
-            --primary-color: #2e7d32;
-            --secondary-color: #388e3c;
-            --accent-color: #ffdd00;
-            --background-color: #f2f2f2;
-            --text-color: #333;
-            --white: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Global Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-        }
-
-        /* Keyframes for Animations */
-        @keyframes slideInDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes bounceIn {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-30px);
-            }
-            60% {
-                transform: translateY(-15px);
-            }
-        }
-
-        @keyframes slideInFromLeft {
-            0% {
-                opacity: 0;
-                transform: translateX(-100%);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* Header */
-        header {
-            width: 100%;
-            text-align: center;
-            padding: 20px;
-            background-color: var(--white);
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
-            box-shadow: 0 2px 4px var(--shadow-color);
-            animation: slideInDown 0.7s ease-out;
-        }
-
-        header img {
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-            animation: bounceIn 1s ease;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 2em;
-            font-weight: 700;
-            color: var(--primary-color);
-            animation: fadeInUp 1s ease-out;
-        }
-
-        p {
-            margin: 0;
-            font-size: 1em;
-            color: var(--text-color);
-            animation: fadeInUp 1s ease-out;
-        }
-
-        /* Main Content */
-        main {
-            padding: 20px;
-            padding-bottom: 80px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Search Bar */
-        .search-bar {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .search-bar input {
-            width: 80%;
-            max-width: 500px;
-            padding: 10px 15px;
-            border: 1px solid var(--secondary-color);
-            border-radius: 25px;
-            font-size: 1em;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
-        }
-
-        /* Intro Section */
-        .intro-section {
-            text-align: center;
-            background-image: url('https://i.imgur.com/Vovy8fi.jpeg');
-            background-size: cover;
-            background-position: center;
-            color: var(--white);
-            padding: 30px;
-            margin-bottom: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            position: relative;
-            font-weight: 700;
-            animation: fadeInUp 1s ease-in-out;
-        }
-
-        .intro-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 12px;
-            z-index: 1;
-        }
-
-        .intro-section p {
-            font-size: 1.2em;
-            margin: 10px 0;
-            position: relative;
-            z-index: 2;
-            color: var(--white);
-        }
-
-        /* Section Titles */
-        h2 {
-            text-align: center;
-            color: var(--white);
-            font-weight: 700;
-            margin: 30px 0;
-            font-size: 1.6em;
-            position: relative;
-            animation: slideInFromLeft 1s ease-out forwards, fadeIn 2s ease-in-out;
-        }
-
-        /* Secondary Intro Section */
-        .intro-section_2 {
-            text-align: center;
-            background-color: var(--secondary-color);
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 30px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            position: relative;
-            font-weight: 700;
-            animation: fadeInUp 1s ease-in-out;
-        }
-
-        .intro-section_2::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--secondary-color);
-            border-radius: 12px;
-            z-index: 1;
-        }
-
-        .intro-section_2 p {
-            font-size: 1.2em;
-            margin: 10px 0;
-            position: relative;
-            z-index: 2;
-            color: var(--white);
-        }
-
-        /* Menu Title Container */
-        .menu-title-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--primary-color);
-            color: var(--white);
-            padding: 12px 20px;
-            border-radius: 50px;
-            margin: 20px auto;
-            width: fit-content;
-            position: relative;
-            font-size: 1.2em;
-            cursor: pointer;
-            animation: bounceIn 1.5s ease-out 0.5s;
-            animation-fill-mode: both;
-        }
-
-        /* Catalog Button */
-        .catalog-btn {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            margin-top: 15px;
-            transition: background-color 0.3s ease;
-        }
-
-        .catalog-btn:hover {
-            background-color: #2c8a41;
-        }
-
-        /* Category Menu */
-        .category-menu {
-            display: none;
-            position: absolute;
-            background-color: var(--white);
-            border: 1px solid var(--secondary-color);
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 220px;
-            animation: fadeIn 0.2s ease-out 0.2s;
-            animation-fill-mode: both;
-        }
-
-        .menu-title-container:hover .category-menu,
-        .menu-title-container:focus-within .category-menu {
-            display: block;
-        }
-
-        .category-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 700;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .category-menu a:hover {
-            background-color: var(--secondary-color);
-            color: var(--white);
-        }
-
-        /* Horizontal Product Grid */
-        .horizontal-product-grid {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding: 10px 0;
-            justify-content: flex-start;
-            scroll-snap-type: x mandatory;
-        }
-
-        .horizontal-product-grid::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .horizontal-product-grid::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        .horizontal-product-item {
-            text-align: left;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: var(--white);
-            box-shadow: 0 6px 12px var(--shadow-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            min-width: 280px;
-            max-width: 280px;
-            flex: 0 0 auto;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            animation: fadeInUp 1s ease-in-out;
-            cursor: pointer;
-            scroll-snap-align: start;
-        }
-
-        .horizontal-product-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .horizontal-product-item img {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
-            object-fit: cover;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-
-        .horizontal-product-item h3 {
-            margin: 0 0 8px 0;
-            font-size: 1.2em;
-            color: var(--text-color);
-            font-weight: 700;
-        }
-
-        .horizontal-product-item p {
-            margin: 5px 0;
-            color: #555;
-        }
-
-        /* Product Grid */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            justify-items: center;
-        }
-
-        .product-item {
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: var(--white);
-            box-shadow: 0 6px 12px var(--shadow-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: fadeInUp 1.5s ease-in-out;
-            cursor: pointer;
-        }
-
-        .product-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .product-item img {
-            width: 100%;
-            height: 200px;
-            border-radius: 10px;
-            object-fit: cover;
-            margin-bottom: 15px;
-        }
-
-        .product-item h3 {
-            margin: 0;
-            font-size: 1.2em;
-            color: var(--text-color);
-        }
-
-        .product-item p {
-            margin: 8px 0;
-            color: #555;
-        }
-
-        .choose-btn {
-            padding: 8px 15px;
-            background-color: var(--secondary-color);
-            color: var(--white);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            text-decoration: none;
-            margin-top: 10px;
-        }
-
-        .choose-btn:hover {
-            background-color: #2c8a41;
-            transform: scale(1.05);
-        }
-
-        select {
-            display: block;
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid var(--secondary-color);
-            border-radius: 5px;
-            background-color: var(--white);
-            color: var(--text-color);
-            font-size: 1em;
-            font-family: 'Poppins', sans-serif;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: var(--primary-color);
-            color: var(--white);
-            width: 100%;
-            bottom: 0;
-            font-size: 0.9em;
-        }
-
-        /* Cart Styles */
-        #cart {
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 15px;
-            background-color: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 4px 8px var(--shadow-color);
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            z-index: 1000;
-            width: 90%;
-            max-width: 350px;
-            display: none;
-            overflow-y: auto;
-            max-height: 80vh;
-            animation: fadeInUp 0.7s ease-out;
-        }
-
-        /* Added Styles */
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-cart-btn {
-            background: none;
-            border: none;
-            font-size: 1em;
-            color: var(--text-color);
-            cursor: pointer;
-        }
-
-        .close-cart-btn:hover {
-            color: var(--primary-color);
-        }
-
-        #cart h3 {
-            margin-bottom: 20px;
-        }
-
-        #cart-items {
-            margin-bottom: 15px;
-        }
-
-        #cart-total {
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--text-color);
-        }
-
-        #whatsapp-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--white);
-            text-decoration: none;
-            font-size: 1em;
-            padding: 10px 20px;
-            background-color: var(--secondary-color);
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        #whatsapp-btn img {
-            width: 24px;
-            height: 24px;
-        }
-
-        #whatsapp-btn:hover {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
-
-        #refresh-btn {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #e3240b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-
-        #refresh-btn:hover {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
-
-        #make-order-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin-top: 15px;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-
-        #make-order-btn:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-3px);
-        }
-
-        #cart-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background-color: var(--accent-color);
-            color: var(--white);
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.3em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            z-index: 1001;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            animation: bounceIn 0.5s ease-out;
-        }
-
-        #cart-btn:hover {
-            background-color: var(--white);
-            color: var(--secondary-color);
-            transform: scale(1.2);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1002;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background-color: var(--white);
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 12px;
-            width: 95%;
-            max-width: 500px;
-            position: relative;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: var(--text-color);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.5em;
-            color: var(--text-color);
-        }
-
-        .modal-body {
-            margin-top: 15px;
-        }
-
-        .modal-body p {
-            margin: 8px 0;
-            color: #555;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .edit-btn {
-            padding: 10px 20px;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-
-        .edit-btn:hover {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
-
-        .quantity-btn {
-            border: none;
-            background-color: var(--secondary-color);
-            color: var(--white);
-            padding: 5px;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .quantity-btn:hover {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-            transform: scale(1.2);
-        }
-
-        /* Similar Products */
-        .similar-products {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            gap: 20px;
-            padding: 10px 0;
-        }
-
-        .similar-products::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .similar-products::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        .similar-product-item {
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: var(--white);
-            box-shadow: 0 4px 8px var(--shadow-color);
-            min-width: 150px;
-            flex: 0 0 auto;
-            cursor: pointer;
-        }
-
-        .similar-product-item img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-
-        /* Smooth Scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--background-color);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color);
-            border-radius: 10px;
-            border: 3px solid var(--background-color);
-        }
-
-        /* Media Queries */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.6em;
-            }
-
-            .product-item img {
-                height: 150px;
-            }
-
-            .product-item h3 {
-                font-size: 1em;
-            }
-
-            .choose-btn {
-                padding: 8px 12px;
-                font-size: 0.9em;
-            }
-
-            select {
-                font-size: 0.9em;
-            }
-
-            #cart-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 1.2em;
-            }
-
-            .modal-content {
-                width: 90%;
-            }
-
-            #refresh-btn {
-                padding: 8px 12px;
-                font-size: 0.9em;
-            }
-
-            .menu-title-container {
-                flex-direction: column;
-                align-items: center;
-                padding: 12px;
-                border-radius: 5px;
-            }
-
-            .category-menu {
-                width: 100%;
-                top: auto;
-                left: 0;
-                transform: none;
-                position: static;
-                box-shadow: none;
-            }
-
-            .horizontal-product-item {
-                min-width: 200px;
-                max-width: 80%;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .horizontal-product-item img {
-                width: 100%;
-                height: auto;
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
-
-            .horizontal-product-item h3 {
-                font-size: 1em;
-            }
-
-            .horizontal-product-item p {
-                text-align: center;
-            }
-
-            .product-grid {
-                grid-template-columns: 1fr;
-            }
-
-            #cart {
-                width: 100%;
-                left: 0;
-                right: 0;
-                top: 70px;
-                margin: 0;
-            }
-
-            .similar-product-item {
-                min-width: 120px;
-            }
-        }
-
-        /* WhatsApp Button */
-        #whatsapp-btn_1 {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-color);
-            text-decoration: none;
-            font-size: 1em;
-            padding: 10px 20px;
-            background-color: white;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        #whatsapp-btn_1 img {
-            width: 24px;
-            height: 24px;
-        }
-
-        #whatsapp-btn_1:hover {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
-
-        /* Product Modal Image */
-        .product-modal-img {
-            width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        .product-modal-details p {
-            margin: 8px 0;
-            color: #555;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <img src="https://i.imgur.com/8zf86ss.png" alt="Logo">
+        <div class="header-content">
+            <img src="https://i.imgur.com/8zf86ss.png" alt="Logo Panza Verde" class="logo">
+            <div class="header-text">
+                <h1>Panza Verde</h1>
+                <p class="tagline">Dulces y botanas artesanales con calidad gourmet</p>
+            </div>
+        </div>
     </header>
 
     <main>
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Buscar productos..." oninput="window.searchProducts(this.value)">
+        <div class="search-container">
+            <div class="search-bar">
+               
+                <input type="text" id="search-input" placeholder="Buscar productos..." oninput="window.searchProducts(this.value)">
+                <i class="fas fa-times clear-search" onclick="document.getElementById('search-input').value = ''; window.searchProducts('')"></i>
+            </div>
         </div>
 
-        <!-- Intro Section -->
-        <div class="intro-section">
-            <p>¡Bienvenidos!</p> 
-            <p>Nos especializamos en la comercialización de dulces y botanas artesanales con calidad gourmet de diferentes estados del país.</p> 
-            <p>¡Descubre nuestro catálogo y déjate sorprender!</p>
-        </div>
+        <section class="hero">
+            <div class="hero-content">
+                <h2>¡Bienvenidos a Panza Verde!</h2>
+                <p>Nos especializamos en la comercialización de dulces y botanas artesanales con calidad gourmet de diferentes estados del país.</p>
+                <p class="highlight">¡Descubre nuestro catálogo y déjate sorprender!</p>
+                <button class="scroll-down-btn" onclick="document.querySelector('.featured-products').scrollIntoView({ behavior: 'smooth' })">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </section>
 
-        <div id="cart">
+        <section class="featured-products">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Nuestros Favoritos</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div id="menu-horizontal" class="horizontal-product-grid"></div>
+        </section>
+
+        <section class="distributor-section">
+            <div class="distributor-content">
+                <h3><i class="fas fa-handshake"></i> ¿Quieres ser distribuidor?</h3>
+                <p>¡Pregunta a nuestro Bot por el Programa de Distribuidores Panza Verde!</p>
+                <p>Contáctanos al +5526627851 para más información:</p>
+                <a href="https://wa.me/5526627851" class="whatsapp-btn" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Escríbenos por WhatsApp
+                </a>
+            </div>
+        </section>
+
+        <section class="product-catalog">
+            <div class="section-header">
+                <div class="category-selector">
+                    <h2><i class="fas fa-store"></i> Catálogo</h2>
+                    <div class="category-dropdown">
+                        <button class="category-toggle"><i class="fas fa-filter"></i> Filtrar</button>
+                        <div class="category-menu">
+                            <a href="#" onclick="window.filterProducts('Todos'); event.preventDefault();">Todos</a>
+                            <a href="#" onclick="window.filterProducts('Dulces'); event.preventDefault();">Dulces</a>
+                            <a href="#" onclick="window.filterProducts('Dulces picositos'); event.preventDefault();">Dulces picositos</a>
+                            <a href="#" onclick="window.filterProducts('Botanas'); event.preventDefault();">Botanas</a>
+                            <a href="#" onclick="window.filterProducts('Otros'); event.preventDefault();">Otros</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-divider"></div>
+            </div>
+            <div id="menu-vertical" class="product-grid"></div>
+        </section>
+
+        <div id="cart" class="cart-panel">
             <div class="cart-header">
-                <h3>🛒 Carrito</h3>
-                <button class="close-cart-btn" onclick="window.toggleCart()">Cerrar Carrito</button>
+                <h3><i class="fas fa-shopping-cart"></i> Carrito</h3>
+                <button class="close-cart-btn" onclick="window.toggleCart()"><i class="fas fa-times"></i></button>
             </div>
-            <div id="cart-items"></div>
-            <p id="cart-total">Total: $0.00</p>
-            <p><button id="refresh-btn" onclick="window.clearCart()">🗑️ Borrar Carrito</button></p><br>
-            <p>Pagar con PayPal:</p><br>
-            <div id="paypal-form"></div><br>
-            <div>
-                <label><input type="radio" name="payment-method" value="en línea" onchange="window.updatePaymentMethod(this.value)" checked> En línea</label><br> 
-                <label><input type="radio" name="payment-method" value="efectivo" onchange="window.updatePaymentMethod(this.value)"> Efectivo</label><br>
-                <label><input type="radio" name="payment-method" value="Transferencia" onchange="window.updatePaymentMethod(this.value)"> Transferencia</label>
-            </div><br>
-            <button class="edit-btn" onclick="window.toggleModal()">Editar Carrito</button>
-            <button id="make-order-btn" onclick="window.uploadOrder()">Hacer pedido 🍬</button><br>
-            <p><a id="whatsapp-btn" href="#" target="_blank" style="display: none;"><br>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-                Confirmar pedido - Whatsapp
-            </a></p><br>
-        </div>
-
-        <button id="cart-btn" onclick="window.toggleCart()">🛒</button>
-
-        <div class="menu-title-container">
-            <h2>🍬 Nuestros Favoritos</h2>
-        </div>
-        <div id="menu-horizontal" class="horizontal-product-grid"></div>
-
-        <div class="intro-section_2">
-            <p>¿Quieres ser distribuidor de nuestros productos?</p>
-            <p>¡Pregunta a nuestro Bot por el Programa de Distribuidores Panza Verde!</p>
-            <p>Contáctanos al +5526627851 para más información:</p><br>
-            <p><a id="whatsapp-btn_1" href="https://wa.me/5526627851" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-                Escríbenos por Whatsapp
-            </a></p><br>
-        </div><br>
-
-        <div class="menu-title-container">
-            <h2>🍬 Catálogo</h2>
-            <div class="category-menu">
-                <a href="#" onclick="window.filterProducts('Todos'); event.preventDefault();">Todos</a>
-                <a href="#" onclick="window.filterProducts('Dulces'); event.preventDefault();">Dulces</a>
-                <a href="#" onclick="window.filterProducts('Dulces picositos'); event.preventDefault();">Dulces picositos</a>
-                <a href="#" onclick="window.filterProducts('Botanas'); event.preventDefault();">Botanas</a>
-                <a href="#" onclick="window.filterProducts('Otros'); event.preventDefault();">Otros</a>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <div class="payment-methods">
+                    <h4>Método de pago:</h4>
+                    <div class="payment-options">
+                        <label><input type="radio" name="payment-method" value="en línea" onchange="window.updatePaymentMethod(this.value)" checked> En línea</label>
+                        <label><input type="radio" name="payment-method" value="efectivo" onchange="window.updatePaymentMethod(this.value)"> Efectivo</label>
+                        <label><input type="radio" name="payment-method" value="Transferencia" onchange="window.updatePaymentMethod(this.value)"> Transferencia</label>
+                    </div>
+                </div>
+                <div id="paypal-form" class="paypal-container"></div>
+                <div class="cart-actions">
+                    <button id="refresh-btn" class="btn-clear" onclick="window.clearCart()">
+                        <i class="fas fa-trash"></i> Vaciar carrito
+                    </button>
+                    <button class="btn-edit" onclick="window.toggleModal()">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button id="make-order-btn" class="btn-order" onclick="window.uploadOrder()">
+                        <i class="fas fa-paper-plane"></i> Hacer pedido
+                    </button>
+                </div>
+                <a id="whatsapp-btn" href="#" target="_blank" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> Confirmar pedido
+                </a>
             </div>
         </div>
-        <div id="menu-vertical" class="product-grid"></div>
 
-        <!-- Product Modal -->
+        <button id="cart-btn" class="floating-cart-btn" onclick="window.toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count" class="cart-count">0</span>
+        </button>
+
         <div id="product-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 id="product-modal-title"></h2>
                     <span class="close" onclick="window.closeProductModal()">&times;</span>
                 </div>
-                <div class="modal-body" id="product-modal-body">
-                    <!-- Product details go here -->
-                </div>
-                <div class="modal-footer">
-                    <button class="edit-btn" onclick="window.closeProductModal()">Cerrar</button>
-                </div>
+                <div class="modal-body" id="product-modal-body"></div>
             </div>
         </div>
 
-        <!-- Edit Cart Modal -->
         <div id="edit-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Editar Carrito</h2>
+                    <h2><i class="fas fa-edit"></i> Editar Carrito</h2>
                     <span class="close" onclick="window.toggleModal()">&times;</span>
                 </div>
                 <div class="modal-body" id="edit-cart-items"></div>
                 <div class="modal-footer">
-                    <button class="edit-btn" onclick="window.toggleModal()">Cerrar</button>
+                    <button class="btn-close" onclick="window.toggleModal()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </main>
+
     <footer>
-        <h4>Panza Verde ® 2024</h4>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="https://i.imgur.com/8zf86ss.png" alt="Panza Verde Logo">
+                <h3>Panza Verde</h3>
+            </div>
+            <div class="footer-links">
+                <a href="https://wa.me/525526627851" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="#" onclick="window.toggleCart()"><i class="fas fa-shopping-cart"></i> Carrito</a>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; <span id="current-year"></span> Panza Verde. Todos los derechos reservados.</p>
+            </div>
+        </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const products = [
-                { name: "Aderezo Panza Verde (500ml)", img: "https://i.imgur.com/YDjR9QQ.png", price: 55, includes: "Especial para pizzas, hamburguesas, sushi, milanesas, alitas. etc.", category: "Otros" },
-                { name: "Ate de fruta", img: "https://i.imgur.com/Yk8a3AC.jpeg", price: 70, includes: "Membrillo (350g aprox)", category: "Dulces" },
-                { name: "Alfajor argentino", img: "https://i.imgur.com/7zoiYN8.png", price: 50, includes: "Hecho con dulce de leche auténtico", category: "Dulces" },
-                { name: "Almendras cubiertas de cocoa (100g)", img: "https://i.imgur.com/LznPjo4.jpeg", price: 55, includes: "", category: "Dulces" },
-                { name: "Almendras cubiertas de Matcha (100g)", img: "https://i.imgur.com/WDPDcq1.jpeg", price: 55, includes: "con chocolate blanco", category: "Dulces" },
-                { name: "Arándanos enchilados (100g)", img: "https://i.imgur.com/pLKUISA.jpeg", price: 35, includes: "Arándanos deshidratados con chile", category: "Dulces picositos" },
-                { name: "Arrayanes (230g)", img: "https://i.imgur.com/PQNiYFI.jpeg", price: 50, includes: "Arrayanes con azúcar", category: "Dulces" },
-                { name: "Botana Gourmet enchilada (100g)", img: "https://i.imgur.com/Yo5R1in.jpeg", price: 55, includes: "Mezcla de nueces enchiladas", category: "Botanas" },
-                { name: "Botana Gourmet salada (100g)", img: "https://i.imgur.com/jhlGdSc.jpeg", price: 55, includes: "Mezcla de nueces", category: "Botanas" },
-                { name: "Botana Panza Verde (300g)", img: "https://i.imgur.com/Sp53Fq9.jpeg", price: 120, includes: "Nuez de la india, pretzels, arándanos enchilados", category: "Botanas" },
-                { name: "Churritos de amaranto con sal y un toque de limón (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
-                { name: "Churritos de amaranto con chipotle (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
-                { name: "Churritos de amaranto con nopal (500g)", img: "https://i.imgur.com/sLaUnO7.jpeg", price: 80, includes: "", category: "Botanas" },
-                { name: "Dátiles rellenos de nuez (100g)", img: "https://i.imgur.com/EBqMxqr.jpeg", price: 45, includes: "Dátiles rellenos de nuez cubiertos con un toque de azúcar", category: "Dulces" },
-                { name: "Fresas Deshidratadas (100g)", img: "https://i.imgur.com/0SK8MuI.jpeg", price: 50, includes: "", category: "Dulces" },
-                { name: "Gomitas de frutos  (250g)", img: "https://i.imgur.com/kWyjWlf.jpeg", price: 45, includes: "Tutti fruti", category: "Dulces" },
-                { name: "Gomitas de corazón (100g)", img: "https://i.imgur.com/CAtOzlA.jpeg", price: 20, includes: "Hechas con amor", category: "Dulces" },
-                { name: "Gomitas de frutas con chile (250g)", img: "https://i.imgur.com/HN5cFUm.jpeg", price: 45, includes: "", category: "Dulces picositos" },
-                { name: "Gomitas de sandía con chile (250g)", img: "https://i.imgur.com/Gh1ozVF.jpeg", price: 45, includes: "", category: "Dulces picositos" },
-                { name: "Gomitas de hierbas (250g)", img: "https://i.imgur.com/rk9xzMb.jpeg", price: 45, includes: "Combinación de sabores: canela, hierbabuena, menta y anís.", category: "Dulces" },
-                { name: "Gomitas de rompope (250g)", img: "https://i.imgur.com/TqhrfIN.jpeg", price: 45, includes: "", category: "Dulces" },
-                { name: "Granos de café cubiertos de chocolate semi amargo (100g)", img: "https://i.imgur.com/ODAIYHh.jpeg", price: 45, includes: "", category: "Dulces" },
-                { name: "Guayabate con nuez (330g aprox.)", img: "https://i.imgur.com/jrJlWHl.jpeg", price: 85, includes: "Dulce de guayaba con cajeta, coco y nuez", category: "Dulces" },
-                { name: "Guayabate con piñón (330g aprox.)", img: "https://i.imgur.com/jrJlWHl.jpeg", price: 85, includes: "Dulce de guayaba con cajeta, coco y piñón", category: "Dulces" },
-                { name: "Macadamias cubiertas de cocoa (100g)", img: "https://i.imgur.com/jehZ5Bu.jpeg", price: 60, includes: "", category: "Dulces" },
-                { name: "Mangomitas cubiertas de chile (100g)", img: "https://i.imgur.com/6mljk5L.png", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Mangos enchilados (100g)", img: "https://i.imgur.com/jLK6q3R.png", price: 45, includes: "", category: "Dulces picositos" },
-                { name: "Nuez de la india enchilada (100g)", img: "https://i.imgur.com/5kbXrDR.png", price: 55, includes: "", category: "Botanas" },
-                { name: "Nuez de la india salada (100g)", img: "https://i.imgur.com/N49fDtW.jpeg", price: 50, includes: "", category: "Botanas" },
-                { name: "Palomas (50g aprox.)", img: "https://i.imgur.com/wpgUaGP.jpeg", price: 25, includes: "Obleas rellenas de coco y cajeta", category: "Dulces" },
-                { name: "Piñas con chile (100g)", img: "https://i.imgur.com/gRCANyj.jpeg", price: 45, includes: "", category: "Dulces picositos" },
-                { name: "Pistaches enchilados (100g)", img: "https://i.imgur.com/FxIyawD.png", price: 55, includes: "Con ajo", category: "Botanas" },
-                { name: "Queso de Almendras (40g aprox)", img: "https://i.imgur.com/CuhnSD3.jpeg", price: 25, includes: "Dulce fino de Almendra con un toque de limón", category: "Dulces" },
-                { name: "Suspiros (50g)", img: "https://i.imgur.com/6uZUzF8.jpeg", price: 20, includes: "Galletas pequeñas cubiertas de chocolate semi amargo", category: "Dulces" },
-                { name: "Suaves de coco (300g)", img: "https://i.imgur.com/CtURNmF.jpeg", price: 80, includes: "", category: "Dulces" },
-                { name: "Tarugos rellenos de panditas (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Tarugos rellenos de tamborcito (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Tarugos rellenos de picafresa (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Tarugos rellenos de rocaleta (100g)", img: "https://i.imgur.com/QlbwTrr.jpeg", price: 20, includes: "", category: "Dulces picositos" },
-                { name: "Vasitos con pulpa de fruta y chile (230g)", img: "https://i.imgur.com/iXCpNDz.jpeg", price: 45, includes: "", category: "Dulces picositos" }
-            ];
-
-            let cart = [];
-            let total = 0;
-            let orderNumber = null;
-            let selectedPaymentMethod = "efectivo"; // Default payment method
-            let filteredProducts = [...products]; // Create a copy of products to use in filtering
-
-            window.updatePaymentMethod = function(method) {
-                selectedPaymentMethod = method;
-                window.updateCart();
-            }
-
-            function createProductElement(product, index, layout = 'vertical') {
-                const productItem = document.createElement('div');
-                productItem.classList.add(layout === 'horizontal' ? 'horizontal-product-item' : 'product-item');
-
-                if (layout === 'horizontal') {
-                    productItem.innerHTML = `
-                        <img src="${product.img}" alt="${product.name}">
-                        <div class="product-item-content">
-                            <h3>${product.name}</h3>
-                            <p>$${product.price.toFixed(2)}</p>
-                        </div>
-                    `;
-                } else {
-                    productItem.innerHTML = `
-                        <img src="${product.img}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                        <p>$${product.price.toFixed(2)}</p>
-                        <button class="choose-btn">Ver más</button>
-                    `;
-                }
-
-                productItem.addEventListener('click', () => {
-                    window.openProductModal(product);
-                });
-
-                if (layout !== 'horizontal') {
-                    productItem.querySelector('.choose-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        window.openProductModal(product);
-                    });
-                }
-
-                return productItem;
-            }
-
-            function displayProducts(productsToDisplay, layout = 'vertical') {
-                const menu = layout === 'horizontal' ? document.getElementById('menu-horizontal') : document.getElementById('menu-vertical');
-                menu.innerHTML = '';
-                productsToDisplay.forEach((product, index) => {
-                    menu.appendChild(createProductElement(product, index, layout));
-                });
-            }
-
-            window.addToCart = function(product) {
-                const productId = product.name.replace(/\s+/g, '-').toLowerCase();
-                const quantitySelect = document.getElementById(`quantity-${productId}`);
-                const quantity = parseInt(quantitySelect.value);
-                const existingProduct = cart.find(item => item.name === product.name);
-
-                if (existingProduct) {
-                    existingProduct.quantity += quantity;
-                } else {
-                    cart.push({ name: product.name, price: product.price, quantity: quantity });
-                }
-                window.updateCart();
-
-                // Update modal content to show confirmation and similar products
-                const modalBody = document.getElementById('product-modal-body');
-                modalBody.innerHTML = `
-                    <p>Se agregó ${quantity} ${product.name} al carrito</p>
-                    <h3>También te puede interesar:</h3>
-                    <div id="similar-products" class="similar-products"></div>
-                `;
-
-                const similarProductsContainer = document.getElementById('similar-products');
-                const similarProducts = getSimilarProducts(product);
-
-                similarProducts.forEach((similarProduct) => {
-                    const productItem = document.createElement('div');
-                    productItem.classList.add('similar-product-item');
-
-                    productItem.innerHTML = `
-                        <img src="${similarProduct.img}" alt="${similarProduct.name}">
-                        <h4>${similarProduct.name}</h4>
-                        <p>$${similarProduct.price.toFixed(2)}</p>
-                        <button class="choose-btn">Ver más</button>
-                    `;
-
-                    productItem.querySelector('img').addEventListener('click', () => {
-                        window.openProductModal(similarProduct);
-                    });
-
-                    productItem.querySelector('.choose-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        window.openProductModal(similarProduct);
-                    });
-
-                    similarProductsContainer.appendChild(productItem);
-                });
-            };
-
-            window.updateCart = function() {
-                const cartItemsSection = document.getElementById('cart-items');
-                const cartTotal = document.getElementById('cart-total');
-                const paypalForm = document.getElementById('paypal-form');
-                const whatsappBtn = document.getElementById('whatsapp-btn');
-                const editCartItems = document.getElementById('edit-cart-items');
-
-                cartItemsSection.innerHTML = '';
-                editCartItems.innerHTML = '';
-                total = 0;
-
-                cart.forEach((item, index) => {
-                    cartItemsSection.innerHTML += `<p>${item.name} - $${item.price} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}</p>`;
-                    editCartItems.innerHTML += `
-                        <p>
-                            ${item.name} - $${item.price} x 
-                            <button class="quantity-btn" onclick="window.updateCartItemQuantity(${index}, -1)">-</button>
-                            ${item.quantity}
-                            <button class="quantity-btn" onclick="window.updateCartItemQuantity(${index}, 1)">+</button>
-                            = $${(item.price * item.quantity).toFixed(2)}
-                            <button onclick="window.removeCartItem(${index})">Eliminar</button>
-                        </p>`;
-                    total += item.price * item.quantity;
-                });
-
-                cartTotal.textContent = `Total: $${total.toFixed(2)}`;
-                updatePayPalForm();
-                updateWhatsAppLink();
-            }
-
-            window.updateCartItemQuantity = function(index, change) {
-                cart[index].quantity += change;
-                if (cart[index].quantity <= 0) {
-                    cart[index].quantity = 1;
-                }
-                window.updateCart();
-            }
-
-            window.removeCartItem = function(index) {
-                cart.splice(index, 1);
-                window.updateCart();
-            }
-
-            function updatePayPalForm() {
-                const paypalForm = document.getElementById('paypal-form');
-                paypalForm.innerHTML = `
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-                        <input type="hidden" name="cmd" value="_xclick" />
-                        <input type="hidden" name="business" value="erandi27gasca@gmail.com" />
-                        <input type="hidden" name="currency_code" value="MXN" />
-                        <input type="hidden" name="amount" value="${total.toFixed(2)}" />
-                        <input type="hidden" name="item_name" value="${cart.map(item => `${item.name} (${item.quantity})`).join(', ')}" />
-                        <input type="image" src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/silver-pill-paypal-44px.png" border="0" name="submit" title="Pay with PayPal" alt="PayPal - The safer, easier way to pay online!" />
-                    </form>
-                `;
-            }
-
-            function updateWhatsAppLink() {
-                const whatsappBtn = document.getElementById('whatsapp-btn');
-                const message = `Orden de Panza Verde:\n${cart.map(item => `${item.name} (${item.quantity}) - $${item.price} c/u`).join('\n')}\nTotal: $${total.toFixed(2)}\nMétodo de pago: ${selectedPaymentMethod}`;
-                const encodedMessage = encodeURIComponent(message);
-                whatsappBtn.href = `https://wa.me/525526627851?text=${encodedMessage}`;
-                whatsappBtn.style.display = total > 0 ? 'inline-flex' : 'none';
-            }
-
-            window.uploadOrder = function() {
-                if (!orderNumber) {
-                    orderNumber = Math.floor(Math.random() * 1000000) + 1;
-                }
-
-                const orderData = {
-                    timestamp: new Date().toLocaleString(),
-                    orderNumber: orderNumber,
-                    paymentMethod: selectedPaymentMethod,
-                    cart: JSON.stringify(cart),
-                    total: total.toFixed(2)
-                };
-
-                updateWhatsAppLink(); // Ensure WhatsApp link is updated before sending the order
-
-                fetch('https://script.google.com/macros/s/AKfycbzRuFIWEDIAmaWXRcEGT-N4D6PAhH35I04hAArX_-vuR2MzLpdb-4bVTCr51z8O0bGjYg/exec', {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderData)
-                })
-                .then(response => {
-                    alert('Pedido enviado correctamente.');
-                    document.getElementById('whatsapp-btn').style.display = 'inline-flex';  // Ensure WhatsApp button remains visible
-                })
-                .catch(error => {
-                    console.error('Error al enviar el pedido:', error);
-                });
-            };
-
-            window.clearCart = function() {
-                cart.length = 0;
-                window.updateCart();
-            };
-
-            window.filterProducts = function(category) {
-                if (category === 'Todos') {
-                    filteredProducts = [...products];
-                } else {
-                    filteredProducts = products.filter(product => product.category === category);
-                }
-                displayProducts(filteredProducts, 'vertical');
-            };
-
-            window.searchProducts = function(query) {
-                filteredProducts = products.filter(product => product.name.toLowerCase().includes(query.toLowerCase()));
-                displayProducts(filteredProducts, 'vertical');
-            };
-
-            window.openProductModal = function(product) {
-                const modal = document.getElementById('product-modal');
-                const modalTitle = document.getElementById('product-modal-title');
-                const modalBody = document.getElementById('product-modal-body');
-
-                const productId = product.name.replace(/\s+/g, '-').toLowerCase();
-
-                modalTitle.textContent = product.name;
-                modalBody.innerHTML = `
-                    <img src="${product.img}" alt="${product.name}" class="product-modal-img">
-                    <div class="product-modal-details">
-                        <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p>
-                        <p><strong>Descripción:</strong> ${product.includes || 'N/A'}</p>
-                        <p><strong>Categoría:</strong> ${product.category}</p>
-                        <select id="quantity-${productId}" class="quantity-select">
-                            ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}
-                        </select>
-                        <button class="choose-btn" id="add-to-cart-btn">Agregar al carrito</button>
-                    </div>
-                `;
-
-                document.getElementById('add-to-cart-btn').addEventListener('click', () => {
-                    window.addToCart(product);
-                });
-
-                modal.style.display = 'block';
-            }
-
-            window.closeProductModal = function() {
-                const modal = document.getElementById('product-modal');
-                modal.style.display = 'none';
-            }
-
-            function getSimilarProducts(currentProduct, numSimilar = 3) {
-                const similarProducts = products.filter(product => product.category === currentProduct.category && product.name !== currentProduct.name);
-                // Shuffle the similar products array
-                similarProducts.sort(() => Math.random() - 0.5);
-                return similarProducts.slice(0, numSimilar);
-            }
-
-            // Display top 6 most expensive products in horizontal layout
-            const topProducts = [...products].sort((a, b) => b.price - a.price).slice(0, 6);
-            displayProducts(topProducts, 'horizontal');
-
-            // Display all products in vertical layout initially
-            displayProducts(products, 'vertical');
-        });
-
-        window.toggleCart = function() {
-            const cart = document.getElementById('cart');
-            cart.style.display = cart.style.display === 'none' || cart.style.display === '' ? 'block' : 'none';
-        }
-
-        window.toggleModal = function() {
-            const modal = document.getElementById('edit-modal');
-            modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
-        }
-
-        window.onclick = function(event) {
-            const editModal = document.getElementById('edit-modal');
-            const productModal = document.getElementById('product-modal');
-            if (event.target === editModal) {
-                editModal.style.display = 'none';
-            }
-            if (event.target === productModal) {
-                productModal.style.display = 'none';
-            }
-        }
-    </script>
-    <!-- Chat Bot Script -->
+    <script src="script.js"></script>
     <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
 </body>
 </html>
