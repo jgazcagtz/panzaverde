@@ -324,6 +324,40 @@
     }
     </script>
     <script type="module" src="script.js"></script>
-    <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
+    
+    <!-- Panza Verde Chatbot -->
+    <div id="panza-verde-chatbot" class="panza-chatbot">
+        <div class="chatbot-toggle" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <div class="chatbot-header-info">
+                    <img src="https://i.imgur.com/8zf86ss.png" alt="Panza Verde" class="chatbot-logo">
+                    <div>
+                        <h3>Panza Verde</h3>
+                        <p>Asistente Virtual</p>
+                    </div>
+                </div>
+                <button class="chatbot-close" id="chatbot-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="chatbot-message bot-message">
+                    <div class="message-content">
+                        <p>¡Hola! 👋 Soy el asistente de Panza Verde. ¿En qué puedo ayudarte hoy? Puedo ayudarte a encontrar productos, información sobre pedidos, o cualquier pregunta sobre nuestros dulces artesanales mexicanos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-container">
+                <input type="text" id="chatbot-input" placeholder="Escribe tu mensaje..." autocomplete="off">
+                <button id="chatbot-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="chatbot.js" defer></script>
 </body>
 </html>

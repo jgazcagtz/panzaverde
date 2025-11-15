@@ -1358,6 +1358,84 @@ window.addOrderItem = addOrderItem;
 window.removeOrderItem = removeOrderItem;
 window.viewBuyerOrders = viewBuyerOrders;
 
+// Sidebar Navigation
+function initSidebarNavigation() {
+    const sidebar = document.getElementById("admin-sidebar");
+    const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+    const sidebarToggle = document.getElementById("sidebar-toggle");
+    const navItems = document.querySelectorAll(".admin-nav-item[data-section]");
+    const sidebarLogoutBtn = document.getElementById("admin-sidebar-logout-btn");
+
+    // Mobile menu toggle
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener("click", () => {
+            if (sidebar) sidebar.classList.toggle("open");
+        });
+    }
+
+    // Sidebar toggle (desktop)
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener("click", () => {
+            if (sidebar) sidebar.classList.toggle("open");
+        });
+    }
+
+    // Navigation item clicks
+    navItems.forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            const section = item.getAttribute("data-section");
+            
+            // Remove active class from all items
+            navItems.forEach(nav => nav.classList.remove("active"));
+            // Add active class to clicked item
+            item.classList.add("active");
+
+            // Scroll to section
+            let targetElement = null;
+            if (section === "stats") {
+                targetElement = document.getElementById("admin-stats-section");
+            } else if (section === "products") {
+                targetElement = document.getElementById("product-management");
+            } else if (section === "categories") {
+                targetElement = document.getElementById("category-management");
+            } else if (section === "orders") {
+                targetElement = document.getElementById("orders-management");
+            } else if (section === "blog") {
+                targetElement = document.getElementById("blog-management");
+            } else if (section === "buyers") {
+                targetElement = document.getElementById("buyers-management");
+            }
+
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+
+            // Close sidebar on mobile after navigation
+            if (window.innerWidth <= 1024 && sidebar) {
+                sidebar.classList.remove("open");
+            }
+        });
+    });
+
+    // Sidebar logout button
+    if (sidebarLogoutBtn) {
+        sidebarLogoutBtn.addEventListener("click", handleAdminLogout);
+    }
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 1024 && sidebar && sidebar.classList.contains("open")) {
+            if (!sidebar.contains(e.target) && !mobileMenuToggle?.contains(e.target)) {
+                sidebar.classList.remove("open");
+            }
+        }
+    });
+}
+
 // Initialize when DOM is ready
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", () => {
+    init();
+    initSidebarNavigation();
+});
 
