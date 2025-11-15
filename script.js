@@ -37,11 +37,6 @@ const db = getFirestore(app);
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const adminCredentials = {
-        email: "erandi@panzaverde.com",
-        password: "ChatitaEspuelas8"
-    };
-    const adminSessionKey = "panzaverde-admin-auth";
     const defaultImage = "https://i.imgur.com/8zf86ss.png";
 
     const rawSeedProducts = [
@@ -99,8 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let total = 0;
     let orderNumber = null;
     let selectedPaymentMethod = "en línea";
-    let editingProductId = null;
-    let isAdminAuthenticated = sessionStorage.getItem(adminSessionKey) === "true";
 
     const dom = {
         currentYear: document.getElementById("current-year"),
@@ -109,24 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
         signoutBtn: document.getElementById("signout-btn"),
         googleBtn: document.getElementById("google-signin-btn"),
         accountStatus: document.getElementById("account-status"),
-        adminLoginForm: document.getElementById("admin-login-form"),
-        adminLoginCard: document.getElementById("admin-login-card"),
-        adminDashboard: document.getElementById("admin-dashboard"),
-        adminLogoutBtn: document.getElementById("admin-logout-btn"),
-        productForm: document.getElementById("product-form"),
-        productFormTitle: document.getElementById("product-form-title"),
-        seedCatalogBtn: document.getElementById("seed-catalog-btn"),
-        clearProductFormBtn: document.getElementById("clear-product-form"),
-        adminProductList: document.getElementById("admin-product-list"),
         toast: document.getElementById("toast"),
         categoryToggle: document.querySelector(".category-toggle"),
-        categoryMenu: document.querySelector(".category-menu"),
-        productName: document.getElementById("product-name"),
-        productPrice: document.getElementById("product-price"),
-        productCategory: document.getElementById("product-category"),
-        productImage: document.getElementById("product-image"),
-        productDescription: document.getElementById("product-description"),
-        productFeatured: document.getElementById("product-featured")
+        categoryMenu: document.querySelector(".category-menu")
     };
 
     init();
@@ -135,15 +113,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (dom.currentYear) {
             dom.currentYear.textContent = new Date().getFullYear();
         }
-        updateAdminUI();
         renderFeaturedProducts();
         displayProducts(filteredProducts, "vertical");
         updateCartCount();
         registerAuthListeners();
-        registerAdminListeners();
         registerCategoryToggle();
         subscribeToProducts();
-        onAuthStateChanged(auth, (user) => updateAuthUI(user));
+        onAuthStateChanged(auth, (user) => {
+            updateAuthUI(user);
+        });
     }
 
     function registerAuthListeners() {
@@ -153,41 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
         dom.googleBtn?.addEventListener("click", handleGoogleSignIn);
     }
 
-    function registerAdminListeners() {
-        dom.adminLoginForm?.addEventListener("submit", (event) => {
-            event.preventDefault();
-            const email = event.target.email.value.trim();
-            const password = event.target.password.value.trim();
-
-            if (email === adminCredentials.email && password === adminCredentials.password) {
-                setAdminAuthenticated(true);
-                event.target.reset();
-                showToast("Panel de administración desbloqueado.", "success");
-            } else {
-                showToast("Credenciales incorrectas.", "error");
-            }
-        });
-
-        dom.adminLogoutBtn?.addEventListener("click", () => {
-            setAdminAuthenticated(false);
-            showToast("Sesión de administrador cerrada.", "info");
-        });
-
-        dom.productForm?.addEventListener("submit", handleProductFormSubmit);
-        dom.clearProductFormBtn?.addEventListener("click", clearProductForm);
-        dom.seedCatalogBtn?.addEventListener("click", seedCatalog);
-
-        dom.adminProductList?.addEventListener("click", (event) => {
-            const row = event.target.closest(".admin-product-row");
-            if (!row) return;
-            const productId = row.dataset.productId;
-            if (event.target.closest(".edit-product")) {
-                startEditProduct(productId);
-            } else if (event.target.closest(".delete-product")) {
-                deleteProduct(productId);
-            }
-        });
-    }
 
     function registerCategoryToggle() {
         if (dom.categoryToggle && dom.categoryMenu) {
@@ -222,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     filteredProducts = [...products];
                     renderFeaturedProducts();
                     displayProducts(filteredProducts, "vertical");
-                    renderAdminProductList();
                 },
                 (error) => {
                     console.error("Error al escuchar productos", error);
@@ -293,196 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return productItem;
     }
 
-    function renderAdminProductList() {
-        if (!dom.adminProductList) return;
-
-        if (!products.length) {
-            dom.adminProductList.innerHTML = '<p class="admin-hint">No hay productos para mostrar.</p>';
-            return;
-        }
-
-        const markup = products.map((product) => `
-            <article class="admin-product-row" data-product-id="${product.id ?? ""}">
-                <div class="admin-product-details">
-                    <img src="${product.img || defaultImage}" alt="${product.name}">
-                    <div>
-                        <h4>${product.name}</h4>
-                        <p>${product.category} · $${Number(product.price).toFixed(2)}</p>
-                    </div>
-                </div>
-                <div class="admin-product-actions">
-                    <button class="ghost-btn edit-product" ${!isAdminAuthenticated ? "disabled" : ""} title="Editar">
-                        <i class="fas fa-pen"></i>
-                    </button>
-                    <button class="ghost-btn danger delete-product" ${!isAdminAuthenticated ? "disabled" : ""} title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </article>
-        `).join("");
-
-        dom.adminProductList.innerHTML = markup + (!isAdminAuthenticated
-            ? '<p class="admin-hint">Inicia sesión para editar o eliminar productos.</p>'
-            : "");
-    }
-
-    function startEditProduct(productId) {
-        if (!isAdminAuthenticated) {
-            showToast("Inicia sesión como administrador para editar.", "warning");
-            return;
-        }
-        if (!productId || productId.startsWith("seed-")) {
-            showToast("Importa el catálogo en Firebase antes de editar este producto.", "info");
-            return;
-        }
-
-        const product = products.find((item) => item.id === productId);
-        if (!product || !dom.productForm) {
-            showToast("No encontramos el producto seleccionado.", "error");
-            return;
-        }
-
-        editingProductId = productId;
-        dom.productName.value = product.name;
-        dom.productPrice.value = product.price;
-        dom.productCategory.value = product.category;
-        dom.productImage.value = product.img || "";
-        dom.productDescription.value = product.includes || "";
-        dom.productFeatured.checked = !!product.featured;
-
-        if (dom.productFormTitle) {
-            dom.productFormTitle.textContent = `Editando: ${product.name}`;
-        }
-
-        const submitBtn = document.getElementById("product-form-submit");
-        if (submitBtn) {
-            submitBtn.textContent = "Actualizar producto";
-        }
-    }
-
-    async function deleteProduct(productId) {
-        if (!isAdminAuthenticated) {
-            showToast("Inicia sesión como administrador para eliminar.", "warning");
-            return;
-        }
-        if (!productId || productId.startsWith("seed-")) {
-            showToast("Sincroniza el producto con Firebase antes de eliminarlo.", "info");
-            return;
-        }
-        if (!confirm("¿Eliminar este producto del catálogo?")) return;
-
-        try {
-            await deleteDoc(doc(db, "products", productId));
-            showToast("Producto eliminado.", "success");
-            if (editingProductId === productId) {
-                clearProductForm();
-            }
-        } catch (error) {
-            console.error("Error al eliminar producto", error);
-            showToast("No pudimos eliminar el producto. Verifica permisos en Firebase.", "error");
-        }
-    }
-
-    async function handleProductFormSubmit(event) {
-        event.preventDefault();
-        if (!isAdminAuthenticated) {
-            showToast("Inicia sesión como administrador para crear productos.", "warning");
-            return;
-        }
-
-        const formData = new FormData(event.target);
-        const productData = {
-            name: formData.get("name").trim(),
-            price: Number(formData.get("price")),
-            category: formData.get("category"),
-            img: (formData.get("img") || "").trim() || defaultImage,
-            includes: (formData.get("includes") || "").trim(),
-            featured: formData.get("featured") === "on"
-        };
-
-        if (!productData.name || !productData.price) {
-            showToast("Completa el nombre y el precio.", "warning");
-            return;
-        }
-
-        try {
-            if (editingProductId) {
-                await updateDoc(doc(db, "products", editingProductId), {
-                    ...productData,
-                    updatedAt: serverTimestamp()
-                });
-                showToast("Producto actualizado correctamente.", "success");
-            } else {
-                await addDoc(collection(db, "products"), {
-                    ...productData,
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp()
-                });
-                showToast("Producto creado correctamente.", "success");
-            }
-            clearProductForm();
-        } catch (error) {
-            console.error("Error al guardar producto", error);
-            showToast("No pudimos guardar el producto. Revisa la consola o tus reglas de Firebase.", "error");
-        }
-    }
-
-    function clearProductForm() {
-        if (!dom.productForm) return;
-        dom.productForm.reset();
-        editingProductId = null;
-        if (dom.productFormTitle) {
-            dom.productFormTitle.textContent = "Crea o edita productos";
-        }
-        const submitBtn = document.getElementById("product-form-submit");
-        if (submitBtn) {
-            submitBtn.textContent = "Guardar producto";
-        }
-    }
-
-    async function seedCatalog() {
-        if (!isAdminAuthenticated) {
-            showToast("Inicia sesión como administrador para importar.", "warning");
-            return;
-        }
-        if (!dom.seedCatalogBtn) return;
-
-        const existingNames = new Set(products.map((product) => product.name.toLowerCase()));
-        const missingProducts = seedProducts.filter((product) => !existingNames.has(product.name.toLowerCase()));
-
-        if (missingProducts.length === 0) {
-            showToast("El catálogo ya incluye la base completa.", "info");
-            return;
-        }
-
-        const originalLabel = dom.seedCatalogBtn.innerHTML;
-        dom.seedCatalogBtn.disabled = true;
-        dom.seedCatalogBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importando...';
-
-        try {
-            await Promise.all(
-                missingProducts.map((product) =>
-                    addDoc(collection(db, "products"), {
-                        name: product.name,
-                        price: product.price,
-                        category: product.category,
-                        img: product.img,
-                        includes: product.includes,
-                        featured: product.featured,
-                        createdAt: serverTimestamp(),
-                        updatedAt: serverTimestamp()
-                    })
-                )
-            );
-            showToast("Catálogo base importado correctamente.", "success");
-        } catch (error) {
-            console.error("Error al importar catálogo", error);
-            showToast("No pudimos importar el catálogo base. Verifica la configuración de Firebase.", "error");
-        } finally {
-            dom.seedCatalogBtn.disabled = false;
-            dom.seedCatalogBtn.innerHTML = originalLabel;
-        }
-    }
 
     function updateAuthUI(user) {
         if (!dom.accountStatus) return;
@@ -547,35 +299,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function setAdminAuthenticated(state) {
-        isAdminAuthenticated = state;
-        if (state) {
-            sessionStorage.setItem(adminSessionKey, "true");
-        } else {
-            sessionStorage.removeItem(adminSessionKey);
-            clearProductForm();
-        }
-        updateAdminUI();
-    }
-
-    function updateAdminUI() {
-        if (!dom.adminDashboard || !dom.adminLoginCard) return;
-        dom.adminDashboard.hidden = !isAdminAuthenticated;
-        dom.adminLoginCard.classList.toggle("is-hidden", isAdminAuthenticated);
-        dom.seedCatalogBtn && (dom.seedCatalogBtn.disabled = !isAdminAuthenticated);
-        toggleProductFormState(isAdminAuthenticated);
-        renderAdminProductList();
-    }
-
-    function toggleProductFormState(enabled) {
-        if (!dom.productForm) return;
-        dom.productForm.querySelectorAll("input, select, textarea").forEach((element) => {
-            element.disabled = !enabled;
-        });
-        const submitBtn = document.getElementById("product-form-submit");
-        if (submitBtn) submitBtn.disabled = !enabled;
-        if (dom.clearProductFormBtn) dom.clearProductFormBtn.disabled = !enabled;
-    }
 
     function showToast(message, type = "info") {
         if (!dom.toast) {

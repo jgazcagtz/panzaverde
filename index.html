@@ -25,7 +25,7 @@
             <a href="#featured">Favoritos</a>
             <a href="#catalogo">Catálogo</a>
             <a href="#account">Cuenta</a>
-            <a href="#admin">Admin</a>
+            <a href="admin.html" class="admin-link">Admin</a>
             <button class="nav-pill" type="button" onclick="document.getElementById('cart-btn').click()">
                 <i class="fas fa-shopping-bag"></i> Carrito
             </button>
@@ -168,69 +168,6 @@
             <div id="menu-vertical" class="product-grid"></div>
         </section>
 
-        <section class="admin-section" id="admin">
-            <div class="section-header">
-                <h2><i class="fas fa-lock"></i> Panel Administrador</h2>
-                <p>Gestiona productos en tiempo real y sincroniza con Firebase.</p>
-            </div>
-            <div class="admin-grid">
-                <article class="admin-card" id="admin-login-card">
-                    <h3>Acceso seguro</h3>
-                    <p>Solo personal autorizado. Usa las credenciales oficiales.</p>
-                    <form id="admin-login-form">
-                        <label for="admin-email">Correo</label>
-                        <input type="email" id="admin-email" name="email" placeholder="erandi@panzaverde.com" required>
-                        <label for="admin-password">Contraseña</label>
-                        <input type="password" id="admin-password" name="password" placeholder="********" required>
-                        <button type="submit" class="btn-primary">Entrar al panel</button>
-                    </form>
-                </article>
-                <article class="admin-card admin-dashboard" id="admin-dashboard" hidden>
-                    <div class="admin-dashboard-header">
-                        <div>
-                            <p class="subtitle">Hola, Erandi</p>
-                            <h3 id="product-form-title">Crea o edita productos</h3>
-                        </div>
-                        <button id="admin-logout-btn" type="button" class="ghost-btn">Cerrar sesión</button>
-                    </div>
-                    <form id="product-form">
-                        <div class="form-grid">
-                            <label for="product-name">Nombre</label>
-                            <input type="text" id="product-name" name="name" placeholder="Nombre del producto" required>
-
-                            <label for="product-price">Precio</label>
-                            <input type="number" id="product-price" name="price" min="1" step="0.01" placeholder="0.00" required>
-
-                            <label for="product-category">Categoría</label>
-                            <select id="product-category" name="category" required>
-                                <option value="Dulces">Dulces</option>
-                                <option value="Dulces picositos">Dulces picositos</option>
-                                <option value="Botanas">Botanas</option>
-                                <option value="Otros">Otros</option>
-                            </select>
-
-                            <label for="product-image">Imagen (URL)</label>
-                            <input type="url" id="product-image" name="img" placeholder="https://">
-
-                            <label for="product-description">Descripción</label>
-                            <textarea id="product-description" name="includes" rows="3" placeholder="Qué incluye, notas de sabor, etc."></textarea>
-                        </div>
-                        <label class="checkbox-field">
-                            <input type="checkbox" id="product-featured" name="featured">
-                            <span>Marcar como destacado</span>
-                        </label>
-                        <div class="admin-form-actions">
-                            <button type="button" id="clear-product-form" class="ghost-btn">Limpiar</button>
-                            <button type="submit" class="btn-primary" id="product-form-submit">Guardar producto</button>
-                        </div>
-                    </form>
-                    <button type="button" id="seed-catalog-btn" class="chip-btn">
-                        <i class="fas fa-bolt"></i> Importar catálogo base
-                    </button>
-                </article>
-            </div>
-            <div id="admin-product-list" class="admin-product-list"></div>
-        </section>
 
         <div id="cart" class="cart-panel">
             <div class="cart-header">

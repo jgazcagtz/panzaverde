@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador - Panza Verde</title>
+    <meta name="description" content="Panel de administración para gestionar productos de Panza Verde">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-page">
+    <div class="admin-container">
+        <!-- Login Screen -->
+        <div class="admin-login-screen" id="admin-login-screen">
+            <div class="admin-login-card">
+                <div class="admin-login-header">
+                    <img src="https://i.imgur.com/8zf86ss.png" alt="Logo Panza Verde" class="admin-logo">
+                    <h1>Panel Administrador</h1>
+                    <p>Acceso exclusivo para personal autorizado</p>
+                </div>
+                <form id="admin-login-form" class="admin-login-form">
+                    <div class="form-group">
+                        <label for="admin-email">
+                            <i class="fas fa-envelope"></i> Correo electrónico
+                        </label>
+                        <input type="email" id="admin-email" name="email" placeholder="admin@panzaverde.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">
+                            <i class="fas fa-lock"></i> Contraseña
+                        </label>
+                        <input type="password" id="admin-password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn-admin-login">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+                    </button>
+                </form>
+                <div class="admin-login-footer">
+                    <a href="index.html" class="back-to-store">
+                        <i class="fas fa-arrow-left"></i> Volver a la tienda
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div class="admin-dashboard-screen" id="admin-dashboard-screen" hidden>
+            <header class="admin-header">
+                <div class="admin-header-content">
+                    <div class="admin-header-left">
+                        <img src="https://i.imgur.com/8zf86ss.png" alt="Logo" class="admin-header-logo">
+                        <div>
+                            <h2>Panel Administrador</h2>
+                            <p id="admin-welcome-text">Bienvenido, Administrador</p>
+                        </div>
+                    </div>
+                    <div class="admin-header-right">
+                        <a href="index.html" class="admin-nav-link" title="Ver tienda">
+                            <i class="fas fa-store"></i>
+                            <span class="admin-nav-text">Tienda</span>
+                        </a>
+                        <button id="admin-logout-btn" class="admin-logout-btn" title="Cerrar sesión">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="admin-nav-text">Salir</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="admin-main">
+                <!-- Stats Section -->
+                <section class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-products">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-total-products">0</h3>
+                            <p>Productos totales</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-featured">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-featured-products">0</h3>
+                            <p>Productos destacados</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-categories">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-categories">0</h3>
+                            <p>Categorías</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-value">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-total-value">$0</h3>
+                            <p>Valor inventario</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Product Management Section -->
+                <section class="admin-section">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-edit"></i> Gestionar Productos</h2>
+                        <button id="new-product-btn" class="btn-new-product">
+                            <i class="fas fa-plus"></i> Nuevo producto
+                        </button>
+                    </div>
+
+                    <div class="admin-form-container" id="product-form-container">
+                        <form id="product-form" class="admin-product-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="product-name">
+                                        <i class="fas fa-tag"></i> Nombre del producto
+                                    </label>
+                                    <input type="text" id="product-name" name="name" placeholder="Ej: Gomitas de frutas" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-price">
+                                        <i class="fas fa-dollar-sign"></i> Precio (MXN)
+                                    </label>
+                                    <input type="number" id="product-price" name="price" min="0" step="0.01" placeholder="0.00" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="product-category">
+                                        <i class="fas fa-folder"></i> Categoría
+                                    </label>
+                                    <select id="product-category" name="category" required>
+                                        <option value="Dulces">Dulces</option>
+                                        <option value="Dulces picositos">Dulces picositos</option>
+                                        <option value="Botanas">Botanas</option>
+                                        <option value="Otros">Otros</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-image">
+                                        <i class="fas fa-image"></i> URL de imagen
+                                    </label>
+                                    <input type="url" id="product-image" name="img" placeholder="https://ejemplo.com/imagen.jpg">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-description">
+                                    <i class="fas fa-align-left"></i> Descripción
+                                </label>
+                                <textarea id="product-description" name="includes" rows="3" placeholder="Descripción del producto, ingredientes, etc."></textarea>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="product-featured" name="featured">
+                                    <span><i class="fas fa-star"></i> Marcar como producto destacado</span>
+                                </label>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="clear-product-form" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Limpiar
+                                </button>
+                                <button type="submit" class="btn-primary" id="product-form-submit">
+                                    <i class="fas fa-save"></i> Guardar producto
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Products List Section -->
+                <section class="admin-section">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-list"></i> Lista de Productos</h2>
+                        <div class="admin-actions">
+                            <button id="seed-catalog-btn" class="btn-seed-catalog">
+                                <i class="fas fa-bolt"></i> Importar catálogo base
+                            </button>
+                            <input type="text" id="admin-search" class="admin-search" placeholder="Buscar productos...">
+                        </div>
+                    </div>
+                    <div id="admin-product-list" class="admin-product-list"></div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
+
