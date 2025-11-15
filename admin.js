@@ -538,14 +538,20 @@ async function handleChatbotTraining(event) {
     }
 
     try {
-        // Save training data to Firestore
+        // Save training data to Firestore with context from current dashboard data
         await addDoc(collection(db, "chatbot_training"), {
             prompt: prompt,
             response: response,
+            context: {
+                totalProducts: products.length,
+                totalOrders: orders.length,
+                totalInventory: inventory.length,
+                timestamp: new Date().toISOString()
+            },
             createdAt: serverTimestamp(),
             createdBy: "admin"
         });
-        showToast("Entrenamiento guardado correctamente. El chatbot aprenderá de esta información.", "success");
+        showToast("Entrenamiento guardado correctamente. El chatbot aprenderá de esta información y la usará en futuras conversaciones.", "success");
         event.target.reset();
     } catch (error) {
         console.error("Error al guardar entrenamiento", error);
@@ -555,6 +561,50 @@ async function handleChatbotTraining(event) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText || '<i class="fas fa-save"></i> Guardar entrenamiento';
         }
+    }
+}
+
+// Helper function to safely get API endpoint
+// For Vercel serverless functions:
+// - Production: https://panzaverde.vercel.app/api/chatbot
+// - Local dev: http://localhost:3000/api/chatbot (when running 'vercel dev')
+function getApiEndpoint() {
+    const location = window.location || document.location || {};
+    const hostname = location.hostname || '';
+    let origin = location.origin;
+    
+    if (!origin && location.href) {
+        try {
+            const url = new URL(location.href);
+            origin = url.origin;
+        } catch (e) {
+            const match = location.href.match(/^(https?:\/\/[^\/]+)/);
+            origin = match ? match[1] : '';
+        }
+    }
+    
+    if (!origin) {
+        origin = hostname ? `https://${hostname}` : '';
+    }
+    
+    // Local development: use localhost:3000 (Vercel dev server)
+    // Production: use same origin (e.g., https://panzaverde.vercel.app/api/chatbot)
+    return hostname === 'localhost' || hostname === '127.0.0.1'
+        ? 'http://localhost:3000/api/chatbot'
+        : `${origin}/api/chatbot`;
+}
+
+// Helper function to load training data
+async function loadTrainingData() {
+    try {
+        const trainingSnapshot = await getDocs(collection(db, 'chatbot_training'));
+        return trainingSnapshot.docs.map(doc => ({
+            prompt: doc.data().prompt || '',
+            response: doc.data().response || ''
+        }));
+    } catch (trainingError) {
+        console.warn('Could not load training data:', trainingError);
+        return [];
     }
 }
 
@@ -617,34 +667,12 @@ function initAdminChatbot() {
 
             try {
                 // Call DeepSeek API via Vercel serverless function
-                // Safely get location info with fallbacks
-                const location = window.location || document.location || {};
-                const hostname = location.hostname || '';
-                let origin = location.origin;
-                
-                // Fallback: construct origin from href if origin is not available
-                if (!origin && location.href) {
-                    try {
-                        const url = new URL(location.href);
-                        origin = url.origin;
-                    } catch (e) {
-                        // If URL parsing fails, try manual extraction
-                        const match = location.href.match(/^(https?:\/\/[^\/]+)/);
-                        origin = match ? match[1] : '';
-                    }
-                }
-                
-                // Final fallback
-                if (!origin) {
-                    origin = hostname ? `https://${hostname}` : '';
-                }
-                
-                const apiEndpoint = hostname === 'localhost' || hostname === '127.0.0.1'
-                    ? 'http://localhost:3000/api/chatbot'
-                    : `${origin}/api/chatbot`;
-                
+                const apiEndpoint = getApiEndpoint();
                 console.log('Admin chatbot: Calling DeepSeek API via Vercel at', apiEndpoint);
                 
+                // Load training data from Firestore
+                const trainingData = await loadTrainingData();
+
                 const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -652,15 +680,19 @@ function initAdminChatbot() {
                         message: message,
                         conversationHistory: [],
                         products: products || [],
-                        orders: window.allOrders || [],
+                        orders: window.allOrders || orders || [],
+                        inventory: inventory || [],
                         stats: {
                             totalProducts: (products || []).length,
-                            totalOrders: (window.allOrders || []).length,
-                            totalRevenue: (window.allOrders || []).reduce((sum, o) => sum + parseFloat(o.total || 0), 0)
+                            totalOrders: (window.allOrders || orders || []).length,
+                            totalRevenue: (window.allOrders || orders || []).reduce((sum, o) => sum + parseFloat(o.total || 0), 0),
+                            totalInventory: (inventory || []).length,
+                            lowStockCount: (inventory || []).filter(inv => inv.quantity <= inv.minStock).length
                         },
                         userId: 'admin',
                         sessionId: 'admin-session',
-                        isAdmin: true
+                        isAdmin: true,
+                        trainingData: trainingData
                     })
                 });
 
@@ -3038,9 +3070,8 @@ async function generateAIInsights() {
     }
 
     try {
-        const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000/api/chatbot'
-            : `${window.location.origin}/api/chatbot`;
+        const apiEndpoint = getApiEndpoint();
+        const trainingData = await loadTrainingData();
 
         const prompt = `Analiza los siguientes datos de Panza Verde y proporciona insights y recomendaciones:
 
@@ -3075,7 +3106,16 @@ Responde en español, de manera profesional y accionable.`;
                 conversationHistory: [],
                 products: products,
                 orders: orders,
-                isAdmin: true
+                inventory: inventory,
+                stats: {
+                    totalProducts: products.length,
+                    totalOrders: orders.length,
+                    totalRevenue: orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0),
+                    totalInventory: inventory.length,
+                    lowStockCount: inventory.filter(inv => inv.quantity <= inv.minStock).length
+                },
+                isAdmin: true,
+                trainingData: trainingData
             })
         });
 
@@ -3182,9 +3222,8 @@ async function generateAIHelpContent() {
     }
 
     try {
-        const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000/api/chatbot'
-            : `${window.location.origin}/api/chatbot`;
+        const apiEndpoint = getApiEndpoint();
+        const trainingData = await loadTrainingData();
 
         const prompt = `Crea una guía completa y detallada para usar el panel de administración de Panza Verde. Incluye:
 
@@ -3205,7 +3244,15 @@ Responde en español, de manera clara y estructurada, como si fuera un tutorial 
                 message: prompt,
                 conversationHistory: [],
                 products: products,
-                isAdmin: true
+                orders: orders,
+                inventory: inventory,
+                stats: {
+                    totalProducts: products.length,
+                    totalOrders: orders.length,
+                    totalInventory: inventory.length
+                },
+                isAdmin: true,
+                trainingData: trainingData
             })
         });
 

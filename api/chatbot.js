@@ -19,7 +19,16 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { message, conversationHistory, products, isAdmin } = req.body;
+        const { 
+            message, 
+            conversationHistory, 
+            products = [], 
+            orders = [],
+            inventory = [],
+            stats = {},
+            isAdmin = false,
+            trainingData = []
+        } = req.body;
 
         if (!message) {
             return res.status(400).json({ error: 'Message is required' });
@@ -35,8 +44,11 @@ export default async function handler(req, res) {
             });
         }
 
-        // Build system prompt with Panza Verde information
-        const systemPrompt = buildSystemPrompt(products, isAdmin);
+        // Load training data from Firestore if available (for future enhancement)
+        // For now, use trainingData passed from client
+
+        // Build system prompt with Panza Verde information and dashboard data
+        const systemPrompt = buildSystemPrompt(products, orders, inventory, stats, isAdmin, trainingData);
 
         // Prepare messages for DeepSeek API
         const messages = [
@@ -110,39 +122,117 @@ export default async function handler(req, res) {
     }
 }
 
-function buildSystemPrompt(products = [], isAdmin = false) {
+function buildSystemPrompt(products = [], orders = [], inventory = [], stats = {}, isAdmin = false, trainingData = []) {
     const productsList = products.length > 0 
         ? products.map(p => `- ${p.name} ($${p.price.toFixed(2)}) - ${p.category}${p.includes ? ': ' + p.includes : ''}`).join('\n')
         : 'Los productos se están cargando...';
 
     if (isAdmin) {
-        return `Eres un asistente virtual especializado para el panel de administración de Panza Verde. Ayudas al administrador con tareas de gestión de la tienda.
+        // Calculate additional stats
+        const totalRevenue = stats.totalRevenue || orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+        const totalOrders = stats.totalOrders || orders.length;
+        const totalProducts = stats.totalProducts || products.length;
+        const totalInventory = inventory.length;
+        const lowStockItems = inventory.filter(inv => inv.quantity <= inv.minStock);
+        const featuredProducts = products.filter(p => p.featured).length;
+        const categories = new Set(products.map(p => p.category)).size;
+        
+        // Recent orders summary
+        const recentOrders = orders.slice(0, 10).map(order => {
+            const date = order.createdAt?.toDate?.() || order.timestamp || new Date();
+            return `- Pedido #${order.id.substring(0, 8)}: ${date.toLocaleDateString('es-MX')} - $${parseFloat(order.total || 0).toFixed(2)}`;
+        }).join('\n') || 'Sin pedidos recientes';
+        
+        // Top products by sales
+        const productSales = {};
+        orders.forEach(order => {
+            const cart = Array.isArray(order.cart) ? order.cart : (typeof order.cart === 'string' ? JSON.parse(order.cart || "[]") : []);
+            cart.forEach(item => {
+                if (!productSales[item.name]) {
+                    productSales[item.name] = 0;
+                }
+                productSales[item.name] += item.quantity || 0;
+            });
+        });
+        const topProducts = Object.entries(productSales)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([name, qty]) => `- ${name}: ${qty} unidades vendidas`)
+            .join('\n') || 'Sin datos de ventas aún';
+        
+        // Inventory summary
+        const inventorySummary = inventory.length > 0
+            ? inventory.map(inv => {
+                const product = products.find(p => p.id === inv.productId);
+                const status = inv.quantity <= inv.minStock ? '⚠️ BAJO STOCK' : '✓';
+                return `- ${inv.productName || product?.name || 'Producto'}: ${inv.quantity} unidades (mín: ${inv.minStock}) ${status}`;
+            }).join('\n')
+            : 'Sin inventario registrado';
+        
+        // Training data context
+        const trainingContext = trainingData.length > 0
+            ? `\n\nDATOS DE ENTRENAMIENTO ADICIONALES:\n${trainingData.map(t => `P: ${t.prompt}\nR: ${t.response}`).join('\n\n')}`
+            : '';
+
+        return `Eres un asistente virtual especializado para el panel de administración de Panza Verde. Ayudas al administrador Erandi con tareas de gestión de la tienda.
 
 INFORMACIÓN DEL ADMINISTRADOR:
-- Tienes acceso a información completa de productos, pedidos, usuarios y estadísticas
-- Puedes ayudar con consultas sobre el estado de la tienda, productos más vendidos, clientes, etc.
+- Tienes acceso a información completa de productos, pedidos, usuarios, inventario y estadísticas
+- Puedes ayudar con consultas sobre el estado de la tienda, productos más vendidos, clientes, inventario, etc.
 - Puedes proporcionar insights sobre el negocio basado en los datos disponibles
+- Eres experto en análisis de datos, gestión de inventario, y estrategias de negocio
 
-ESTADÍSTICAS Y DATOS:
-- Total de productos: ${products.length}
-- Productos destacados: ${products.filter(p => p.featured).length}
-- Categorías disponibles: ${new Set(products.map(p => p.category)).size}
+ESTADÍSTICAS ACTUALES DE LA TIENDA:
+- Total de productos: ${totalProducts}
+- Productos destacados: ${featuredProducts}
+- Categorías disponibles: ${categories}
+- Total de pedidos: ${totalOrders}
+- Ingresos totales: $${totalRevenue.toFixed(2)}
+- Productos con inventario: ${totalInventory}
+- Productos con bajo stock: ${lowStockItems.length}
 
 PRODUCTOS DISPONIBLES:
 ${productsList}
 
+INVENTARIO:
+${inventorySummary}
+
+PEDIDOS RECIENTES:
+${recentOrders}
+
+PRODUCTOS MÁS VENDIDOS:
+${topProducts}
+
+PRODUCTOS CON BAJO STOCK:
+${lowStockItems.length > 0 ? lowStockItems.map(inv => {
+    const product = products.find(p => p.id === inv.productId);
+    return `- ${inv.productName || product?.name || 'Producto'}: ${inv.quantity} unidades (mínimo requerido: ${inv.minStock})`;
+}).join('\n') : 'Ninguno - Todo el inventario está en buen nivel'}${trainingContext}
+
 INSTRUCCIONES PARA ADMIN:
 - Responde de manera profesional y técnica cuando sea apropiado
-- Proporciona información detallada sobre productos, pedidos y usuarios cuando se solicite
+- Proporciona información detallada sobre productos, pedidos, usuarios e inventario cuando se solicite
 - Ayuda con análisis de datos y estadísticas del negocio
-- Sugiere mejoras o acciones basadas en la información disponible
+- Sugiere mejoras o acciones basadas en la información disponible (reabastecimiento, precios, marketing, etc.)
+- Identifica productos con bajo stock y recomienda acciones
+- Analiza tendencias de ventas y sugiere estrategias
 - Mantén un tono profesional pero amigable
 - Si no tienes acceso a cierta información, indícalo claramente
+- Usa los datos de entrenamiento para proporcionar respuestas más precisas
+
+CAPACIDADES ESPECIALES:
+- Análisis de inventario y recomendaciones de reabastecimiento
+- Análisis de ventas y productos más/menos vendidos
+- Sugerencias de precios y estrategias de marketing
+- Análisis de tendencias y patrones de pedidos
+- Recomendaciones operativas y mejoras del negocio
 
 IMPORTANTE:
 - Sé preciso con los datos y estadísticas
 - Proporciona información útil para la toma de decisiones
-- Mantén la confidencialidad de la información sensible`;
+- Mantén la confidencialidad de la información sensible
+- Usa los datos reales proporcionados, no inventes información
+- Si los datos están incompletos, indícalo claramente`;
     }
 
     return `Eres un asistente virtual amigable y profesional para Panza Verde, una tienda de dulces y botanas artesanales mexicanas.
