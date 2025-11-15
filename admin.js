@@ -287,6 +287,12 @@ function registerListeners() {
     // Initialize admin chatbot
     initAdminChatbot();
 
+    // Create initial SEO blog posts button
+    const createBlogPostsBtn = document.getElementById("create-seo-blog-posts");
+    if (createBlogPostsBtn) {
+        createBlogPostsBtn.addEventListener("click", createSEOBlogPosts);
+    }
+
     // User management
     dom.newUserBtn?.addEventListener("click", () => {
         clearUserForm();
@@ -515,13 +521,23 @@ function initAdminChatbot() {
 
             try {
                 // Call chatbot API with admin context
-                const response = await fetch(`${window.location.origin}/api/chatbot`, {
+                const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:3000/api/chatbot'
+                    : `${window.location.origin}/api/chatbot`;
+                
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         message: message,
                         conversationHistory: [],
                         products: products,
+                        orders: window.allOrders || [],
+                        stats: {
+                            totalProducts: products.length,
+                            totalOrders: (window.allOrders || []).length,
+                            totalRevenue: (window.allOrders || []).reduce((sum, o) => sum + parseFloat(o.total || 0), 0)
+                        },
                         userId: 'admin',
                         sessionId: 'admin-session',
                         isAdmin: true
@@ -1681,6 +1697,162 @@ function clearBlogForm() {
     editingBlogId = null;
     if (dom.blogForm) dom.blogForm.reset();
     if (dom.blogAuthor) dom.blogAuthor.value = "Panza Verde";
+}
+
+// Create SEO-optimized blog posts with product images
+async function createSEOBlogPosts() {
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador.", "warning");
+        return;
+    }
+
+    const btn = document.getElementById("create-seo-blog-posts");
+    const originalText = btn?.innerHTML;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+    }
+
+    // Get featured products for blog images
+    const featuredProducts = products.filter(p => p.featured).slice(0, 5);
+    const productImages = featuredProducts.length > 0 
+        ? featuredProducts.map(p => p.img)
+        : products.slice(0, 5).map(p => p.img);
+
+    const seoBlogPosts = [
+        {
+            title: "Dulces Artesanales Mexicanos: Tradición y Sabor en Cada Bocado",
+            excerpt: "Descubre la rica tradición de los dulces artesanales mexicanos. En Panza Verde, cada producto es elaborado con ingredientes 100% naturales y recetas familiares que han pasado de generación en generación.",
+            content: `<h2>La Dulcería Mexicana: Un Patrimonio Cultural</h2>
+            <p>Los dulces artesanales mexicanos representan mucho más que simples golosinas; son un patrimonio cultural que refleja la rica historia gastronómica de México. Desde tiempos prehispánicos, cuando se utilizaban ingredientes como el cacao, el amaranto y la miel de abeja, hasta la llegada de los españoles que introdujeron el azúcar y nuevas técnicas de confitería.</p>
+            
+            <img src="${productImages[0] || 'https://i.imgur.com/8zf86ss.png'}" alt="Dulces artesanales mexicanos" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Ingredientes 100% Naturales</h3>
+            <p>En Panza Verde, nos enorgullecemos de utilizar únicamente ingredientes naturales en todos nuestros productos. No utilizamos conservadores artificiales, colorantes sintéticos ni saborizantes químicos. Cada gomita, cada alfajor y cada botana gourmet está elaborada con frutas frescas, nueces de la más alta calidad y especias naturales.</p>
+            
+            <h3>Recetas Familiares Tradicionales</h3>
+            <p>Nuestras recetas han sido transmitidas de generación en generación, preservando los sabores auténticos que han endulzado la vida de familias mexicanas durante décadas. Cada producto cuenta una historia y conecta a las personas con sus raíces culturales.</p>
+            
+            <h3>Productos Destacados</h3>
+            <p>Entre nuestros productos más populares se encuentran las gomitas artesanales en diversas presentaciones, los alfajores argentinos con dulce de leche auténtico, los guayabates tradicionales con nuez o piñón, y las botanas gourmet que combinan sabores únicos mexicanos.</p>
+            
+            <img src="${productImages[1] || 'https://i.imgur.com/8zf86ss.png'}" alt="Gomitas artesanales mexicanas" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Compromiso con la Calidad</h3>
+            <p>Nuestro compromiso es ofrecer productos de la más alta calidad, elaborados con pasión y dedicación. Cada pedido es preparado con cuidado y atención a los detalles, asegurando que nuestros clientes reciban productos frescos y deliciosos.</p>`,
+            category: "Tradición y Calidad",
+            image: productImages[0] || "https://i.imgur.com/8zf86ss.png",
+            author: "Panza Verde"
+        },
+        {
+            title: "Snacks Picositos: La Combinación Perfecta de Dulce y Picante",
+            excerpt: "Explora la fascinante tradición mexicana de combinar sabores dulces con picantes. Descubre cómo el chile realza el sabor de frutas y dulces, creando una experiencia sensorial única.",
+            content: `<h2>La Tradición de los Sabores Picositos en México</h2>
+            <p>Una de las características más distintivas de la gastronomía mexicana es la combinación magistral de sabores dulces y picantes. Esta tradición se refleja perfectamente en nuestros snacks picositos, donde el chile se convierte en el complemento perfecto para frutas y dulces.</p>
+            
+            <img src="${productImages[2] || 'https://i.imgur.com/8zf86ss.png'}" alt="Snacks picositos mexicanos" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Mangos Enchilados: Un Clásico Mexicano</h3>
+            <p>Los mangos enchilados son uno de nuestros productos más populares. La combinación del dulzor natural del mango con el toque picante del chile crea una experiencia sensorial que despierta todos los sentidos. Este snack es perfecto para cualquier momento del día.</p>
+            
+            <h3>Gomitas con Chile: Innovación en la Tradición</h3>
+            <p>Nuestras gomitas con chile son una innovación que respeta la tradición mexicana. El chile no enmascara el dulce, sino que lo realza, creando un equilibrio perfecto de sabores. Disponibles en presentaciones de 250g, son ideales para compartir o disfrutar personalmente.</p>
+            
+            <img src="${productImages[3] || 'https://i.imgur.com/8zf86ss.png'}" alt="Gomitas con chile" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Arándanos y Piñas Enchilados</h3>
+            <p>También ofrecemos arándanos enchilados y piñas con chile, productos que combinan la frescura de las frutas con el picante característico mexicano. Estos snacks son perfectos para quienes buscan algo diferente y auténtico.</p>
+            
+            <h3>Beneficios de los Snacks Picositos</h3>
+            <p>Los snacks picositos no solo son deliciosos, sino que también pueden tener beneficios para la salud. El chile contiene capsaicina, que puede ayudar a acelerar el metabolismo y proporcionar sensación de saciedad. Además, las frutas deshidratadas conservan sus nutrientes naturales.</p>`,
+            category: "Sabores y Tradición",
+            image: productImages[2] || "https://i.imgur.com/8zf86ss.png",
+            author: "Panza Verde"
+        },
+        {
+            title: "Botanas Gourmet: Snacks Premium para Disfrutar en Cualquier Ocasión",
+            excerpt: "Descubre nuestra selección de botanas gourmet elaboradas con ingredientes premium. Desde nueces de la india hasta pistaches enchilados, cada botana es una experiencia de sabor única.",
+            content: `<h2>Botanas Gourmet: Calidad Premium en Cada Bocado</h2>
+            <p>Nuestras botanas gourmet representan lo mejor de la tradición mexicana combinada con ingredientes de la más alta calidad. Cada producto está cuidadosamente seleccionado y preparado para ofrecer una experiencia gastronómica excepcional.</p>
+            
+            <img src="${productImages[4] || 'https://i.imgur.com/8zf86ss.png'}" alt="Botanas gourmet mexicanas" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Nuez de la India: El Snack Premium</h3>
+            <p>La nuez de la india es uno de nuestros productos estrella. Disponible en presentaciones enchiladas y saladas, esta botana gourmet es perfecta para acompañar cualquier momento. Rica en proteínas y grasas saludables, es una opción nutritiva y deliciosa.</p>
+            
+            <h3>Pistaches Enchilados con Ajo</h3>
+            <p>Nuestros pistaches enchilados con ajo combinan el sabor único del pistache con el picante del chile y el aroma del ajo. Esta combinación crea un snack irresistible que es difícil de dejar de comer.</p>
+            
+            <h3>Botana Panza Verde: La Mezcla Perfecta</h3>
+            <p>Nuestra botana Panza Verde es una mezcla exclusiva de nuez de la india, pretzels y arándanos enchilados. Esta combinación única ofrece una textura crujiente y sabores que se complementan perfectamente.</p>
+            
+            <img src="${productImages[1] || 'https://i.imgur.com/8zf86ss.png'}" alt="Botana Panza Verde" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Churritos de Amaranto: Tradición y Nutrición</h3>
+            <p>Los churritos de amaranto son una opción nutritiva y deliciosa. Disponibles en diferentes sabores como sal y limón, chipotle y nopal, estos snacks son ricos en proteínas y fibra, además de ser una excelente fuente de calcio y hierro.</p>
+            
+            <h3>Ideal para Compartir</h3>
+            <p>Todas nuestras botanas gourmet vienen en presentaciones generosas, perfectas para compartir en reuniones familiares, fiestas o simplemente para disfrutar en casa. Cada botana está empacada con cuidado para mantener su frescura y crujiente.</p>`,
+            category: "Productos Premium",
+            image: productImages[4] || "https://i.imgur.com/8zf86ss.png",
+            author: "Panza Verde"
+        },
+        {
+            title: "Dulces Tradicionales: Alfajores, Guayabates y Más",
+            excerpt: "Conoce nuestros dulces tradicionales mexicanos: alfajores argentinos, guayabates, palomas y más. Cada uno elaborado con ingredientes naturales y recetas que honran la tradición.",
+            content: `<h2>Dulces Tradicionales que Endulzan el Corazón</h2>
+            <p>Nuestra colección de dulces tradicionales incluye algunos de los sabores más queridos de México y Argentina. Cada producto está elaborado con ingredientes naturales y técnicas artesanales que preservan el sabor auténtico.</p>
+            
+            <img src="${productImages[0] || 'https://i.imgur.com/8zf86ss.png'}" alt="Alfajores argentinos" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Alfajores Argentinos: Dulce de Leche Auténtico</h3>
+            <p>Nuestros alfajores argentinos están hechos con dulce de leche auténtico, creando un sabor cremoso y delicioso que se derrite en la boca. Cada alfajor es una pequeña obra de arte que combina la textura suave de las galletas con la riqueza del dulce de leche.</p>
+            
+            <h3>Guayabates: Tradición en Cada Bocado</h3>
+            <p>Los guayabates son uno de nuestros productos más tradicionales. Disponibles con nuez o piñón, estos dulces combinan el sabor único de la guayaba con cajeta, coco y nueces. Cada bocado es una explosión de sabores que recuerda a la cocina mexicana tradicional.</p>
+            
+            <img src="${productImages[2] || 'https://i.imgur.com/8zf86ss.png'}" alt="Guayabates tradicionales" style="width: 100%; max-width: 600px; border-radius: 12px; margin: 1.5rem 0;">
+            
+            <h3>Palomas: Obleas Rellenas de Sabor</h3>
+            <p>Las palomas son obleas delgadas rellenas de coco y cajeta, creando un dulce ligero pero lleno de sabor. Perfectas para disfrutar como postre o merienda, estas delicias son un favorito entre nuestros clientes.</p>
+            
+            <h3>Suspiros: Pequeñas Delicias</h3>
+            <p>Nuestros suspiros son pequeñas galletas cubiertas de chocolate semi amargo. Aunque pequeños en tamaño, están llenos de sabor y son perfectos para satisfacer ese antojo de algo dulce sin excederse.</p>
+            
+            <h3>El Compromiso con la Tradición</h3>
+            <p>En Panza Verde, cada dulce tradicional que ofrecemos es una celebración de la rica herencia culinaria mexicana y latinoamericana. Utilizamos solo los mejores ingredientes y técnicas artesanales para asegurar que cada producto mantenga su sabor auténtico y tradicional.</p>`,
+            category: "Dulces Tradicionales",
+            image: productImages[0] || "https://i.imgur.com/8zf86ss.png",
+            author: "Panza Verde"
+        }
+    ];
+
+    try {
+        let created = 0;
+        for (const post of seoBlogPosts) {
+            try {
+                await addDoc(collection(db, "blogPosts"), {
+                    ...post,
+                    createdAt: serverTimestamp(),
+                    published: true,
+                    seoOptimized: true
+                });
+                created++;
+            } catch (error) {
+                console.error("Error creating blog post:", error);
+            }
+        }
+        showToast(`${created} artículos SEO creados exitosamente.`, "success");
+    } catch (error) {
+        console.error("Error creating SEO blog posts:", error);
+        showToast("Error al crear artículos SEO.", "error");
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText || '<i class="fas fa-magic"></i> Crear artículos SEO';
+        }
+    }
 }
 
 // User Management Functions
