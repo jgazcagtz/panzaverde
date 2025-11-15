@@ -46,12 +46,17 @@ let currentLanguage = localStorage.getItem('language') || 'es';
 // Expose functions to window immediately (before DOMContentLoaded)
 window.toggleCart = function() {
     const cartPanel = document.getElementById("cart");
+    const cartBackdrop = document.getElementById("cart-backdrop");
     if (!cartPanel) {
         console.warn('Cart panel not found');
         return;
     }
+    const isActive = cartPanel.classList.contains("active");
     cartPanel.classList.toggle("active");
-    document.body.style.overflow = cartPanel.classList.contains("active") ? "hidden" : "auto";
+    if (cartBackdrop) {
+        cartBackdrop.classList.toggle("active");
+    }
+    document.body.style.overflow = !isActive ? "hidden" : "auto";
 };
 
 window.closeProductModal = function() {
@@ -623,36 +628,42 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const user = auth.currentUser;
-        if (!user) {
-            showToast("Por favor inicia sesión para guardar tu pedido en tu historial.", "warning");
-            updateWhatsAppLink();
-            return;
+        const orderBtn = document.getElementById("make-order-btn");
+        const originalText = orderBtn?.innerHTML;
+        
+        if (orderBtn) {
+            orderBtn.disabled = true;
+            orderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
         }
 
         if (!orderNumber) {
             orderNumber = Math.floor(Math.random() * 1000000) + 1;
         }
 
+        // Create order data - allow orders without login (guest checkout)
         const orderData = {
-            timestamp: new Date().toLocaleString(),
+            timestamp: new Date().toLocaleString("es-MX"),
             orderNumber,
             paymentMethod: selectedPaymentMethod,
             cart: JSON.stringify(cart),
             total: total.toFixed(2),
-            userId: user.uid,
-            userEmail: user.email,
-            userName: user.displayName || user.email,
+            userId: user ? user.uid : `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            userEmail: user ? user.email : "guest@panzaverde.com",
+            userName: user ? (user.displayName || user.email) : "Cliente Invitado",
             status: "pendiente",
             createdAt: serverTimestamp()
         };
 
-        updateWhatsAppLink();
-
         try {
             // Save to Firestore
             const orderRef = await addDoc(collection(db, "orders"), orderData);
-            showToast("Pedido guardado correctamente. Confirma por WhatsApp.", "success");
-            document.getElementById("whatsapp-btn").style.display = "flex";
+            showToast(`Pedido #${orderNumber} creado correctamente. Confirma por WhatsApp.`, "success");
+            
+            // Show WhatsApp button
+            const whatsappBtn = document.getElementById("whatsapp-btn");
+            if (whatsappBtn) {
+                whatsappBtn.style.display = "flex";
+            }
             
             // Also send to Google Sheets (optional)
             try {
@@ -672,9 +683,25 @@ document.addEventListener("DOMContentLoaded", () => {
             cart = [];
             orderNumber = null;
             updateCart();
+            
+            // Close cart panel
+            const cartPanel = document.getElementById("cart");
+            const cartBackdrop = document.getElementById("cart-backdrop");
+            if (cartPanel) {
+                cartPanel.classList.remove("active");
+                if (cartBackdrop) {
+                    cartBackdrop.classList.remove("active");
+                }
+                document.body.style.overflow = "auto";
+            }
         } catch (error) {
             console.error("Error al enviar el pedido:", error);
             showToast("Hubo un error al enviar tu pedido. Inténtalo nuevamente.", "error");
+        } finally {
+            if (orderBtn) {
+                orderBtn.disabled = false;
+                orderBtn.innerHTML = originalText || '<i class="fas fa-paper-plane"></i> Hacer pedido';
+            }
         }
     }
 
@@ -762,12 +789,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function toggleCart() {
         const cartPanel = document.getElementById("cart");
+        const cartBackdrop = document.getElementById("cart-backdrop");
         if (!cartPanel) {
             console.warn('Cart panel not found');
             return;
         }
+        const isActive = cartPanel.classList.contains("active");
         cartPanel.classList.toggle("active");
-        document.body.style.overflow = cartPanel.classList.contains("active") ? "hidden" : "auto";
+        if (cartBackdrop) {
+            cartBackdrop.classList.toggle("active");
+        }
+        document.body.style.overflow = !isActive ? "hidden" : "auto";
     }
 
     function toggleModal() {
@@ -823,6 +855,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentLanguage = localStorage.getItem('language') || 'es';
     }
 
+    // Define translations BEFORE using them
     const translations = {
         es: {
             'tagline': 'Dulces y botanas artesanales mexicanas',
@@ -881,6 +914,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function initLanguageToggle() {
+        // Make sure translations are defined before using
+        if (typeof translations === 'undefined') {
+            console.warn('Translations not defined yet, skipping language toggle init');
+            return;
+        }
         const langToggle = document.getElementById('language-toggle');
         if (langToggle) {
             langToggle.addEventListener('click', toggleLanguage);
