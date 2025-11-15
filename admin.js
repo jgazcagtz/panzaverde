@@ -17,7 +17,8 @@ import {
     serverTimestamp,
     getDocs,
     query,
-    where
+    where,
+    orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -93,9 +94,11 @@ let categories = [];
 let orders = [];
 let blogPosts = [];
 let users = [];
+let inventory = [];
 let editingProductId = null;
 let editingCategoryId = null;
 let editingBlogId = null;
+let editingInventoryId = null;
 let isAdminAuthenticated = false;
 
 const dom = {
@@ -185,6 +188,7 @@ function checkAuthState() {
             subscribeToOrders();
             subscribeToBlogPosts();
             subscribeToUsers();
+            subscribeToInventory();
         } else {
             isAdminAuthenticated = false;
             showLogin();
@@ -292,6 +296,15 @@ function registerListeners() {
     if (createBlogPostsBtn) {
         createBlogPostsBtn.addEventListener("click", createSEOBlogPosts);
     }
+
+    // Business Manager - Inventory Management
+    initInventoryManagement();
+    
+    // Business Manager - Analytics and Data Download
+    initBusinessManagerFeatures();
+    
+    // Tutorial navigation
+    initTutorialNavigation();
 
     // User management
     dom.newUserBtn?.addEventListener("click", () => {
@@ -2048,6 +2061,28 @@ function initSidebarNavigation() {
     const sidebarToggle = document.getElementById("sidebar-toggle");
     const navItems = document.querySelectorAll(".admin-nav-item[data-section]");
     const sidebarLogoutBtn = document.getElementById("admin-sidebar-logout-btn");
+    const allSections = document.querySelectorAll(".admin-section, #admin-stats-section");
+
+    // Hide all sections initially
+    function hideAllSections() {
+        allSections.forEach(section => {
+            if (section) section.style.display = "none";
+        });
+    }
+
+    // Show specific section
+    function showSection(sectionId) {
+        hideAllSections();
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+            targetElement.style.display = "block";
+            targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }
+
+    // Show stats section by default
+    const statsSection = document.getElementById("admin-stats-section");
+    if (statsSection) statsSection.style.display = "grid";
 
     // Mobile menu toggle
     if (mobileMenuToggle) {
@@ -2074,29 +2109,33 @@ function initSidebarNavigation() {
             // Add active class to clicked item
             item.classList.add("active");
 
-            // Scroll to section
-            let targetElement = null;
+            // Show only the selected section
+            let targetSectionId = null;
             if (section === "stats") {
-                targetElement = document.getElementById("admin-stats-section");
+                targetSectionId = "admin-stats-section";
             } else if (section === "products") {
-                targetElement = document.getElementById("product-management");
+                targetSectionId = "product-management";
             } else if (section === "categories") {
-                targetElement = document.getElementById("category-management");
+                targetSectionId = "category-management";
             } else if (section === "orders") {
-                targetElement = document.getElementById("orders-management");
+                targetSectionId = "orders-management";
             } else if (section === "blog") {
-                targetElement = document.getElementById("blog-management");
+                targetSectionId = "blog-management";
             } else if (section === "buyers") {
-                targetElement = document.getElementById("buyers-management");
+                targetSectionId = "buyers-management";
+            } else if (section === "business") {
+                targetSectionId = "business-manager";
             } else if (section === "chatbot") {
-                targetElement = document.getElementById("chatbot-management");
+                targetSectionId = "chatbot-management";
                 loadChatbotData();
             } else if (section === "users") {
-                targetElement = document.getElementById("users-management");
+                targetSectionId = "users-management";
+            } else if (section === "help") {
+                targetSectionId = "help-tutorial";
             }
 
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+            if (targetSectionId) {
+                showSection(targetSectionId);
             }
 
             // Close sidebar on mobile after navigation
@@ -2119,6 +2158,703 @@ function initSidebarNavigation() {
             }
         }
     });
+}
+
+// ==================== INVENTORY MANAGEMENT ====================
+
+function initInventoryManagement() {
+    const inventoryForm = document.getElementById("inventory-form");
+    const inventoryFormContainer = document.getElementById("inventory-form-container");
+    const bulkInventoryForm = document.getElementById("bulk-inventory-form");
+    const bulkInventoryFormContainer = document.getElementById("bulk-inventory-form-container");
+    const addInventoryBtn = document.getElementById("add-inventory-btn");
+    const bulkUploadBtn = document.getElementById("bulk-upload-inventory-btn");
+    const cancelInventoryFormBtn = document.getElementById("cancel-inventory-form");
+    const cancelBulkInventoryFormBtn = document.getElementById("cancel-bulk-inventory-form");
+
+    // Show inventory form
+    if (addInventoryBtn) {
+        addInventoryBtn.addEventListener("click", () => {
+            clearInventoryForm();
+            populateInventoryProductSelect();
+            inventoryFormContainer.style.display = "block";
+            inventoryFormContainer.scrollIntoView({ behavior: "smooth" });
+        });
+    }
+
+    const inventoryProductSelect = document.getElementById("inventory-product-select");
+    if (inventoryProductSelect) {
+        inventoryProductSelect.addEventListener("focus", () => {
+            populateInventoryProductSelect();
+        });
+    }
+
+    if (inventoryForm) {
+        inventoryForm.addEventListener("submit", handleInventoryFormSubmit);
+    }
+
+    if (bulkInventoryForm) {
+        bulkInventoryForm.addEventListener("submit", handleBulkInventorySubmit);
+    }
+
+    if (bulkUploadBtn) {
+        bulkUploadBtn.addEventListener("click", () => {
+            bulkInventoryFormContainer.style.display = bulkInventoryFormContainer.style.display === "none" ? "block" : "none";
+            if (bulkInventoryFormContainer.style.display === "block") {
+                populateInventoryProductSelect();
+            }
+        });
+    }
+
+    if (cancelInventoryFormBtn) {
+        cancelInventoryFormBtn.addEventListener("click", () => {
+            clearInventoryForm();
+            inventoryFormContainer.style.display = "none";
+        });
+    }
+
+    if (cancelBulkInventoryFormBtn) {
+        cancelBulkInventoryFormBtn.addEventListener("click", () => {
+            bulkInventoryFormContainer.style.display = "none";
+        });
+    }
+
+    // Show inventory form when clicking on inventory item
+    const inventoryList = document.getElementById("admin-inventory-list");
+    if (inventoryList) {
+        inventoryList.addEventListener("click", (e) => {
+            if (e.target.closest(".edit-inventory")) {
+                const inventoryId = e.target.closest(".admin-inventory-row")?.dataset.inventoryId;
+                if (inventoryId) {
+                    startEditInventory(inventoryId);
+                }
+            } else if (e.target.closest(".delete-inventory")) {
+                const inventoryId = e.target.closest(".admin-inventory-row")?.dataset.inventoryId;
+                if (inventoryId) {
+                    deleteInventory(inventoryId);
+                }
+            }
+        });
+    }
+}
+
+function subscribeToInventory() {
+    try {
+        const inventoryRef = collection(db, "inventory");
+        onSnapshot(
+            inventoryRef,
+            (snapshot) => {
+                inventory = snapshot.docs.map((docSnap) => {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        productId: data.productId || "",
+                        productName: data.productName || "",
+                        quantity: Number(data.quantity) || 0,
+                        minStock: Number(data.minStock) || 0,
+                        location: data.location || "",
+                        notes: data.notes || "",
+                        lastUpdated: data.lastUpdated || serverTimestamp(),
+                        createdAt: data.createdAt || serverTimestamp()
+                    };
+                });
+                renderInventoryList();
+                updateAnalytics();
+            },
+            (error) => {
+                console.error("Error al escuchar inventario", error);
+            }
+        );
+    } catch (error) {
+        console.error("Error de Firebase en inventario", error);
+    }
+}
+
+function populateInventoryProductSelect() {
+    const select = document.getElementById("inventory-product-select");
+    if (!select) return;
+    
+    const currentValue = select.value;
+    select.innerHTML = '<option value="">Seleccionar producto</option>' +
+        products.map(p => `<option value="${p.id}" data-name="${p.name}">${p.name} - $${p.price.toFixed(2)}</option>`).join("");
+    if (currentValue) select.value = currentValue;
+}
+
+function renderInventoryList() {
+    const container = document.getElementById("admin-inventory-list");
+    if (!container) return;
+
+    if (inventory.length === 0) {
+        container.innerHTML = '<p class="admin-hint">No hay inventario registrado. Agrega inventario para comenzar.</p>';
+        return;
+    }
+
+    container.innerHTML = inventory.map(inv => {
+        const product = products.find(p => p.id === inv.productId);
+        const isLowStock = inv.quantity <= inv.minStock;
+        const inventoryValue = product ? (product.price * inv.quantity) : 0;
+        
+        return `
+            <div class="admin-inventory-row ${isLowStock ? 'low-stock' : ''}" data-inventory-id="${inv.id}">
+                <div class="admin-inventory-info">
+                    <h4>${inv.productName || product?.name || 'Producto desconocido'}</h4>
+                    <div class="admin-inventory-details">
+                        <span class="inventory-badge ${isLowStock ? 'badge-warning' : 'badge-success'}">
+                            <i class="fas fa-${isLowStock ? 'exclamation-triangle' : 'check-circle'}"></i>
+                            Stock: ${inv.quantity} ${isLowStock ? '(Bajo Stock)' : ''}
+                        </span>
+                        <span>Stock Mínimo: ${inv.minStock}</span>
+                        ${product ? `<span>Valor: $${inventoryValue.toFixed(2)}</span>` : ''}
+                        ${inv.location ? `<span><i class="fas fa-map-marker-alt"></i> ${inv.location}</span>` : ''}
+                    </div>
+                    ${inv.notes ? `<p class="inventory-notes">${inv.notes}</p>` : ''}
+                </div>
+                <div class="admin-inventory-actions">
+                    <button class="admin-action-btn edit-inventory" title="Editar">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="admin-action-btn delete-inventory" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+async function handleInventoryFormSubmit(event) {
+    event.preventDefault();
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador.", "warning");
+        return;
+    }
+
+    const formData = new FormData(event.target);
+    const productId = formData.get("productId");
+    const product = products.find(p => p.id === productId);
+    
+    if (!product) {
+        showToast("Selecciona un producto válido.", "warning");
+        return;
+    }
+
+    const inventoryData = {
+        productId: productId,
+        productName: product.name,
+        quantity: Number(formData.get("quantity")) || 0,
+        minStock: Number(formData.get("minStock")) || 0,
+        location: formData.get("location")?.trim() || "",
+        notes: formData.get("notes")?.trim() || "",
+        lastUpdated: serverTimestamp()
+    };
+
+    const submitBtn = document.getElementById("inventory-form-submit");
+    const originalText = submitBtn?.innerHTML;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    }
+
+    try {
+        if (editingInventoryId) {
+            await updateDoc(doc(db, "inventory", editingInventoryId), inventoryData);
+            showToast("Inventario actualizado correctamente.", "success");
+        } else {
+            // Check if inventory already exists for this product
+            const existingInventory = inventory.find(inv => inv.productId === productId);
+            if (existingInventory) {
+                await updateDoc(doc(db, "inventory", existingInventory.id), inventoryData);
+                showToast("Inventario actualizado correctamente.", "success");
+            } else {
+                await addDoc(collection(db, "inventory"), {
+                    ...inventoryData,
+                    createdAt: serverTimestamp()
+                });
+                showToast("Inventario agregado correctamente.", "success");
+            }
+        }
+        clearInventoryForm();
+        document.getElementById("inventory-form-container").style.display = "none";
+    } catch (error) {
+        console.error("Error al guardar inventario", error);
+        showToast("No pudimos guardar el inventario.", "error");
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText || '<i class="fas fa-save"></i> Guardar Inventario';
+        }
+    }
+}
+
+async function handleBulkInventorySubmit(event) {
+    event.preventDefault();
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador.", "warning");
+        return;
+    }
+
+    const formData = new FormData(event.target);
+    const bulkData = formData.get("bulkData").trim();
+    
+    if (!bulkData) {
+        showToast("Ingresa datos para procesar.", "warning");
+        return;
+    }
+
+    const lines = bulkData.split('\n').filter(line => line.trim());
+    const inventoryItems = [];
+    
+    for (const line of lines) {
+        const parts = line.split(',').map(p => p.trim());
+        if (parts.length >= 2) {
+            const productName = parts[0];
+            const quantity = parseInt(parts[1]) || 0;
+            const minStock = parseInt(parts[2]) || 0;
+            
+            const product = products.find(p => p.name.toLowerCase() === productName.toLowerCase());
+            if (product) {
+                inventoryItems.push({ product, quantity, minStock });
+            }
+        }
+    }
+
+    if (inventoryItems.length === 0) {
+        showToast("No se encontraron productos válidos en los datos.", "warning");
+        return;
+    }
+
+    const submitBtn = event.target.querySelector("button[type='submit']");
+    const originalText = submitBtn?.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+
+    try {
+        const promises = inventoryItems.map(async ({ product, quantity, minStock }) => {
+            const existingInventory = inventory.find(inv => inv.productId === product.id);
+            const inventoryData = {
+                productId: product.id,
+                productName: product.name,
+                quantity: quantity,
+                minStock: minStock,
+                lastUpdated: serverTimestamp()
+            };
+
+            if (existingInventory) {
+                await updateDoc(doc(db, "inventory", existingInventory.id), inventoryData);
+            } else {
+                await addDoc(collection(db, "inventory"), {
+                    ...inventoryData,
+                    createdAt: serverTimestamp()
+                });
+            }
+        });
+
+        await Promise.all(promises);
+        showToast(`${inventoryItems.length} productos procesados correctamente.`, "success");
+        event.target.reset();
+        document.getElementById("bulk-inventory-form-container").style.display = "none";
+    } catch (error) {
+        console.error("Error al procesar inventario masivo", error);
+        showToast("Error al procesar el inventario masivo.", "error");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText || '<i class="fas fa-upload"></i> Procesar Carga Masiva';
+    }
+}
+
+function startEditInventory(inventoryId) {
+    const inv = inventory.find(i => i.id === inventoryId);
+    if (!inv) return;
+
+    editingInventoryId = inventoryId;
+    const form = document.getElementById("inventory-form");
+    if (!form) return;
+
+    populateInventoryProductSelect();
+    document.getElementById("inventory-product-select").value = inv.productId;
+    document.getElementById("inventory-quantity").value = inv.quantity;
+    document.getElementById("inventory-min-stock").value = inv.minStock;
+    document.getElementById("inventory-location").value = inv.location || "";
+    document.getElementById("inventory-notes").value = inv.notes || "";
+
+    document.getElementById("inventory-form-container").style.display = "block";
+    document.getElementById("inventory-form-container").scrollIntoView({ behavior: "smooth" });
+}
+
+async function deleteInventory(inventoryId) {
+    if (!isAdminAuthenticated) {
+        showToast("No autorizado.", "error");
+        return;
+    }
+
+    if (!confirm("¿Eliminar este registro de inventario?")) return;
+
+    try {
+        await deleteDoc(doc(db, "inventory", inventoryId));
+        showToast("Inventario eliminado correctamente.", "success");
+    } catch (error) {
+        console.error("Error al eliminar inventario", error);
+        showToast("No pudimos eliminar el inventario.", "error");
+    }
+}
+
+function clearInventoryForm() {
+    editingInventoryId = null;
+    const form = document.getElementById("inventory-form");
+    if (form) form.reset();
+}
+
+// ==================== ANALYTICS & DATA DOWNLOAD ====================
+
+function initBusinessManagerFeatures() {
+    const downloadDataBtn = document.getElementById("download-data-btn");
+    const aiInsightsBtn = document.getElementById("ai-insights-btn");
+
+    if (downloadDataBtn) {
+        downloadDataBtn.addEventListener("click", downloadAllData);
+    }
+
+    if (aiInsightsBtn) {
+        aiInsightsBtn.addEventListener("click", generateAIInsights);
+    }
+}
+
+function updateAnalytics() {
+    // Calculate total inventory value
+    let totalInventoryValue = 0;
+    let lowStockCount = 0;
+    const lowStockProducts = [];
+
+    inventory.forEach(inv => {
+        const product = products.find(p => p.id === inv.productId);
+        if (product) {
+            totalInventoryValue += product.price * inv.quantity;
+            if (inv.quantity <= inv.minStock) {
+                lowStockCount++;
+                lowStockProducts.push({ ...inv, product });
+            }
+        }
+    });
+
+    // Update analytics display
+    const totalValueEl = document.getElementById("analytics-total-inventory-value");
+    if (totalValueEl) totalValueEl.textContent = `$${totalInventoryValue.toFixed(2)}`;
+
+    const lowStockEl = document.getElementById("analytics-low-stock-count");
+    if (lowStockEl) lowStockEl.textContent = lowStockCount;
+
+    // Update low stock products list
+    const lowStockList = document.getElementById("low-stock-products-list");
+    if (lowStockList) {
+        if (lowStockProducts.length === 0) {
+            lowStockList.innerHTML = '<p class="admin-hint">Todos los productos tienen stock suficiente.</p>';
+        } else {
+            lowStockList.innerHTML = lowStockProducts.map(item => `
+                <div class="low-stock-item">
+                    <strong>${item.productName}</strong>
+                    <span class="stock-warning">Stock: ${item.quantity} / Mínimo: ${item.minStock}</span>
+                </div>
+            `).join("");
+        }
+    }
+
+    // Calculate turnover rate (simplified - based on recent orders)
+    const recentOrders = orders.filter(o => {
+        const orderDate = o.createdAt?.toDate?.() || new Date(0);
+        const daysAgo = (Date.now() - orderDate.getTime()) / (1000 * 60 * 60 * 24);
+        return daysAgo <= 30;
+    });
+    
+    const turnoverEl = document.getElementById("analytics-turnover-rate");
+    if (turnoverEl) {
+        if (recentOrders.length > 0) {
+            const totalSold = recentOrders.reduce((sum, o) => {
+                const cart = Array.isArray(o.cart) ? o.cart : JSON.parse(o.cart || "[]");
+                return sum + cart.reduce((s, item) => s + item.quantity, 0);
+            }, 0);
+            turnoverEl.textContent = `${totalSold} unidades (últimos 30 días)`;
+        } else {
+            turnoverEl.textContent = "Sin datos recientes";
+        }
+    }
+}
+
+function downloadAllData() {
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador.", "warning");
+        return;
+    }
+
+    const data = {
+        timestamp: new Date().toISOString(),
+        products: products,
+        categories: categories,
+        inventory: inventory,
+        orders: orders.map(o => ({
+            ...o,
+            cart: Array.isArray(o.cart) ? o.cart : JSON.parse(o.cart || "[]")
+        })),
+        blogPosts: blogPosts,
+        stats: {
+            totalProducts: products.length,
+            totalInventoryValue: inventory.reduce((sum, inv) => {
+                const product = products.find(p => p.id === inv.productId);
+                return sum + (product ? product.price * inv.quantity : 0);
+            }, 0),
+            totalOrders: orders.length,
+            totalRevenue: orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0)
+        }
+    };
+
+    // Download as JSON
+    const jsonBlob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const jsonUrl = URL.createObjectURL(jsonBlob);
+    const jsonLink = document.createElement('a');
+    jsonLink.href = jsonUrl;
+    jsonLink.download = `panza-verde-data-${new Date().toISOString().split('T')[0]}.json`;
+    jsonLink.click();
+
+    // Download inventory as CSV
+    const csvRows = [
+        ['Producto', 'Cantidad', 'Stock Mínimo', 'Valor', 'Ubicación', 'Notas'],
+        ...inventory.map(inv => {
+            const product = products.find(p => p.id === inv.productId);
+            const value = product ? product.price * inv.quantity : 0;
+            return [
+                inv.productName || product?.name || '',
+                inv.quantity,
+                inv.minStock,
+                value.toFixed(2),
+                inv.location || '',
+                inv.notes || ''
+            ];
+        })
+    ];
+    
+    const csvContent = csvRows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const csvUrl = URL.createObjectURL(csvBlob);
+    const csvLink = document.createElement('a');
+    csvLink.href = csvUrl;
+    csvLink.download = `panza-verde-inventario-${new Date().toISOString().split('T')[0]}.csv`;
+    csvLink.click();
+
+    showToast("Datos descargados correctamente.", "success");
+}
+
+async function generateAIInsights() {
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador.", "warning");
+        return;
+    }
+
+    const btn = document.getElementById("ai-insights-btn");
+    const originalText = btn?.innerHTML;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+    }
+
+    try {
+        const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api/chatbot'
+            : `${window.location.origin}/api/chatbot`;
+
+        const prompt = `Analiza los siguientes datos de Panza Verde y proporciona insights y recomendaciones:
+
+PRODUCTOS: ${products.length} productos en total
+INVENTARIO: ${inventory.length} productos con inventario registrado
+PEDIDOS: ${orders.length} pedidos totales
+INGRESOS: $${orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0).toFixed(2)}
+
+PRODUCTOS CON BAJO STOCK:
+${inventory.filter(inv => inv.quantity <= inv.minStock).map(inv => {
+    const product = products.find(p => p.id === inv.productId);
+    return `- ${inv.productName}: ${inv.quantity} unidades (mínimo: ${inv.minStock})`;
+}).join('\n') || 'Ninguno'}
+
+PRODUCTOS MÁS VENDIDOS (últimos 30 días):
+${getTopSellingProducts(30).map((p, i) => `${i + 1}. ${p.name}: ${p.quantity} unidades vendidas`).join('\n') || 'Sin datos'}
+
+Proporciona:
+1. Recomendaciones de reabastecimiento
+2. Análisis de productos más/menos vendidos
+3. Sugerencias de precios
+4. Estrategias de marketing
+5. Mejoras operativas
+
+Responde en español, de manera profesional y accionable.`;
+
+        const response = await fetch(apiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: prompt,
+                conversationHistory: [],
+                products: products,
+                orders: orders,
+                isAdmin: true
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('API error');
+        }
+
+        const data = await response.json();
+        const insights = data.response || 'No se pudieron generar insights en este momento.';
+
+        // Show insights in a modal or alert
+        const insightsModal = document.createElement('div');
+        insightsModal.className = 'insights-modal';
+        insightsModal.innerHTML = `
+            <div class="insights-modal-content">
+                <div class="insights-modal-header">
+                    <h3><i class="fas fa-brain"></i> Insights de IA</h3>
+                    <button class="insights-modal-close" onclick="this.closest('.insights-modal').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="insights-modal-body">
+                    <div class="insights-content">${insights.replace(/\n/g, '<br>')}</div>
+                </div>
+                <div class="insights-modal-footer">
+                    <button class="btn-primary" onclick="this.closest('.insights-modal').remove()">Cerrar</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(insightsModal);
+    } catch (error) {
+        console.error("Error generating AI insights", error);
+        showToast("Error al generar insights. Verifica la configuración de la API.", "error");
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText || '<i class="fas fa-brain"></i> Insights de IA';
+        }
+    }
+}
+
+function getTopSellingProducts(days = 30) {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    const productSales = {};
+    
+    orders.forEach(order => {
+        const orderDate = order.createdAt?.toDate?.() || new Date(0);
+        if (orderDate >= cutoffDate) {
+            const cart = Array.isArray(order.cart) ? order.cart : JSON.parse(order.cart || "[]");
+            cart.forEach(item => {
+                if (!productSales[item.name]) {
+                    productSales[item.name] = { name: item.name, quantity: 0 };
+                }
+                productSales[item.name].quantity += item.quantity;
+            });
+        }
+    });
+    
+    return Object.values(productSales)
+        .sort((a, b) => b.quantity - a.quantity)
+        .slice(0, 10);
+}
+
+// ==================== TUTORIAL NAVIGATION ====================
+
+function initTutorialNavigation() {
+    const tutorialTabs = document.querySelectorAll(".tutorial-tab");
+    const tutorialSections = document.querySelectorAll(".tutorial-section");
+
+    tutorialTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const tutorialId = tab.getAttribute("data-tutorial");
+            
+            // Remove active class from all tabs and sections
+            tutorialTabs.forEach(t => t.classList.remove("active"));
+            tutorialSections.forEach(s => s.classList.remove("active"));
+            
+            // Add active class to clicked tab and corresponding section
+            tab.classList.add("active");
+            const section = document.getElementById(`tutorial-${tutorialId}`);
+            if (section) section.classList.add("active");
+        });
+    });
+
+    const generateAIHelpBtn = document.getElementById("generate-ai-help-btn");
+    if (generateAIHelpBtn) {
+        generateAIHelpBtn.addEventListener("click", generateAIHelpContent);
+    }
+}
+
+async function generateAIHelpContent() {
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador.", "warning");
+        return;
+    }
+
+    const btn = document.getElementById("generate-ai-help-btn");
+    const originalText = btn?.innerHTML;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+    }
+
+    try {
+        const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api/chatbot'
+            : `${window.location.origin}/api/chatbot`;
+
+        const prompt = `Crea una guía completa y detallada para usar el panel de administración de Panza Verde. Incluye:
+
+1. Cómo gestionar productos (crear, editar, eliminar)
+2. Cómo gestionar inventario (agregar cantidades, establecer stock mínimo)
+3. Cómo gestionar pedidos (crear, actualizar estado)
+4. Cómo usar las funciones de analytics
+5. Cómo generar contenido para blog con IA
+6. Cómo descargar datos
+7. Consejos y mejores prácticas
+
+Responde en español, de manera clara y estructurada, como si fuera un tutorial paso a paso.`;
+
+        const response = await fetch(apiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: prompt,
+                conversationHistory: [],
+                products: products,
+                isAdmin: true
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('API error');
+        }
+
+        const data = await response.json();
+        const helpContent = data.response || 'No se pudo generar el contenido de ayuda.';
+
+        // Add to tutorial section
+        const gettingStartedSection = document.getElementById("tutorial-getting-started");
+        if (gettingStartedSection) {
+            gettingStartedSection.innerHTML += `
+                <div class="ai-generated-help" style="margin-top: 2rem; padding: 1rem; background: #f5f5f5; border-radius: 8px;">
+                    <h4><i class="fas fa-magic"></i> Guía Generada por IA</h4>
+                    <div>${helpContent.replace(/\n/g, '<br>')}</div>
+                </div>
+            `;
+        }
+
+        showToast("Contenido de ayuda generado correctamente.", "success");
+    } catch (error) {
+        console.error("Error generating AI help", error);
+        showToast("Error al generar ayuda. Verifica la configuración de la API.", "error");
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText || '<i class="fas fa-magic"></i> Generar Ayuda con IA';
+        }
+    }
 }
 
 // Initialize when DOM is ready

@@ -88,6 +88,10 @@
                         <i class="fas fa-users"></i>
                         <span>Compradores</span>
                     </a>
+                    <a href="#business-manager" class="admin-nav-item" data-section="business">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Business Manager</span>
+                    </a>
                     <a href="#chatbot-management" class="admin-nav-item" data-section="chatbot">
                         <i class="fas fa-robot"></i>
                         <span>Chatbot</span>
@@ -95,6 +99,10 @@
                     <a href="#users-management" class="admin-nav-item" data-section="users">
                         <i class="fas fa-user-cog"></i>
                         <span>Usuarios</span>
+                    </a>
+                    <a href="#help-tutorial" class="admin-nav-item" data-section="help">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Ayuda y Tutorial</span>
                     </a>
                 </nav>
                 <div class="admin-sidebar-footer">
@@ -515,6 +523,147 @@
                     <div id="admin-users-list" class="admin-users-list"></div>
                 </section>
 
+                <!-- Business Manager Section -->
+                <section class="admin-section" id="business-manager">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-chart-line"></i> Business Manager - Gestión de Inventario</h2>
+                        <div class="admin-actions">
+                            <button id="download-data-btn" class="btn-secondary">
+                                <i class="fas fa-download"></i> Descargar Datos
+                            </button>
+                            <button id="ai-insights-btn" class="btn-secondary">
+                                <i class="fas fa-brain"></i> Insights de IA
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Management -->
+                    <div class="admin-section-header">
+                        <h3><i class="fas fa-boxes"></i> Gestión de Inventario</h3>
+                        <div class="admin-actions">
+                            <button id="add-inventory-btn" class="btn-new-product">
+                                <i class="fas fa-plus"></i> Agregar Inventario
+                            </button>
+                            <button id="bulk-upload-inventory-btn" class="btn-secondary">
+                                <i class="fas fa-upload"></i> Carga Masiva
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-form-container" id="inventory-form-container" style="display: none;">
+                        <form id="inventory-form" class="admin-product-form">
+                            <div class="form-group">
+                                <label for="inventory-product-select">
+                                    <i class="fas fa-box"></i> Producto
+                                </label>
+                                <select id="inventory-product-select" name="productId" required>
+                                    <option value="">Seleccionar producto</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="inventory-quantity">
+                                        <i class="fas fa-hashtag"></i> Cantidad en Stock
+                                    </label>
+                                    <input type="number" id="inventory-quantity" name="quantity" min="0" placeholder="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inventory-min-stock">
+                                        <i class="fas fa-exclamation-triangle"></i> Stock Mínimo (Alerta)
+                                    </label>
+                                    <input type="number" id="inventory-min-stock" name="minStock" min="0" placeholder="10">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inventory-location">
+                                    <i class="fas fa-map-marker-alt"></i> Ubicación/Almacén
+                                </label>
+                                <input type="text" id="inventory-location" name="location" placeholder="Ej: Almacén Principal">
+                            </div>
+                            <div class="form-group">
+                                <label for="inventory-notes">
+                                    <i class="fas fa-sticky-note"></i> Notas
+                                </label>
+                                <textarea id="inventory-notes" name="notes" rows="2" placeholder="Notas adicionales sobre el inventario..."></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="cancel-inventory-form" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary" id="inventory-form-submit">
+                                    <i class="fas fa-save"></i> Guardar Inventario
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Bulk Upload Form -->
+                    <div class="admin-form-container" id="bulk-inventory-form-container" style="display: none; margin-top: 1rem;">
+                        <div class="admin-section-header">
+                            <h4><i class="fas fa-file-upload"></i> Carga Masiva de Inventario</h4>
+                            <p>Sube un archivo CSV o ingresa datos manualmente en formato: Producto, Cantidad, Stock Mínimo</p>
+                        </div>
+                        <form id="bulk-inventory-form" class="admin-product-form">
+                            <div class="form-group">
+                                <label for="bulk-inventory-data">
+                                    <i class="fas fa-file-csv"></i> Datos de Inventario (CSV o texto)
+                                </label>
+                                <textarea id="bulk-inventory-data" name="bulkData" rows="10" placeholder="Formato: Nombre del Producto, Cantidad, Stock Mínimo&#10;Ejemplo:&#10;Gomitas de frutos (250g), 50, 10&#10;Alfajor argentino, 30, 5&#10;Mangos enchilados (100g), 25, 8"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="cancel-bulk-inventory-form" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-upload"></i> Procesar Carga Masiva
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Inventory List -->
+                    <div id="admin-inventory-list" class="admin-inventory-list"></div>
+
+                    <!-- Advanced Analytics -->
+                    <div class="admin-section-header" style="margin-top: 2rem;">
+                        <h3><i class="fas fa-chart-bar"></i> Analytics Avanzados</h3>
+                    </div>
+                    <div class="analytics-dashboard" id="analytics-dashboard">
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <h4><i class="fas fa-box"></i> Valor Total Inventario</h4>
+                                <div class="analytics-value" id="analytics-total-inventory-value">$0.00</div>
+                                <p class="analytics-change" id="analytics-inventory-change">-</p>
+                            </div>
+                            <div class="analytics-card">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Productos Bajo Stock</h4>
+                                <div class="analytics-value" id="analytics-low-stock-count">0</div>
+                                <p class="analytics-change">Productos que requieren atención</p>
+                            </div>
+                            <div class="analytics-card">
+                                <h4><i class="fas fa-chart-line"></i> Rotación de Inventario</h4>
+                                <div class="analytics-value" id="analytics-turnover-rate">-</div>
+                                <p class="analytics-change">Basado en ventas recientes</p>
+                            </div>
+                            <div class="analytics-card">
+                                <h4><i class="fas fa-dollar-sign"></i> Productos Más Valiosos</h4>
+                                <div class="analytics-value" id="analytics-top-value-count">0</div>
+                                <p class="analytics-change">Por valor de inventario</p>
+                            </div>
+                        </div>
+                        <div class="analytics-charts" id="analytics-charts">
+                            <div class="chart-container">
+                                <h4>Distribución de Inventario por Categoría</h4>
+                                <canvas id="category-inventory-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Productos con Bajo Stock</h4>
+                                <div id="low-stock-products-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Chatbot Management Section -->
                 <section class="admin-section" id="chatbot-management">
                     <div class="admin-section-header">
@@ -597,6 +746,152 @@
                         <h3><i class="fas fa-history"></i> Conversaciones Recientes</h3>
                     </div>
                     <div id="admin-chatbot-conversations" class="admin-orders-list"></div>
+                </section>
+
+                <!-- Help and Tutorial Section -->
+                <section class="admin-section" id="help-tutorial">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-question-circle"></i> Ayuda y Tutorial</h2>
+                        <div class="admin-actions">
+                            <button id="generate-ai-help-btn" class="btn-secondary">
+                                <i class="fas fa-magic"></i> Generar Ayuda con IA
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-container">
+                        <div class="tutorial-nav">
+                            <button class="tutorial-tab active" data-tutorial="getting-started">
+                                <i class="fas fa-play-circle"></i> Inicio Rápido
+                            </button>
+                            <button class="tutorial-tab" data-tutorial="inventory">
+                                <i class="fas fa-boxes"></i> Gestión de Inventario
+                            </button>
+                            <button class="tutorial-tab" data-tutorial="products">
+                                <i class="fas fa-box"></i> Productos
+                            </button>
+                            <button class="tutorial-tab" data-tutorial="orders">
+                                <i class="fas fa-shopping-cart"></i> Pedidos
+                            </button>
+                            <button class="tutorial-tab" data-tutorial="analytics">
+                                <i class="fas fa-chart-bar"></i> Analytics
+                            </button>
+                            <button class="tutorial-tab" data-tutorial="ai-features">
+                                <i class="fas fa-brain"></i> Funciones de IA
+                            </button>
+                        </div>
+
+                        <div class="tutorial-content">
+                            <div class="tutorial-section active" id="tutorial-getting-started">
+                                <h3>Bienvenida al Panel de Administración de Panza Verde</h3>
+                                <p>Este panel te permite gestionar completamente tu tienda de dulces artesanales mexicanos.</p>
+                                <h4>Funciones Principales:</h4>
+                                <ul>
+                                    <li><strong>Dashboard:</strong> Vista general de estadísticas y métricas clave</li>
+                                    <li><strong>Business Manager:</strong> Gestión completa de inventario y analytics avanzados</li>
+                                    <li><strong>Productos:</strong> Crear, editar y eliminar productos del catálogo</li>
+                                    <li><strong>Categorías:</strong> Organizar productos por categorías</li>
+                                    <li><strong>Pedidos:</strong> Gestionar y rastrear todos los pedidos</li>
+                                    <li><strong>Blog:</strong> Crear contenido para tu blog con ayuda de IA</li>
+                                    <li><strong>Chatbot:</strong> Entrenar y monitorear el asistente virtual</li>
+                                </ul>
+                                <h4>Navegación:</h4>
+                                <p>Usa el menú lateral izquierdo para navegar entre secciones. Solo se mostrará la sección que selecciones.</p>
+                            </div>
+
+                            <div class="tutorial-section" id="tutorial-inventory">
+                                <h3>Gestión de Inventario</h3>
+                                <h4>Agregar Inventario a un Producto:</h4>
+                                <ol>
+                                    <li>Ve a la sección "Business Manager"</li>
+                                    <li>Haz clic en "Cargar Inventario Masivo" o agrega productos individualmente</li>
+                                    <li>Selecciona el producto y especifica la cantidad en stock</li>
+                                    <li>Establece un stock mínimo para recibir alertas cuando esté bajo</li>
+                                    <li>Guarda los cambios</li>
+                                </ol>
+                                <h4>Carga Masiva:</h4>
+                                <p>Puedes cargar múltiples productos a la vez usando el formato CSV:</p>
+                                <pre>Nombre del Producto, Cantidad, Stock Mínimo
+Gomitas de frutos (250g), 50, 10
+Alfajor argentino, 30, 5</pre>
+                                <h4>Analytics de Inventario:</h4>
+                                <p>El dashboard de analytics muestra:</p>
+                                <ul>
+                                    <li>Valor total del inventario</li>
+                                    <li>Productos con bajo stock</li>
+                                    <li>Rotación de inventario</li>
+                                    <li>Distribución por categorías</li>
+                                </ul>
+                            </div>
+
+                            <div class="tutorial-section" id="tutorial-products">
+                                <h3>Gestión de Productos</h3>
+                                <h4>Crear un Nuevo Producto:</h4>
+                                <ol>
+                                    <li>Ve a la sección "Productos"</li>
+                                    <li>Haz clic en "Nuevo producto"</li>
+                                    <li>Completa todos los campos requeridos (nombre, precio, categoría)</li>
+                                    <li>Agrega una imagen (URL) y descripción</li>
+                                    <li>Marca como destacado si deseas que aparezca en la página principal</li>
+                                    <li>Guarda el producto</li>
+                                </ol>
+                                <h4>Editar un Producto:</h4>
+                                <p>Haz clic en el botón de editar (lápiz) junto al producto que deseas modificar.</p>
+                                <h4>Eliminar un Producto:</h4>
+                                <p>Haz clic en el botón de eliminar (papelera). Esta acción no se puede deshacer.</p>
+                            </div>
+
+                            <div class="tutorial-section" id="tutorial-orders">
+                                <h3>Gestión de Pedidos</h3>
+                                <h4>Ver Pedidos:</h4>
+                                <p>Todos los pedidos aparecen en la sección "Pedidos" ordenados por fecha (más recientes primero).</p>
+                                <h4>Crear un Pedido Manual:</h4>
+                                <ol>
+                                    <li>Haz clic en "Crear pedido"</li>
+                                    <li>Ingresa los datos del cliente</li>
+                                    <li>Agrega productos al pedido</li>
+                                    <li>Selecciona el método de pago y estado</li>
+                                    <li>Guarda el pedido</li>
+                                </ol>
+                                <h4>Actualizar Estado de Pedido:</h4>
+                                <p>Usa el menú desplegable en cada pedido para cambiar su estado: Pendiente, Confirmado, En preparación, Enviado, Entregado, o Cancelado.</p>
+                            </div>
+
+                            <div class="tutorial-section" id="tutorial-analytics">
+                                <h3>Analytics y Reportes</h3>
+                                <h4>Descargar Datos:</h4>
+                                <p>Haz clic en "Descargar Datos" en Business Manager para exportar:</p>
+                                <ul>
+                                    <li>Inventario completo (CSV/JSON)</li>
+                                    <li>Productos y categorías</li>
+                                    <li>Pedidos y ventas</li>
+                                    <li>Estadísticas y métricas</li>
+                                </ul>
+                                <h4>Insights de IA:</h4>
+                                <p>Usa el botón "Insights de IA" para obtener recomendaciones inteligentes basadas en tus datos de inventario y ventas.</p>
+                            </div>
+
+                            <div class="tutorial-section" id="tutorial-ai-features">
+                                <h3>Funciones de IA</h3>
+                                <h4>Generación de Contenido para Blog:</h4>
+                                <ol>
+                                    <li>Ve a la sección "Blog"</li>
+                                    <li>Haz clic en "Crear artículos SEO" para generar contenido automáticamente</li>
+                                    <li>O crea artículos manualmente con ayuda de IA</li>
+                                </ol>
+                                <h4>Insights y Recomendaciones:</h4>
+                                <p>La IA analiza tus datos y proporciona:</p>
+                                <ul>
+                                    <li>Sugerencias de productos a reabastecer</li>
+                                    <li>Recomendaciones de precios</li>
+                                    <li>Análisis de tendencias de ventas</li>
+                                    <li>Sugerencias de marketing</li>
+                                </ul>
+                                <h4>Asistente Virtual:</h4>
+                                <p>El chatbot en la esquina inferior derecha puede ayudarte con preguntas sobre el panel de administración.</p>
+                            </div>
+                        </div>
+                    </div>
                 </section>
                 </main>
             </div>
