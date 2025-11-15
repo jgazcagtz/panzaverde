@@ -657,24 +657,66 @@ function showLogin() {
 }
 
 function showDashboard() {
+    // Show loading screen first
+    const loadingScreen = document.getElementById("admin-loading-screen");
+    if (loadingScreen) {
+        loadingScreen.style.display = "flex";
+    }
+
     // Hide login screen
     if (dom.loginScreen) {
         dom.loginScreen.classList.add("hidden");
         dom.loginScreen.style.display = "none";
     }
-    // Show dashboard screen
-    if (dom.dashboardScreen) {
-        dom.dashboardScreen.removeAttribute("hidden");
-        dom.dashboardScreen.style.display = "flex";
+
+    // Simulate loading time and then show dashboard with animation
+    setTimeout(() => {
+        // Hide loading screen
+        if (loadingScreen) {
+            loadingScreen.style.display = "none";
+        }
+
+        // Show dashboard screen with fade-in animation
+        if (dom.dashboardScreen) {
+            dom.dashboardScreen.removeAttribute("hidden");
+            dom.dashboardScreen.style.display = "flex";
+            dom.dashboardScreen.classList.add("dashboard-fade-in");
+        }
+
+        // Show stats when logged in
+        const statsSection = document.getElementById("admin-stats-section");
+        if (statsSection) {
+            statsSection.style.display = "grid";
+            statsSection.classList.add("stats-fade-in");
+        }
+
+        // Trigger welcome animation
+        triggerWelcomeAnimation();
+    }, 1500); // 1.5 second loading animation
+}
+
+function triggerWelcomeAnimation() {
+    const welcomeText = document.getElementById("admin-welcome-text");
+    if (welcomeText) {
+        welcomeText.classList.add("animate-welcome");
+        
+        // Add sparkle effect to Erandina text
+        const erandinaText = welcomeText.querySelector(".erandina-text");
+        if (erandinaText) {
+            erandinaText.classList.add("sparkle-animation");
+        }
     }
-    // Show stats when logged in
-    const statsSection = document.getElementById("admin-stats-section");
-    if (statsSection) statsSection.style.display = "grid";
 }
 
 function updateWelcomeText(user) {
     if (dom.welcomeText) {
-        dom.welcomeText.textContent = `Bienvenida, Erandi`;
+        // Keep the HTML structure for animation
+        const erandinaSpan = dom.welcomeText.querySelector('.erandina-text');
+        if (erandinaSpan) {
+            erandinaSpan.textContent = 'Erandina';
+        } else {
+            dom.welcomeText.innerHTML = `Bienvenida, <span class="erandina-text">Erandina</span>`;
+        }
     }
 }
 

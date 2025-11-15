@@ -1258,6 +1258,7 @@
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -1521,7 +1522,8 @@
 .panza-chatbot {
     position: fixed;
     bottom: 2rem;
-    left: 2rem;
+    right: 2rem;
+    left: auto;
     z-index: 9999;
     font-family: 'Poppins', sans-serif;
 }
@@ -1557,7 +1559,8 @@
 .chatbot-window {
     position: absolute;
     bottom: 80px;
-    left: 0;
+    right: 0;
+    left: auto;
     width: 380px;
     max-width: calc(100vw - 2rem);
     height: 600px;
@@ -1782,7 +1785,8 @@
 @media (max-width: 768px) {
     .panza-chatbot {
         bottom: max(1rem, env(safe-area-inset-bottom));
-        left: max(1rem, env(safe-area-inset-left));
+        right: max(1rem, env(safe-area-inset-right));
+        left: auto;
     }
 
     .chatbot-toggle {
@@ -1799,8 +1803,8 @@
         height: calc(100vh - 8rem);
         max-height: calc(100dvh - 8rem);
         bottom: 70px;
-        left: 1rem;
-        right: auto;
+        right: 1rem;
+        left: auto;
         border-radius: 20px 20px 0 0;
     }
 
@@ -1835,8 +1839,8 @@
 @media (max-width: 480px) {
     .panza-chatbot {
         bottom: 0;
-        left: 0;
-        right: auto;
+        right: 0;
+        left: auto;
     }
 
     .chatbot-toggle {
@@ -1846,7 +1850,8 @@
         min-height: 52px;
         font-size: 1.2rem;
         bottom: max(1rem, env(safe-area-inset-bottom));
-        left: max(1rem, env(safe-area-inset-left));
+        right: max(1rem, env(safe-area-inset-right));
+        left: auto;
     }
 
     .chatbot-window {
@@ -1855,8 +1860,8 @@
         height: calc(100vh - 4rem);
         max-height: calc(100dvh - 4rem);
         bottom: 0;
-        left: 0;
-        right: auto;
+        right: 0;
+        left: auto;
         border-radius: 0;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
@@ -2255,6 +2260,386 @@
     .admin-inventory-actions {
         width: 100%;
         justify-content: flex-end;
+    }
+}
+
+/* ==================== LOADING SCREEN ANIMATIONS ==================== */
+.admin-loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.loading-container {
+    text-align: center;
+    color: white;
+}
+
+.loading-logo {
+    margin-bottom: 2rem;
+    animation: logoFloat 2s ease-in-out infinite;
+}
+
+.loading-logo img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    background: white;
+    padding: 10px;
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-20px) scale(1.05);
+    }
+}
+
+.loading-spinner {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 2rem auto;
+}
+
+.spinner-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+.spinner-ring:nth-child(2) {
+    width: 70%;
+    height: 70%;
+    top: 15%;
+    left: 15%;
+    border-top-color: rgba(255, 255, 255, 0.7);
+    animation-duration: 1s;
+    animation-direction: reverse;
+}
+
+.spinner-ring:nth-child(3) {
+    width: 50%;
+    height: 50%;
+    top: 25%;
+    left: 25%;
+    border-top-color: rgba(255, 255, 255, 0.5);
+    animation-duration: 0.75s;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 2rem;
+}
+
+.loading-dots {
+    display: inline-block;
+}
+
+.loading-dots span {
+    animation: dotPulse 1.4s infinite;
+    opacity: 0;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dotPulse {
+    0%, 80%, 100% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+}
+
+/* ==================== WELCOME ANIMATION ==================== */
+.welcome-animation {
+    position: relative;
+    display: inline-block;
+}
+
+.welcome-animation.animate-welcome {
+    animation: welcomeSlideIn 0.8s ease-out;
+}
+
+.erandina-text {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    position: relative;
+}
+
+.erandina-text.sparkle-animation::before,
+.erandina-text.sparkle-animation::after {
+    content: '✨';
+    position: absolute;
+    font-size: 0.8em;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+.erandina-text.sparkle-animation::before {
+    left: -20px;
+    animation-delay: 0s;
+}
+
+.erandina-text.sparkle-animation::after {
+    right: -20px;
+    animation-delay: 1s;
+}
+
+@keyframes welcomeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1) rotate(180deg);
+    }
+}
+
+/* ==================== DASHBOARD FADE-IN ANIMATION ==================== */
+.dashboard-fade-in {
+    animation: dashboardFadeIn 0.6s ease-out;
+}
+
+@keyframes dashboardFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stats-fade-in {
+    animation: statsFadeIn 0.8s ease-out 0.3s both;
+}
+
+@keyframes statsFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ==================== ENHANCED DASHBOARD EXPERIENCE ==================== */
+.admin-dashboard-screen {
+    animation: dashboardFadeIn 0.6s ease-out;
+}
+
+.admin-section {
+    transition: all 0.3s ease;
+}
+
+.admin-section:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card {
+    transition: all 0.3s ease;
+    animation: cardFadeIn 0.5s ease-out both;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+.stat-card:nth-child(5) { animation-delay: 0.5s; }
+.stat-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes cardFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.stat-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.admin-nav-item {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.admin-nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 0 4px 4px 0;
+    transition: height 0.3s ease;
+}
+
+.admin-nav-item.active::before {
+    height: 60%;
+}
+
+.admin-nav-item:hover {
+    transform: translateX(5px);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+/* ==================== SMOOTH SCROLLING ==================== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ==================== ENHANCED BUTTONS ==================== */
+.btn-primary,
+.btn-secondary,
+.btn-new-product {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before,
+.btn-secondary::before,
+.btn-new-product::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::before,
+.btn-secondary:hover::before,
+.btn-new-product:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-new-product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ==================== ENHANCED CHATBOT TOGGLE ==================== */
+.chatbot-toggle {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.chatbot-toggle:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 8px 30px rgba(46, 125, 50, 0.6);
+}
+
+.chatbot-toggle.active {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(46, 125, 50, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 30px rgba(46, 125, 50, 0.8);
+    }
+}
+
+/* ==================== RESPONSIVE LOADING SCREEN ==================== */
+@media (max-width: 768px) {
+    .loading-logo img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+    }
+
+    .loading-text {
+        font-size: 1rem;
+    }
+
+    .erandina-text.sparkle-animation::before,
+    .erandina-text.sparkle-animation::after {
+        font-size: 0.6em;
+    }
+
+    .erandina-text.sparkle-animation::before {
+        left: -15px;
+    }
+
+    .erandina-text.sparkle-animation::after {
+        right: -15px;
     }
 }
 
