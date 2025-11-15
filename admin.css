@@ -871,6 +871,13 @@
     margin-bottom: 1rem;
 }
 
+#admin-contact-list .admin-order-items {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
 .admin-order-item {
     display: flex;
     justify-content: space-between;
@@ -3002,7 +3009,11 @@ html {
 
 /* Contact Section Specific Styles */
 #admin-contact-list .admin-order-card {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
 }
 
 #admin-contact-list .admin-order-header {
@@ -3021,6 +3032,10 @@ html {
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
 }
 
 #admin-contact-list .admin-order-info {
@@ -3042,6 +3057,15 @@ html {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    position: relative;
+}
+
+#admin-contact-list .admin-order-item:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 #admin-contact-list .admin-order-item strong {
@@ -3073,12 +3097,21 @@ html {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    clear: both;
+    position: relative;
+    z-index: 1;
 }
 
 #admin-contact-list .admin-order-actions {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
+    width: 100%;
+    position: relative;
+    z-index: 2;
 }
 
 #admin-contact-list .admin-action-link {
@@ -3090,12 +3123,18 @@ html {
     -webkit-tap-highlight-color: rgba(46, 125, 50, 0.2);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     text-decoration: none;
     border-radius: 8px;
     background: rgba(46, 125, 50, 0.1);
     color: #2e7d32;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 3;
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: visible;
 }
 
 #admin-contact-list .admin-action-link:hover,
@@ -3167,12 +3206,22 @@ html {
 
     #admin-contact-list .admin-order-actions {
         flex-direction: column;
+        gap: 0.75rem;
     }
 
     #admin-contact-list .admin-action-link {
         width: 100%;
         justify-content: center;
         font-size: 16px; /* Prevents zoom on iOS */
+        margin: 0;
+        flex: 1 1 100%;
+        min-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #admin-contact-list .admin-order-footer {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
     }
 
     #contact-search {
