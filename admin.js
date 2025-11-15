@@ -690,6 +690,13 @@ function showDashboard() {
             statsSection.classList.add("stats-fade-in");
         }
 
+        // Ensure products list is rendered
+        setTimeout(() => {
+            if (dom.adminProductList && products.length > 0) {
+                renderProductList();
+            }
+        }, 200);
+
         // Trigger welcome animation
         triggerWelcomeAnimation();
     }, 1500); // 1.5 second loading animation
@@ -2157,6 +2164,20 @@ function initSidebarNavigation() {
                 targetSectionId = "admin-stats-section";
             } else if (section === "products") {
                 targetSectionId = "product-management";
+                // Ensure products list is visible and rendered when clicking products tab
+                setTimeout(() => {
+                    if (dom.adminProductList) {
+                        renderProductList();
+                        // Make sure the list container is visible
+                        const productSection = document.getElementById("product-management");
+                        if (productSection) {
+                            const listContainer = productSection.querySelector("#admin-product-list");
+                            if (listContainer) {
+                                listContainer.style.display = "block";
+                            }
+                        }
+                    }
+                }, 100);
             } else if (section === "categories") {
                 targetSectionId = "category-management";
             } else if (section === "orders") {
