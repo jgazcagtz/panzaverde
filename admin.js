@@ -31,7 +31,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const adminCredentials = {
-    email: "erandi@panzaverde.com"
+    email: "erandi@panzaverde.store"
 };
 
 const defaultImage = "https://i.imgur.com/8zf86ss.png";
