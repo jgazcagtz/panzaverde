@@ -131,11 +131,20 @@ const dom = {
 };
 
 function init() {
+    // Ensure dashboard is hidden on initial load
+    if (dom.dashboardScreen) {
+        dom.dashboardScreen.setAttribute("hidden", "true");
+        dom.dashboardScreen.style.display = "none";
+    }
+    // Ensure login screen is visible on initial load
+    if (dom.loginScreen) {
+        dom.loginScreen.classList.remove("hidden");
+        dom.loginScreen.style.display = "flex";
+    }
+    
     checkAuthState();
     registerListeners();
-    subscribeToProducts();
-    subscribeToCategories();
-    subscribeToOrders();
+    // Data subscriptions are now handled in checkAuthState() after authentication
 }
 
 function checkAuthState() {
@@ -144,9 +153,21 @@ function checkAuthState() {
             isAdminAuthenticated = true;
             showDashboard();
             updateWelcomeText(user);
+            // Subscribe to data only when authenticated
+            subscribeToProducts();
+            subscribeToCategories();
+            subscribeToOrders();
         } else {
             isAdminAuthenticated = false;
             showLogin();
+            // Clear data subscriptions when logged out
+            products = [];
+            categories = [];
+            orders = [];
+            if (dom.adminProductList) dom.adminProductList.innerHTML = '';
+            if (dom.adminCategoriesList) dom.adminCategoriesList.innerHTML = '';
+            if (dom.adminOrdersList) dom.adminOrdersList.innerHTML = '';
+            if (dom.adminBuyersList) dom.adminBuyersList.innerHTML = '';
         }
     });
 }
@@ -247,16 +268,32 @@ function handleAdminLogout() {
 }
 
 function showLogin() {
-    dom.loginScreen?.classList.remove("hidden");
-    dom.dashboardScreen?.setAttribute("hidden", "true");
+    // Show login screen
+    if (dom.loginScreen) {
+        dom.loginScreen.classList.remove("hidden");
+        dom.loginScreen.style.display = "flex";
+    }
+    // Hide dashboard screen completely
+    if (dom.dashboardScreen) {
+        dom.dashboardScreen.setAttribute("hidden", "true");
+        dom.dashboardScreen.style.display = "none";
+    }
     // Hide stats when logged out
     const statsSection = document.getElementById("admin-stats-section");
     if (statsSection) statsSection.style.display = "none";
 }
 
 function showDashboard() {
-    dom.loginScreen?.classList.add("hidden");
-    dom.dashboardScreen?.removeAttribute("hidden");
+    // Hide login screen
+    if (dom.loginScreen) {
+        dom.loginScreen.classList.add("hidden");
+        dom.loginScreen.style.display = "none";
+    }
+    // Show dashboard screen
+    if (dom.dashboardScreen) {
+        dom.dashboardScreen.removeAttribute("hidden");
+        dom.dashboardScreen.style.display = "flex";
+    }
     // Show stats when logged in
     const statsSection = document.getElementById("admin-stats-section");
     if (statsSection) statsSection.style.display = "grid";

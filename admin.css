@@ -36,7 +36,10 @@
 }
 
 .admin-login-screen.hidden {
-    display: none;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 .admin-login-card {
@@ -176,6 +179,14 @@
     background: #f5f7fa;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+}
+
+/* Hide dashboard when not authenticated */
+.admin-dashboard-screen[hidden] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 .admin-header {
