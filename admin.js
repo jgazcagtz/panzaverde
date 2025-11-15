@@ -249,11 +249,17 @@ function handleAdminLogout() {
 function showLogin() {
     dom.loginScreen?.classList.remove("hidden");
     dom.dashboardScreen?.setAttribute("hidden", "true");
+    // Hide stats when logged out
+    const statsSection = document.getElementById("admin-stats-section");
+    if (statsSection) statsSection.style.display = "none";
 }
 
 function showDashboard() {
     dom.loginScreen?.classList.add("hidden");
     dom.dashboardScreen?.removeAttribute("hidden");
+    // Show stats when logged in
+    const statsSection = document.getElementById("admin-stats-section");
+    if (statsSection) statsSection.style.display = "grid";
 }
 
 function updateWelcomeText(user) {

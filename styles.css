@@ -559,10 +559,46 @@
     --box-shadow-dark: 0 12px 24px var(--shadow-dark);
 }
 
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+/* Smooth scrolling for iOS */
+@supports (-webkit-overflow-scrolling: touch) {
+    html {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+*:focus {
+    outline: none;
+}
+
+input, textarea, select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 body {
@@ -571,6 +607,19 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* iOS safe area support */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+        padding-top: max(0px, env(safe-area-inset-top));
+        padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
 }
 
 header {
@@ -1061,6 +1110,7 @@ h1 {
     width: 100%;
     max-width: 420px;
     height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile browsers */
     background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
     z-index: 1000;
@@ -1068,6 +1118,9 @@ h1 {
     display: flex;
     flex-direction: column;
     border-left: 1px solid rgba(46, 125, 50, 0.1);
+    /* iOS safe area support */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .cart-panel.active {
@@ -1430,10 +1483,14 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
+    height: 100dvh; /* Dynamic viewport height for mobile */
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1001;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     animation: fadeIn 0.3s ease-out;
+    /* iOS safe area support */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .modal-content {
@@ -1800,6 +1857,7 @@ footer {
     }
 }
 
+/* iOS and Android specific optimizations */
 @media (max-width: 576px) {
     .header-text h1 {
         font-size: 1.8rem;
@@ -1811,6 +1869,7 @@ footer {
 
     .hero h2 {
         font-size: 1.8rem;
+        line-height: 1.3;
     }
 
     .section-header h2 {
@@ -1819,6 +1878,7 @@ footer {
 
     .product-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
     .horizontal-product-item {
@@ -1826,11 +1886,14 @@ footer {
     }
 
     .floating-cart-btn {
-        width: 50px;
-        height: 50px;
+        width: 56px;
+        height: 56px;
         font-size: 1.2rem;
-        bottom: 1rem;
-        right: 1rem;
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        right: max(1rem, env(safe-area-inset-right));
+        /* Ensure minimum touch target size (44x44px for iOS) */
+        min-width: 44px;
+        min-height: 44px;
     }
 
     .cart-count {
@@ -1849,21 +1912,28 @@ footer {
     
     .top-nav a {
         font-size: 0.85rem;
-        padding: 0.35rem 0.65rem;
+        padding: 0.5rem 0.75rem; /* Increased for better touch targets */
+        min-height: 44px; /* iOS minimum touch target */
+        display: flex;
+        align-items: center;
     }
     
     .nav-pill {
-        padding: 0.5rem 1rem;
+        padding: 0.6rem 1.2rem;
         font-size: 0.85rem;
+        min-height: 44px;
     }
     
     .hero-cta {
         flex-direction: column;
         width: 100%;
+        gap: 0.75rem;
     }
     
     .hero-cta button {
         width: 100%;
+        min-height: 48px; /* Better touch target */
+        padding: 1rem;
     }
     
     .hero-metrics {
@@ -1879,14 +1949,60 @@ footer {
         max-width: 100%;
     }
     
+    .search-bar input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 1rem 3rem 1rem 1.5rem;
+        min-height: 44px;
+    }
+    
     .cart-panel {
         width: 100%;
         right: -100%;
+        /* iOS safe area support */
+        padding-bottom: env(safe-area-inset-bottom);
     }
     
     .modal-content {
         width: 95%;
         margin: 1rem auto;
+        max-height: 90vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Better touch targets for buttons */
+    button, .btn-primary, .btn-secondary, a.btn-primary, a.btn-secondary {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation; /* Prevents double-tap zoom */
+    }
+    
+    /* Product items better spacing on mobile */
+    .product-item {
+        margin-bottom: 1rem;
+    }
+    
+    .product-item .view-btn {
+        min-height: 44px;
+        padding: 0.75rem;
+    }
+    
+    /* Cart items better spacing */
+    .cart-item {
+        padding: 1rem 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Form inputs better on mobile */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 44px;
+        padding: 0.75rem 1rem;
     }
 }
 

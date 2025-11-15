@@ -2,11 +2,26 @@
 .admin-page {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
     font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* iOS safe area support */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+@supports (padding: max(0px)) {
+    .admin-page {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+        padding-top: max(0px, env(safe-area-inset-top));
+        padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
 }
 
 .admin-container {
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
     display: flex;
     flex-direction: column;
 }
@@ -157,7 +172,10 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
     background: #f5f7fa;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .admin-header {
@@ -252,6 +270,8 @@
     margin: 0 auto;
     width: 100%;
     padding: 2rem;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Stats Section */
@@ -260,6 +280,11 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
+}
+
+/* Hide stats when not authenticated */
+.admin-stats[style*="display: none"] {
+    display: none !important;
 }
 
 .stat-card {
@@ -631,11 +656,13 @@
 @media (max-width: 768px) {
     .admin-login-card {
         padding: 2rem 1.5rem;
+        margin: 1rem;
     }
 
     .admin-header-content {
         flex-direction: column;
         padding: 1rem;
+        gap: 1rem;
     }
 
     .admin-header-left {
@@ -646,55 +673,125 @@
     .admin-header-right {
         width: 100%;
         justify-content: center;
+        flex-wrap: wrap;
     }
 
     .admin-nav-text {
         display: none;
     }
+    
+    .admin-nav-link,
+    .admin-logout-btn {
+        min-height: 44px; /* iOS minimum touch target */
+        min-width: 44px;
+        touch-action: manipulation;
+    }
 
     .admin-main {
         padding: 1rem;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
     }
 
     .admin-stats {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1.25rem;
     }
 
     .admin-section {
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .admin-section-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .admin-section-header h2 {
+        font-size: 1.3rem;
     }
 
     .form-row {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
     .form-actions {
         flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .form-actions button {
+        width: 100%;
+        min-height: 48px;
     }
 
     .admin-product-row {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1rem;
     }
 
     .admin-product-actions {
         width: 100%;
         justify-content: flex-end;
     }
+    
+    .admin-action-btn {
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+    }
 
     .admin-actions {
         flex-direction: column;
         width: 100%;
+        gap: 0.75rem;
     }
 
     .admin-search {
         width: 100%;
         min-width: auto;
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+    
+    /* Better touch targets for admin buttons */
+    .btn-new-product,
+    .btn-seed-catalog,
+    .btn-primary,
+    .btn-secondary {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+        padding: 0.75rem 1.25rem;
+    }
+    
+    /* Form inputs better on mobile */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+    
+    /* Order form items better on mobile */
+    .order-item-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .order-product-select,
+    .order-quantity-input {
+        width: 100%;
+        min-height: 44px;
     }
 }
 
