@@ -982,7 +982,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         snapshot.docs.forEach((docSnap) => {
                             const data = docSnap.data();
                             // Only process published posts (default to true if not specified)
-                            const isPublished = data.published !== false && data.published !== undefined;
+                            // If published field doesn't exist, consider it published
+                            const isPublished = data.published !== false;
                             
                             if (isPublished) {
                                 // Handle date conversion properly

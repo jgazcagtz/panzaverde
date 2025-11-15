@@ -602,11 +602,11 @@ async function handleChatbotTraining(event) {
     }
 }
 
-// Helper function to safely get API endpoint
+// Helper function to safely get Admin API endpoint
 // For Vercel serverless functions:
-// - Production: https://panzaverde.vercel.app/api/chatbot
-// - Local dev: http://localhost:3000/api/chatbot (when running 'vercel dev')
-function getApiEndpoint() {
+// - Production: https://panzaverde.vercel.app/api/admin-chatbot
+// - Local dev: http://localhost:3000/api/admin-chatbot (when running 'vercel dev')
+function getAdminApiEndpoint() {
     const location = window.location || document.location || {};
     const hostname = location.hostname || '';
     let origin = location.origin;
@@ -626,10 +626,10 @@ function getApiEndpoint() {
     }
     
     // Local development: use localhost:3000 (Vercel dev server)
-    // Production: use same origin (e.g., https://panzaverde.vercel.app/api/chatbot)
+    // Production: use same origin (e.g., https://panzaverde.vercel.app/api/admin-chatbot)
     return hostname === 'localhost' || hostname === '127.0.0.1'
-        ? 'http://localhost:3000/api/chatbot'
-        : `${origin}/api/chatbot`;
+        ? 'http://localhost:3000/api/admin-chatbot'
+        : `${origin}/api/admin-chatbot`;
 }
 
 // Helper function to load training data
@@ -705,7 +705,7 @@ function initAdminChatbot() {
 
             try {
                 // Call DeepSeek API via Vercel serverless function
-                const apiEndpoint = getApiEndpoint();
+                const apiEndpoint = getAdminApiEndpoint();
                 console.log('Admin chatbot: Calling DeepSeek API via Vercel at', apiEndpoint);
                 
                 // Load training data from Firestore
@@ -727,9 +727,6 @@ function initAdminChatbot() {
                             totalInventory: (inventory || []).length,
                             lowStockCount: (inventory || []).filter(inv => inv.quantity <= inv.minStock).length
                         },
-                        userId: 'admin',
-                        sessionId: 'admin-session',
-                        isAdmin: true,
                         trainingData: trainingData
                     })
                 });
@@ -3303,7 +3300,7 @@ async function generateAIInsights() {
     }
 
     try {
-        const apiEndpoint = getApiEndpoint();
+        const apiEndpoint = getAdminApiEndpoint();
         const trainingData = await loadTrainingData();
 
         const prompt = `Analiza los siguientes datos de Panza Verde y proporciona insights y recomendaciones:
@@ -3347,13 +3344,13 @@ Responde en español, de manera profesional y accionable.`;
                     totalInventory: inventory.length,
                     lowStockCount: inventory.filter(inv => inv.quantity <= inv.minStock).length
                 },
-                isAdmin: true,
                 trainingData: trainingData
             })
         });
 
         if (!response.ok) {
-            throw new Error('API error');
+            const errorText = await response.text();
+            throw new Error(errorText || 'API error');
         }
 
         const data = await response.json();
@@ -3455,7 +3452,7 @@ async function generateAIHelpContent() {
     }
 
     try {
-        const apiEndpoint = getApiEndpoint();
+        const apiEndpoint = getAdminApiEndpoint();
         const trainingData = await loadTrainingData();
 
         const prompt = `Crea una guía completa y detallada para usar el panel de administración de Panza Verde. Incluye:
@@ -3484,13 +3481,13 @@ Responde en español, de manera clara y estructurada, como si fuera un tutorial 
                     totalOrders: orders.length,
                     totalInventory: inventory.length
                 },
-                isAdmin: true,
                 trainingData: trainingData
             })
         });
 
         if (!response.ok) {
-            throw new Error('API error');
+            const errorText = await response.text();
+            throw new Error(errorText || 'API error');
         }
 
         const data = await response.json();

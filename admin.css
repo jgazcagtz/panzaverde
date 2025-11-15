@@ -1121,6 +1121,37 @@
     .btn-remove-order-item {
         width: 100%;
     }
+
+    /* Contact section mobile optimizations */
+    #admin-contact-list .admin-order-card {
+        padding: 1rem;
+    }
+
+    #admin-contact-list .admin-order-header {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    #admin-contact-list .admin-order-header > div:last-child {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .contact-status-select {
+        width: 100%;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    #admin-contact-list .admin-order-actions {
+        flex-direction: column;
+    }
+
+    #admin-contact-list .admin-action-link {
+        width: 100%;
+        justify-content: center;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
 }
 
 /* Category Management Styles */
@@ -1192,6 +1223,42 @@
     
     .admin-categories-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Ensure all inputs have 16px font to prevent iOS zoom */
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="url"],
+    input[type="search"],
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+
+    /* Ensure all buttons have proper touch targets */
+    button,
+    .btn-primary,
+    .btn-secondary,
+    .admin-action-btn,
+    .admin-action-link {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(46, 125, 50, 0.2);
+    }
+
+    /* Contact section specific */
+    #admin-contact-list .admin-order-card {
+        padding: 0.75rem;
+    }
+
+    #admin-contact-list .admin-order-header h4 {
+        font-size: 0.95rem;
+    }
+
+    #admin-contact-list .admin-order-info {
+        font-size: 0.75rem;
     }
 }
 
@@ -2881,30 +2948,273 @@ html {
 .new-badge {
     background: rgba(33, 150, 243, 0.1);
     color: #2196f3;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .read-badge {
     background: rgba(255, 152, 0, 0.1);
     color: #ff9800;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .replied-badge {
     background: rgba(46, 125, 50, 0.1);
     color: #2e7d32;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .contact-status-select {
-    padding: 0.5rem;
-    border: 1px solid var(--medium-gray);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--medium-gray, #e0e0e0);
     border-radius: 8px;
     font-size: 0.9rem;
+    min-height: 44px; /* iOS minimum touch target */
     cursor: pointer;
-    transition: var(--transition);
+    transition: var(--transition, all 0.3s ease);
+    background: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    min-width: 120px;
 }
 
 .contact-status-select:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--primary-color, #2e7d32);
     box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+/* Contact Section Specific Styles */
+#admin-contact-list .admin-order-card {
+    margin-bottom: 1rem;
+}
+
+#admin-contact-list .admin-order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+#admin-contact-list .admin-order-header > div:first-child {
+    width: 100%;
+}
+
+#admin-contact-list .admin-order-header > div:last-child {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#admin-contact-list .admin-order-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+#admin-contact-list .admin-order-info span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+#admin-contact-list .admin-order-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+#admin-contact-list .admin-order-item strong {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+#admin-contact-list .admin-order-item p {
+    margin: 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #555;
+}
+
+#admin-contact-list .admin-order-item a {
+    color: var(--primary-color, #2e7d32);
+    text-decoration: none;
+    word-break: break-all;
+    font-size: 0.85rem;
+}
+
+#admin-contact-list .admin-order-item a:hover {
+    text-decoration: underline;
+}
+
+#admin-contact-list .admin-order-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+#admin-contact-list .admin-order-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+#admin-contact-list .admin-action-link {
+    min-height: 44px; /* iOS minimum touch target */
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(46, 125, 50, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(46, 125, 50, 0.1);
+    color: #2e7d32;
+    transition: all 0.3s ease;
+}
+
+#admin-contact-list .admin-action-link:hover,
+#admin-contact-list .admin-action-link:active {
+    background: rgba(46, 125, 50, 0.2);
+    transform: scale(1.05);
+}
+
+#admin-contact-list .delete-contact {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(244, 67, 54, 0.2);
+}
+
+/* Contact Search Input */
+#contact-search {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--medium-gray, #e0e0e0);
+    border-radius: 8px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px; /* iOS minimum touch target */
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+#contact-search:focus {
+    outline: none;
+    border-color: var(--primary-color, #2e7d32);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+/* Mobile Optimizations for Contact Section */
+@media (max-width: 768px) {
+    #admin-contact-list .admin-order-card {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    #admin-contact-list .admin-order-header {
+        gap: 0.5rem;
+    }
+
+    #admin-contact-list .admin-order-header h4 {
+        font-size: 1rem;
+    }
+
+    #admin-contact-list .admin-order-info {
+        font-size: 0.8rem;
+    }
+
+    #admin-contact-list .admin-order-info span {
+        flex-wrap: wrap;
+    }
+
+    #admin-contact-list .admin-order-header > div:last-child {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .contact-status-select {
+        width: 100%;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    #admin-contact-list .admin-order-actions {
+        flex-direction: column;
+    }
+
+    #admin-contact-list .admin-action-link {
+        width: 100%;
+        justify-content: center;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    #contact-search {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .new-badge,
+    .read-badge,
+    .replied-badge {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #admin-contact-list .admin-order-card {
+        padding: 0.75rem;
+    }
+
+    #admin-contact-list .admin-order-header h4 {
+        font-size: 0.95rem;
+    }
+
+    #admin-contact-list .admin-order-info {
+        font-size: 0.75rem;
+    }
+
+    #admin-contact-list .admin-order-item {
+        font-size: 0.85rem;
+    }
+
+    #admin-contact-list .admin-order-item p {
+        font-size: 0.8rem;
+    }
+}
+
+/* iOS Safe Area Support for Contact Section */
+@supports (padding: max(0px)) {
+    #admin-contact-list .admin-order-card {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+    }
 }
 
