@@ -616,10 +616,12 @@ function initAdminChatbot() {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             try {
-                // Call chatbot API with admin context
+                // Call DeepSeek API via Vercel serverless function
                 const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                     ? 'http://localhost:3000/api/chatbot'
                     : `${window.location.origin}/api/chatbot`;
+                
+                console.log('Admin chatbot: Calling DeepSeek API via Vercel at', apiEndpoint);
                 
                 const response = await fetch(apiEndpoint, {
                     method: 'POST',
@@ -627,10 +629,10 @@ function initAdminChatbot() {
                     body: JSON.stringify({
                         message: message,
                         conversationHistory: [],
-                        products: products,
+                        products: products || [],
                         orders: window.allOrders || [],
                         stats: {
-                            totalProducts: products.length,
+                            totalProducts: (products || []).length,
                             totalOrders: (window.allOrders || []).length,
                             totalRevenue: (window.allOrders || []).reduce((sum, o) => sum + parseFloat(o.total || 0), 0)
                         },
@@ -643,7 +645,19 @@ function initAdminChatbot() {
                 typing.remove();
 
                 if (!response.ok) {
-                    throw new Error('API error');
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    console.error('DeepSeek API error:', response.status, errorData);
+                    
+                    let errorMessage = 'Error al comunicarse con DeepSeek API.';
+                    if (response.status === 500 && errorData.error?.includes('DEEPSEEK_API_KEY')) {
+                        errorMessage = 'La API de DeepSeek no está configurada. Verifica que DEEPSEEK_API_KEY esté configurada en Vercel.';
+                    } else if (response.status === 404) {
+                        errorMessage = 'El endpoint de la API no se encontró. Verifica que el proyecto esté desplegado en Vercel.';
+                    } else if (errorData.error) {
+                        errorMessage = errorData.error;
+                    }
+                    
+                    throw new Error(errorMessage);
                 }
 
                 const data = await response.json();
@@ -655,10 +669,14 @@ function initAdminChatbot() {
                 messagesContainer.appendChild(botMsg);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             } catch (error) {
+                console.error('Admin chatbot error:', error);
                 typing.remove();
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'chatbot-message bot-message';
-                errorMsg.innerHTML = '<div class="message-content"><p>Lo siento, hubo un error. Por favor intenta de nuevo.</p></div>';
+                
+                const errorMessage = error.message || 'Lo siento, hubo un error al comunicarse con DeepSeek API. Por favor intenta de nuevo.';
+                
+                errorMsg.innerHTML = `<div class="message-content"><p>${errorMessage}</p></div>`;
                 messagesContainer.appendChild(errorMsg);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             } finally {
@@ -1947,7 +1965,8 @@ function startEditBlog(blogId) {
     dom.blogFormContainer.scrollIntoView({ behavior: "smooth" });
 }
 
-function viewBlogPost(blogId) {
+// Make viewBlogPost globally accessible for onclick handlers
+window.viewBlogPost = function(blogId) {
     const post = blogPosts.find(p => p.id === blogId);
     if (!post) {
         showToast("Artículo no encontrado", "error");
@@ -1985,7 +2004,22 @@ function viewBlogPost(blogId) {
     `;
     document.body.appendChild(modal);
     modal.style.display = 'flex';
-}
+    
+    // Add click handler to close button
+    const closeBtn = modal.querySelector('.blog-view-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.remove();
+        });
+    }
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+};
 
 async function deleteBlog(blogId) {
     if (!confirm("¿Estás seguro de que deseas eliminar este artículo del blog?")) {
