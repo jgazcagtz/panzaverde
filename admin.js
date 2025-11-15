@@ -87,8 +87,10 @@ const seedProducts = rawSeedProducts.map((product, index) => ({
 let products = [];
 let categories = [];
 let orders = [];
+let blogPosts = [];
 let editingProductId = null;
 let editingCategoryId = null;
+let editingBlogId = null;
 let isAdminAuthenticated = false;
 
 const dom = {
@@ -127,7 +129,18 @@ const dom = {
     cancelOrderFormBtn: document.getElementById("cancel-order-form"),
     adminOrderSearch: document.getElementById("admin-order-search"),
     statTotalOrders: document.getElementById("stat-total-orders"),
-    statTotalRevenue: document.getElementById("stat-total-revenue")
+    statTotalRevenue: document.getElementById("stat-total-revenue"),
+    blogForm: document.getElementById("blog-form"),
+    blogFormContainer: document.getElementById("blog-form-container"),
+    newBlogBtn: document.getElementById("new-blog-btn"),
+    cancelBlogFormBtn: document.getElementById("cancel-blog-form"),
+    blogTitle: document.getElementById("blog-title"),
+    blogExcerpt: document.getElementById("blog-excerpt"),
+    blogContent: document.getElementById("blog-content"),
+    blogCategory: document.getElementById("blog-category"),
+    blogImage: document.getElementById("blog-image"),
+    blogAuthor: document.getElementById("blog-author"),
+    adminBlogList: document.getElementById("admin-blog-list")
 };
 
 function init() {
@@ -157,6 +170,7 @@ function checkAuthState() {
             subscribeToProducts();
             subscribeToCategories();
             subscribeToOrders();
+            subscribeToBlogPosts();
         } else {
             isAdminAuthenticated = false;
             showLogin();
@@ -218,6 +232,29 @@ function registerListeners() {
             startEditProduct(productId);
         } else if (event.target.closest(".delete")) {
             deleteProduct(productId);
+        }
+    });
+
+    // Blog listeners
+    dom.newBlogBtn?.addEventListener("click", () => {
+        clearBlogForm();
+        dom.blogFormContainer.style.display = "block";
+        dom.blogFormContainer.scrollIntoView({ behavior: "smooth" });
+    });
+    dom.cancelBlogFormBtn?.addEventListener("click", () => {
+        clearBlogForm();
+        dom.blogFormContainer.style.display = "none";
+    });
+    dom.blogForm?.addEventListener("submit", handleBlogFormSubmit);
+
+    dom.adminBlogList?.addEventListener("click", (event) => {
+        const row = event.target.closest(".admin-blog-row");
+        if (!row) return;
+        const blogId = row.dataset.blogId;
+        if (event.target.closest(".edit")) {
+            startEditBlog(blogId);
+        } else if (event.target.closest(".delete")) {
+            deleteBlog(blogId);
         }
     });
 }
@@ -1157,6 +1194,162 @@ function viewBuyerOrders(email) {
     showToast(`Mostrando ${buyerOrders.length} pedido(s) de este comprador.`, "info");
     // Scroll to orders section
     document.querySelector("#admin-orders-list")?.scrollIntoView({ behavior: "smooth" });
+}
+
+// Blog Management Functions
+function subscribeToBlogPosts() {
+    try {
+        const blogRef = collection(db, "blogPosts");
+        onSnapshot(
+            blogRef,
+            (snapshot) => {
+                blogPosts = snapshot.docs.map((docSnap) => {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        title: data.title || "",
+                        content: data.content || "",
+                        excerpt: data.excerpt || "",
+                        author: data.author || "Panza Verde",
+                        date: data.createdAt?.toDate?.() || new Date(),
+                        image: data.image || "https://i.imgur.com/8zf86ss.png",
+                        category: data.category || "Dulcería Mexicana",
+                        published: data.published !== false
+                    };
+                });
+                renderBlogList(blogPosts);
+            },
+            (error) => {
+                console.error("Error al escuchar blog posts", error);
+                showToast("Error al cargar artículos del blog", "error");
+            }
+        );
+    } catch (error) {
+        console.error("Error de Firebase en blog", error);
+        showToast("Error de conexión con Firebase", "error");
+    }
+}
+
+function renderBlogList(posts) {
+    if (!dom.adminBlogList) return;
+    
+    if (!posts || posts.length === 0) {
+        dom.adminBlogList.innerHTML = '<p class="empty-state">No hay artículos del blog aún. Crea uno nuevo para comenzar.</p>';
+        return;
+    }
+
+    dom.adminBlogList.innerHTML = posts.map(post => {
+        const date = post.date instanceof Date ? post.date : (post.date?.toDate?.() || new Date());
+        const formattedDate = date.toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+
+        return `
+            <div class="admin-blog-row" data-blog-id="${post.id}">
+                <div class="admin-blog-info">
+                    <div class="admin-blog-image">
+                        <img src="${post.image}" alt="${post.title}">
+                    </div>
+                    <div class="admin-blog-details">
+                        <h4>${post.title}</h4>
+                        <p class="admin-blog-excerpt">${post.excerpt}</p>
+                        <div class="admin-blog-meta">
+                            <span><i class="fas fa-tag"></i> ${post.category}</span>
+                            <span><i class="fas fa-user"></i> ${post.author}</span>
+                            <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                            ${post.published ? '<span class="published-badge"><i class="fas fa-check"></i> Publicado</span>' : '<span class="draft-badge"><i class="fas fa-clock"></i> Borrador</span>'}
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-blog-actions">
+                    <button class="edit" title="Editar artículo">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="delete" title="Eliminar artículo">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+async function handleBlogFormSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const blogData = {
+        title: formData.get("title").trim(),
+        excerpt: formData.get("excerpt").trim(),
+        content: formData.get("content").trim(),
+        category: formData.get("category").trim(),
+        image: formData.get("image").trim() || "https://i.imgur.com/8zf86ss.png",
+        author: formData.get("author").trim() || "Panza Verde",
+        published: true
+    };
+
+    if (!blogData.title || !blogData.excerpt || !blogData.content) {
+        showToast("Por favor completa todos los campos requeridos", "error");
+        return;
+    }
+
+    try {
+        if (editingBlogId) {
+            // Update existing blog post
+            const blogRef = doc(db, "blogPosts", editingBlogId);
+            await updateDoc(blogRef, blogData);
+            showToast("Artículo actualizado exitosamente", "success");
+        } else {
+            // Create new blog post
+            await addDoc(collection(db, "blogPosts"), {
+                ...blogData,
+                createdAt: serverTimestamp()
+            });
+            showToast("Artículo creado exitosamente", "success");
+        }
+        clearBlogForm();
+        dom.blogFormContainer.style.display = "none";
+    } catch (error) {
+        console.error("Error al guardar artículo", error);
+        showToast("Error al guardar el artículo", "error");
+    }
+}
+
+function startEditBlog(blogId) {
+    const post = blogPosts.find(p => p.id === blogId);
+    if (!post) return;
+
+    editingBlogId = blogId;
+    if (dom.blogTitle) dom.blogTitle.value = post.title;
+    if (dom.blogExcerpt) dom.blogExcerpt.value = post.excerpt;
+    if (dom.blogContent) dom.blogContent.value = post.content;
+    if (dom.blogCategory) dom.blogCategory.value = post.category;
+    if (dom.blogImage) dom.blogImage.value = post.image;
+    if (dom.blogAuthor) dom.blogAuthor.value = post.author;
+
+    dom.blogFormContainer.style.display = "block";
+    dom.blogFormContainer.scrollIntoView({ behavior: "smooth" });
+}
+
+async function deleteBlog(blogId) {
+    if (!confirm("¿Estás seguro de que deseas eliminar este artículo del blog?")) {
+        return;
+    }
+
+    try {
+        await deleteDoc(doc(db, "blogPosts", blogId));
+        showToast("Artículo eliminado exitosamente", "success");
+    } catch (error) {
+        console.error("Error al eliminar artículo", error);
+        showToast("Error al eliminar el artículo", "error");
+    }
+}
+
+function clearBlogForm() {
+    editingBlogId = null;
+    if (dom.blogForm) dom.blogForm.reset();
+    if (dom.blogAuthor) dom.blogAuthor.value = "Panza Verde";
 }
 
 window.updateOrderStatus = updateOrderStatus;

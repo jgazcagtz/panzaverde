@@ -33,18 +33,22 @@
             <img src="https://i.imgur.com/8zf86ss.png" alt="Logo Panza Verde" class="logo">
             <div class="header-text">
                 <h1>Panza Verde</h1>
-                <p class="tagline">Dulces y botanas artesanales mexicanas</p>
+                <p class="tagline" data-i18n="tagline">Dulces y botanas artesanales mexicanas</p>
             </div>
         </div>
         <nav class="top-nav">
-            <a href="#hero">Inicio</a>
-            <a href="#featured">Favoritos</a>
-            <a href="#catalogo">Catálogo</a>
-            <a href="#account">Mi Cuenta</a>
-            <a href="#pedidos" id="pedidos-link" style="display: none;">Mis Pedidos</a>
-            <a href="admin.html" class="admin-link">Admin</a>
+            <a href="#hero" data-i18n="nav-home">Inicio</a>
+            <a href="#featured" data-i18n="nav-favorites">Favoritos</a>
+            <a href="#catalogo" data-i18n="nav-catalog">Catálogo</a>
+            <a href="#blog" data-i18n="nav-blog">Blog</a>
+            <a href="#account" data-i18n="nav-account">Mi Cuenta</a>
+            <a href="#pedidos" id="pedidos-link" style="display: none;" data-i18n="nav-orders">Mis Pedidos</a>
+            <a href="admin.html" class="admin-link" data-i18n="nav-admin">Admin</a>
             <button class="nav-pill" type="button" onclick="document.getElementById('cart-btn').click()">
-                <i class="fas fa-shopping-bag"></i> Carrito
+                <i class="fas fa-shopping-bag"></i> <span data-i18n="nav-cart">Carrito</span>
+            </button>
+            <button class="nav-pill language-toggle" type="button" id="language-toggle" title="Change language">
+                <i class="fas fa-language"></i> <span id="current-lang">ES</span>
             </button>
         </nav>
     </header>
@@ -126,16 +130,20 @@
                     <button id="signout-btn" type="button" class="ghost-btn">Cerrar sesión</button>
                 </article>
                 <article class="auth-card">
-                    <h3>Crear cuenta</h3>
+                    <h3 data-i18n="create-account-title">Crear cuenta</h3>
                     <form id="buyer-signup-form">
-                        <label for="signup-name">Nombre</label>
-                        <input type="text" id="signup-name" name="name" placeholder="Nombre completo" required>
-                        <label for="signup-email">Correo</label>
-                        <input type="email" id="signup-email" name="email" placeholder="email@panza.com" required>
-                        <label for="signup-password">Contraseña</label>
-                        <input type="password" id="signup-password" name="password" placeholder="8 caracteres mínimo" minlength="8" required>
-                        <button type="submit" class="btn-primary">Registrarme</button>
+                        <label for="signup-name" data-i18n="name-label">Nombre</label>
+                        <input type="text" id="signup-name" name="name" data-i18n-placeholder="name-placeholder" placeholder="Nombre completo" required>
+                        <label for="signup-email" data-i18n="email-label">Correo</label>
+                        <input type="email" id="signup-email" name="email" data-i18n-placeholder="email-placeholder" placeholder="email@panza.com" required>
+                        <label for="signup-password" data-i18n="password-label">Contraseña</label>
+                        <input type="password" id="signup-password" name="password" data-i18n-placeholder="password-placeholder" placeholder="8 caracteres mínimo" minlength="8" required>
+                        <button type="submit" class="btn-primary" data-i18n="signup-button">Registrarme</button>
                     </form>
+                    <div class="divider"><span data-i18n="or-text">o</span></div>
+                    <button type="button" id="google-signup-btn" class="google-btn">
+                        <i class="fab fa-google"></i> <span data-i18n="continue-with-google">Continuar con Google</span>
+                    </button>
                 </article>
                 <article class="auth-card">
                     <h3>Iniciar sesión</h3>
@@ -163,13 +171,22 @@
             <div id="menu-horizontal" class="horizontal-product-grid"></div>
         </section>
 
+        <section class="blog-section" id="blog">
+            <div class="section-header">
+                <h2><i class="fas fa-book"></i> <span data-i18n="blog-title">Blog</span></h2>
+                <p data-i18n="blog-subtitle">Descubre la tradición y cultura de la dulcería mexicana</p>
+                <div class="section-divider"></div>
+            </div>
+            <div id="blog-posts" class="blog-posts-grid"></div>
+        </section>
+
         <section class="distributor-section">
             <div class="distributor-content">
-                <h3><i class="fas fa-handshake"></i> ¿Quieres ser distribuidor?</h3>
-                <p>Pregunta por el Programa de Distribuidores Panza Verde</p>
-                <p>Contáctanos al +5526627851 para más información:</p>
+                <h3><i class="fas fa-handshake"></i> <span data-i18n="distributor-title">¿Quieres ser distribuidor?</span></h3>
+                <p data-i18n="distributor-text">Pregunta por el Programa de Distribuidores Panza Verde</p>
+                <p data-i18n="distributor-contact">Contáctanos al +5526627851 para más información:</p>
                 <a href="https://wa.me/5526627851" class="whatsapp-btn" target="_blank">
-                    <i class="fab fa-whatsapp"></i> Escríbenos por WhatsApp
+                    <i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp-contact">Escríbenos por WhatsApp</span>
                 </a>
             </div>
         </section>

@@ -125,6 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
         registerCategoryToggle();
         subscribeToProducts();
         subscribeToCategories();
+        subscribeToBlogPosts();
+        initLanguageToggle();
         onAuthStateChanged(auth, (user) => {
             updateAuthUI(user);
             if (user) {
@@ -141,6 +143,11 @@ document.addEventListener("DOMContentLoaded", () => {
         dom.signinForm?.addEventListener("submit", handleSignin);
         dom.signoutBtn?.addEventListener("click", handleSignOut);
         dom.googleBtn?.addEventListener("click", handleGoogleSignIn);
+        // Google signup button
+        const googleSignupBtn = document.getElementById("google-signup-btn");
+        if (googleSignupBtn) {
+            googleSignupBtn.addEventListener("click", handleGoogleSignIn);
+        }
     }
 
 
@@ -762,6 +769,266 @@ document.addEventListener("DOMContentLoaded", () => {
     window.closeProductModal = closeProductModal;
     window.toggleCart = toggleCart;
     window.toggleModal = toggleModal;
+
+    // Translation system
+    let currentLanguage = localStorage.getItem('language') || 'es';
+
+    const translations = {
+        es: {
+            'tagline': 'Dulces y botanas artesanales mexicanas',
+            'nav-home': 'Inicio',
+            'nav-favorites': 'Favoritos',
+            'nav-catalog': 'Catálogo',
+            'nav-blog': 'Blog',
+            'nav-account': 'Mi Cuenta',
+            'nav-orders': 'Mis Pedidos',
+            'nav-admin': 'Admin',
+            'nav-cart': 'Carrito',
+            'create-account-title': 'Crear cuenta',
+            'name-label': 'Nombre',
+            'name-placeholder': 'Nombre completo',
+            'email-label': 'Correo',
+            'email-placeholder': 'email@panza.com',
+            'password-label': 'Contraseña',
+            'password-placeholder': '8 caracteres mínimo',
+            'signup-button': 'Registrarme',
+            'or-text': 'o',
+            'continue-with-google': 'Continuar con Google',
+            'blog-title': 'Blog',
+            'blog-subtitle': 'Descubre la tradición y cultura de la dulcería mexicana',
+            'distributor-title': '¿Quieres ser distribuidor?',
+            'distributor-text': 'Pregunta por el Programa de Distribuidores Panza Verde',
+            'distributor-contact': 'Contáctanos al +5526627851 para más información:',
+            'whatsapp-contact': 'Escríbenos por WhatsApp'
+        },
+        en: {
+            'tagline': 'Artisanal Mexican sweets and snacks',
+            'nav-home': 'Home',
+            'nav-favorites': 'Favorites',
+            'nav-catalog': 'Catalog',
+            'nav-blog': 'Blog',
+            'nav-account': 'My Account',
+            'nav-orders': 'My Orders',
+            'nav-admin': 'Admin',
+            'nav-cart': 'Cart',
+            'create-account-title': 'Create account',
+            'name-label': 'Name',
+            'name-placeholder': 'Full name',
+            'email-label': 'Email',
+            'email-placeholder': 'email@panza.com',
+            'password-label': 'Password',
+            'password-placeholder': 'Minimum 8 characters',
+            'signup-button': 'Sign up',
+            'or-text': 'or',
+            'continue-with-google': 'Continue with Google',
+            'blog-title': 'Blog',
+            'blog-subtitle': 'Discover the tradition and culture of Mexican confectionery',
+            'distributor-title': 'Want to be a distributor?',
+            'distributor-text': 'Ask about the Panza Verde Distributor Program',
+            'distributor-contact': 'Contact us at +5526627851 for more information:',
+            'whatsapp-contact': 'Write us on WhatsApp'
+        }
+    };
+
+    function initLanguageToggle() {
+        const langToggle = document.getElementById('language-toggle');
+        if (langToggle) {
+            langToggle.addEventListener('click', toggleLanguage);
+            updateLanguage(currentLanguage);
+        }
+    }
+
+    function toggleLanguage() {
+        currentLanguage = currentLanguage === 'es' ? 'en' : 'es';
+        localStorage.setItem('language', currentLanguage);
+        updateLanguage(currentLanguage);
+    }
+
+    function updateLanguage(lang) {
+        currentLanguage = lang;
+        const currentLangSpan = document.getElementById('current-lang');
+        if (currentLangSpan) currentLangSpan.textContent = lang.toUpperCase();
+
+        // Update all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+                el.textContent = translations[lang][key];
+            }
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (translations[lang] && translations[lang][key]) {
+                el.placeholder = translations[lang][key];
+            }
+        });
+    }
+
+    // Blog functionality
+    function subscribeToBlogPosts() {
+        try {
+            const blogRef = collection(db, "blogPosts");
+            onSnapshot(
+                blogRef,
+                (snapshot) => {
+                    if (snapshot.empty) {
+                        // Create initial blog posts if none exist
+                        createInitialBlogPosts();
+                    } else {
+                        const posts = snapshot.docs.map((docSnap) => {
+                            const data = docSnap.data();
+                            return {
+                                id: docSnap.id,
+                                title: data.title || "",
+                                content: data.content || "",
+                                excerpt: data.excerpt || "",
+                                author: data.author || "Panza Verde",
+                                date: data.date || data.createdAt?.toDate?.() || new Date(),
+                                image: data.image || "https://i.imgur.com/8zf86ss.png",
+                                category: data.category || "Dulcería Mexicana"
+                            };
+                        });
+                        renderBlogPosts(posts);
+                    }
+                },
+                (error) => {
+                    console.error("Error al escuchar blog posts", error);
+                    // Show default posts on error
+                    renderDefaultBlogPosts();
+                }
+            );
+        } catch (error) {
+            console.error("Error de Firebase en blog", error);
+            renderDefaultBlogPosts();
+        }
+    }
+
+    async function createInitialBlogPosts() {
+        const initialPosts = [
+            {
+                title: "La Tradición de la Dulcería Mexicana: Un Legado de Sabores",
+                excerpt: "Descubre cómo la dulcería mexicana ha evolucionado desde las recetas prehispánicas hasta convertirse en un arte culinario reconocido mundialmente.",
+                content: `<p>La dulcería mexicana es mucho más que simples golosinas; es un patrimonio cultural que refleja la rica historia de México. Desde los tiempos prehispánicos, cuando se utilizaban ingredientes como el cacao, el amaranto y la miel de abeja, hasta la llegada de los españoles que introdujeron el azúcar y nuevas técnicas, la dulcería mexicana ha evolucionado creando sabores únicos e inigualables.</p>
+                <p>En Panza Verde, honramos esta tradición utilizando ingredientes naturales y recetas familiares que han pasado de generación en generación. Cada producto que ofrecemos cuenta una historia, desde las gomitas artesanales hasta los guayabates tradicionales.</p>
+                <p>Los dulces mexicanos no solo endulzan el paladar, sino que también conectan a las personas con sus raíces, evocando recuerdos de la infancia y celebraciones familiares. Es por eso que cada bocado de nuestros productos es una experiencia que trasciende el simple sabor.</p>`,
+                category: "Tradición",
+                image: "https://i.imgur.com/8zf86ss.png"
+            },
+            {
+                title: "Ingredientes Naturales: El Corazón de Nuestros Productos",
+                excerpt: "Conoce por qué elegimos ingredientes 100% naturales y cómo esto impacta no solo el sabor, sino también tu salud y el medio ambiente.",
+                content: `<p>En Panza Verde, creemos firmemente que la calidad comienza con los ingredientes. Por eso, todos nuestros productos están elaborados con ingredientes 100% naturales, sin conservadores artificiales ni colorantes sintéticos.</p>
+                <p>Utilizamos frutas frescas, nueces de la más alta calidad, chocolate artesanal y especias naturales. Esto no solo garantiza un sabor auténtico, sino que también asegura que nuestros productos sean más saludables y respetuosos con el medio ambiente.</p>
+                <p>Desde las almendras cubiertas de cocoa hasta los mangos enchilados, cada ingrediente es cuidadosamente seleccionado para ofrecerte lo mejor de la naturaleza en cada bocado.</p>`,
+                category: "Ingredientes",
+                image: "https://i.imgur.com/8zf86ss.png"
+            },
+            {
+                title: "Snacks Picositos: La Combinación Perfecta de Dulce y Picante",
+                excerpt: "Explora la fascinante tradición mexicana de combinar sabores dulces con picantes, creando una experiencia sensorial única que despierta todos los sentidos.",
+                content: `<p>Una de las características más distintivas de la gastronomía mexicana es la combinación de sabores dulces y picantes. Esta tradición se refleja perfectamente en nuestros snacks picositos, donde el chile se convierte en el complemento perfecto para frutas y dulces.</p>
+                <p>Productos como los mangos enchilados, las gomitas con chile y los arándanos enchilados son ejemplos perfectos de cómo los mexicanos han perfeccionado el arte de equilibrar sabores. El picante no enmascara el dulce, sino que lo realza, creando una experiencia sensorial única.</p>
+                <p>Esta combinación no es casual; tiene raíces profundas en la cultura mexicana, donde el chile ha sido un ingrediente fundamental desde tiempos prehispánicos. En Panza Verde, respetamos esta tradición mientras innovamos con nuevos sabores y texturas.</p>`,
+                category: "Sabores",
+                image: "https://i.imgur.com/8zf86ss.png"
+            }
+        ];
+
+        try {
+            for (const post of initialPosts) {
+                await addDoc(collection(db, "blogPosts"), {
+                    ...post,
+                    createdAt: serverTimestamp(),
+                    published: true
+                });
+            }
+        } catch (error) {
+            console.error("Error creating initial blog posts", error);
+            renderDefaultBlogPosts();
+        }
+    }
+
+    function renderDefaultBlogPosts() {
+        const defaultPosts = [
+            {
+                id: 'default-1',
+                title: "La Tradición de la Dulcería Mexicana: Un Legado de Sabores",
+                excerpt: "Descubre cómo la dulcería mexicana ha evolucionado desde las recetas prehispánicas hasta convertirse en un arte culinario reconocido mundialmente.",
+                author: "Panza Verde",
+                date: new Date(),
+                category: "Tradición",
+                image: "https://i.imgur.com/8zf86ss.png"
+            },
+            {
+                id: 'default-2',
+                title: "Ingredientes Naturales: El Corazón de Nuestros Productos",
+                excerpt: "Conoce por qué elegimos ingredientes 100% naturales y cómo esto impacta no solo el sabor, sino también tu salud y el medio ambiente.",
+                author: "Panza Verde",
+                date: new Date(),
+                category: "Ingredientes",
+                image: "https://i.imgur.com/8zf86ss.png"
+            },
+            {
+                id: 'default-3',
+                title: "Snacks Picositos: La Combinación Perfecta de Dulce y Picante",
+                excerpt: "Explora la fascinante tradición mexicana de combinar sabores dulces con picantes, creando una experiencia sensorial única que despierta todos los sentidos.",
+                author: "Panza Verde",
+                date: new Date(),
+                category: "Sabores",
+                image: "https://i.imgur.com/8zf86ss.png"
+            }
+        ];
+        renderBlogPosts(defaultPosts);
+    }
+
+    function renderBlogPosts(posts) {
+        const blogContainer = document.getElementById("blog-posts");
+        if (!blogContainer) return;
+
+        if (!posts || posts.length === 0) {
+            blogContainer.innerHTML = '<p class="empty-state">No hay artículos del blog aún.</p>';
+            return;
+        }
+
+        blogContainer.innerHTML = posts.slice(0, 3).map(post => {
+            const date = post.date instanceof Date ? post.date : (post.date?.toDate?.() || new Date());
+            const formattedDate = date.toLocaleDateString(currentLanguage === 'es' ? 'es-MX' : 'en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            return `
+                <article class="blog-post-card">
+                    <div class="blog-post-image">
+                        <img src="${post.image}" alt="${post.title}">
+                        <span class="blog-post-category">${post.category}</span>
+                    </div>
+                    <div class="blog-post-content">
+                        <h3>${post.title}</h3>
+                        <p class="blog-post-excerpt">${post.excerpt}</p>
+                        <div class="blog-post-meta">
+                            <span class="blog-post-author"><i class="fas fa-user"></i> ${post.author}</span>
+                            <span class="blog-post-date"><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                        </div>
+                        <button class="blog-read-more" onclick="openBlogPost('${post.id}')">
+                            ${currentLanguage === 'es' ? 'Leer más' : 'Read more'}
+                        </button>
+                    </div>
+                </article>
+            `;
+        }).join("");
+    }
+
+    function openBlogPost(postId) {
+        // This will be implemented to show full blog post
+        console.log("Opening blog post:", postId);
+    }
+
+    window.toggleLanguage = toggleLanguage;
+    window.openBlogPost = openBlogPost;
 
     async function loadOrderHistory(userId) {
         try {

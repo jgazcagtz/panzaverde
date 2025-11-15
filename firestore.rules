@@ -66,6 +66,17 @@ service cloud.firestore {
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
+
+    // Blog posts collection
+    match /blogPosts/{postId} {
+      // Anyone can read blog posts (public)
+      allow read: if true;
+      
+      // Only admin can create, update, or delete blog posts
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
     
     // Admin settings collection (optional, for future use)
     match /admin/{document=**} {
