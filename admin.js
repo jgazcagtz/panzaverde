@@ -617,9 +617,31 @@ function initAdminChatbot() {
 
             try {
                 // Call DeepSeek API via Vercel serverless function
-                const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                // Safely get location info with fallbacks
+                const location = window.location || document.location || {};
+                const hostname = location.hostname || '';
+                let origin = location.origin;
+                
+                // Fallback: construct origin from href if origin is not available
+                if (!origin && location.href) {
+                    try {
+                        const url = new URL(location.href);
+                        origin = url.origin;
+                    } catch (e) {
+                        // If URL parsing fails, try manual extraction
+                        const match = location.href.match(/^(https?:\/\/[^\/]+)/);
+                        origin = match ? match[1] : '';
+                    }
+                }
+                
+                // Final fallback
+                if (!origin) {
+                    origin = hostname ? `https://${hostname}` : '';
+                }
+                
+                const apiEndpoint = hostname === 'localhost' || hostname === '127.0.0.1'
                     ? 'http://localhost:3000/api/chatbot'
-                    : `${window.location.origin}/api/chatbot`;
+                    : `${origin}/api/chatbot`;
                 
                 console.log('Admin chatbot: Calling DeepSeek API via Vercel at', apiEndpoint);
                 

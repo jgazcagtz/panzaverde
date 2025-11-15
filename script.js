@@ -955,6 +955,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Blog functionality
+    // Store blog posts globally for openBlogPost function
+    let allBlogPosts = [];
+
     function subscribeToBlogPosts() {
         try {
             const blogRef = collection(db, "blogPosts");
@@ -979,6 +982,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 published: data.published !== false
                             };
                         }).filter(post => post.published); // Only show published posts
+                        allBlogPosts = posts; // Store globally for openBlogPost
                         renderBlogPosts(posts);
                     }
                 },
@@ -1045,6 +1049,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: 'default-1',
                 title: "La Tradición de la Dulcería Mexicana: Un Legado de Sabores",
                 excerpt: "Descubre cómo la dulcería mexicana ha evolucionado desde las recetas prehispánicas hasta convertirse en un arte culinario reconocido mundialmente.",
+                content: `<p>La dulcería mexicana es mucho más que simples golosinas; es un patrimonio cultural que refleja la rica historia de México. Desde los tiempos prehispánicos, cuando se utilizaban ingredientes como el cacao, el amaranto y la miel de abeja, hasta la llegada de los españoles que introdujeron el azúcar y nuevas técnicas, la dulcería mexicana ha evolucionado creando sabores únicos e inigualables.</p>
+                <p>En Panza Verde, honramos esta tradición utilizando ingredientes naturales y recetas familiares que han pasado de generación en generación. Cada producto que ofrecemos cuenta una historia, desde las gomitas artesanales hasta los guayabates tradicionales.</p>
+                <p>Los dulces mexicanos no solo endulzan el paladar, sino que también conectan a las personas con sus raíces, evocando recuerdos de la infancia y celebraciones familiares. Es por eso que cada bocado de nuestros productos es una experiencia que trasciende el simple sabor.</p>`,
                 author: "Panza Verde",
                 date: new Date(),
                 category: "Tradición",
@@ -1054,6 +1061,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: 'default-2',
                 title: "Ingredientes Naturales: El Corazón de Nuestros Productos",
                 excerpt: "Conoce por qué elegimos ingredientes 100% naturales y cómo esto impacta no solo el sabor, sino también tu salud y el medio ambiente.",
+                content: `<p>En Panza Verde, creemos firmemente que la calidad de nuestros productos comienza con la selección cuidadosa de ingredientes naturales. Cada uno de nuestros dulces y botanas está elaborado con ingredientes 100% naturales, sin conservadores artificiales ni aditivos químicos.</p>
+                <p>Esta decisión no solo garantiza un sabor auténtico y puro, sino que también tiene un impacto positivo en tu salud. Los ingredientes naturales son más fáciles de digerir y proporcionan nutrientes reales, a diferencia de los productos procesados industrialmente.</p>
+                <p>Además, al elegir ingredientes naturales, contribuimos al cuidado del medio ambiente, apoyando prácticas agrícolas sostenibles y reduciendo nuestra huella ecológica. Cada bocado de nuestros productos es una elección consciente por tu bienestar y el del planeta.</p>`,
                 author: "Panza Verde",
                 date: new Date(),
                 category: "Ingredientes",
@@ -1063,12 +1073,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: 'default-3',
                 title: "Snacks Picositos: La Combinación Perfecta de Dulce y Picante",
                 excerpt: "Explora la fascinante tradición mexicana de combinar sabores dulces con picantes, creando una experiencia sensorial única que despierta todos los sentidos.",
+                content: `<p>La combinación de sabores dulces y picantes es una de las tradiciones más distintivas de la gastronomía mexicana. En Panza Verde, honramos esta tradición con nuestra línea de snacks picositos que combinan lo mejor de ambos mundos.</p>
+                <p>Nuestros productos picositos, como los mangos enchilados y las gomitas con chile, ofrecen una experiencia sensorial única. El dulzor inicial se complementa perfectamente con el picante que viene después, creando una explosión de sabores que despierta todos los sentidos.</p>
+                <p>Esta combinación no es casualidad; es el resultado de siglos de tradición culinaria mexicana que ha perfeccionado el arte de equilibrar sabores. Cada producto picosito de Panza Verde es una celebración de esta rica herencia gastronómica.</p>`,
                 author: "Panza Verde",
                 date: new Date(),
                 category: "Sabores",
                 image: "https://i.imgur.com/8zf86ss.png"
             }
         ];
+        allBlogPosts = defaultPosts; // Store globally for openBlogPost
         renderBlogPosts(defaultPosts);
     }
 
@@ -1113,8 +1127,77 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function openBlogPost(postId) {
-        // This will be implemented to show full blog post
-        console.log("Opening blog post:", postId);
+        // Find the blog post by ID
+        const post = allBlogPosts.find(p => p.id === postId);
+        if (!post) {
+            console.error("Blog post not found:", postId);
+            return;
+        }
+        
+        // Create modal to view blog post
+        const modal = document.createElement('div');
+        modal.className = 'blog-view-modal';
+        
+        const date = post.date instanceof Date ? post.date : (post.date?.toDate?.() || new Date());
+        const lang = currentLanguage || 'es';
+        const formattedDate = date.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        modal.innerHTML = `
+            <div class="blog-view-content">
+                <div class="blog-view-header">
+                    <h2>${post.title}</h2>
+                    <button class="blog-view-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="blog-view-body">
+                    <div class="blog-view-image">
+                        <img src="${post.image}" alt="${post.title}">
+                    </div>
+                    <div class="blog-view-meta">
+                        <span><i class="fas fa-tag"></i> ${post.category}</span>
+                        <span><i class="fas fa-user"></i> ${post.author}</span>
+                        <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                    </div>
+                    ${post.excerpt ? `<div class="blog-view-excerpt">
+                        <p><strong>Resumen:</strong> ${post.excerpt}</p>
+                    </div>` : ''}
+                    <div class="blog-view-content-text">
+                        ${post.content ? post.content.replace(/\n/g, '<br>') : post.excerpt || 'Contenido no disponible.'}
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.style.display = 'flex';
+        
+        // Add click handler to close button
+        const closeBtn = modal.querySelector('.blog-view-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                modal.remove();
+            });
+        }
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+        
+        // Close modal with Escape key
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                modal.remove();
+                document.removeEventListener('keydown', handleEscape);
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
     }
 
     window.toggleLanguage = toggleLanguage;
