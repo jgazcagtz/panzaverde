@@ -1,10 +1,15 @@
 // Panza Verde Chatbot with DeepSeek API Integration
-// This chatbot is trained on Panza Verde products and updates automatically
+// Enhanced AI Agent with Firebase data management and analytics
 
 import { 
     getFirestore, 
     collection, 
-    onSnapshot 
+    onSnapshot,
+    addDoc,
+    serverTimestamp,
+    query,
+    orderBy,
+    limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -26,15 +31,61 @@ class PanzaVerdeChatbot {
         this.conversationHistory = [];
         this.isOpen = false;
         this.isLoading = false;
+        this.sessionId = this.generateSessionId();
+        this.userId = this.getOrCreateUserId();
         
         // Get API endpoint - use Vercel deployment URL or localhost for development
-        // TODO: Update this with your actual Vercel deployment URL after deploying
-        this.apiEndpoint = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api/chatbot'
-            : 'https://your-project.vercel.app/api/chatbot'; // Update with your Vercel URL
+        // Auto-detect environment
+        const hostname = window.location.hostname;
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            this.apiEndpoint = 'http://localhost:3000/api/chatbot';
+        } else {
+            // Use current domain for API endpoint
+            this.apiEndpoint = `${window.location.origin}/api/chatbot`;
+        }
         
         this.init();
         this.subscribeToProducts();
+        this.loadConversationHistory();
+    }
+
+    generateSessionId() {
+        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    getOrCreateUserId() {
+        let userId = localStorage.getItem('panza_verde_user_id');
+        if (!userId) {
+            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('panza_verde_user_id', userId);
+        }
+        return userId;
+    }
+
+    async loadConversationHistory() {
+        try {
+            const conversationsRef = collection(db, 'chatbot_conversations');
+            const q = query(
+                conversationsRef,
+                orderBy('timestamp', 'desc'),
+                limit(10)
+            );
+            
+            // Load recent conversations for context
+            onSnapshot(q, (snapshot) => {
+                const recentMessages = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.userId === this.userId && data.messages) {
+                        recentMessages.push(...data.messages);
+                    }
+                });
+                // Use last 10 messages for context
+                this.conversationHistory = recentMessages.slice(-10);
+            });
+        } catch (error) {
+            console.error('Error loading conversation history:', error);
+        }
     }
 
     init() {
@@ -45,15 +96,27 @@ class PanzaVerdeChatbot {
         const window = document.getElementById('chatbot-window');
 
         if (toggle) {
-            toggle.addEventListener('click', () => this.toggleChatbot());
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleChatbot();
+            });
         }
 
         if (close) {
-            close.addEventListener('click', () => this.closeChatbot());
+            close.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.closeChatbot();
+            });
         }
 
         if (send) {
-            send.addEventListener('click', () => this.sendMessage());
+            send.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.sendMessage();
+            });
         }
 
         if (input) {
@@ -65,14 +128,19 @@ class PanzaVerdeChatbot {
             });
         }
 
-        // Close on outside click
+        // Prevent closing on window click
         if (window) {
             window.addEventListener('click', (e) => e.stopPropagation());
         }
 
+        // Close modal when clicking outside (but not the toggle button)
         document.addEventListener('click', (e) => {
-            if (this.isOpen && !window?.contains(e.target) && !toggle?.contains(e.target)) {
-                // Don't close on outside click - let user explicitly close
+            if (this.isOpen && 
+                !window?.contains(e.target) && 
+                !toggle?.contains(e.target) &&
+                !close?.contains(e.target)) {
+                // Optionally close on outside click - commented out for better UX
+                // this.closeChatbot();
             }
         });
     }
@@ -149,6 +217,7 @@ class PanzaVerdeChatbot {
 
         // Add user message to UI
         this.addMessage(message, 'user');
+        const userMessage = message;
         input.value = '';
         input.disabled = true;
         if (sendBtn) sendBtn.disabled = true;
@@ -164,6 +233,9 @@ class PanzaVerdeChatbot {
                 content: msg.content
             }));
 
+            // Save user message to Firebase
+            await this.saveMessageToFirebase('user', userMessage);
+
             // Call API
             const response = await fetch(this.apiEndpoint, {
                 method: 'POST',
@@ -171,9 +243,11 @@ class PanzaVerdeChatbot {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    message: message,
+                    message: userMessage,
                     conversationHistory: recentHistory,
-                    products: this.products
+                    products: this.products,
+                    userId: this.userId,
+                    sessionId: this.sessionId
                 })
             });
 
@@ -181,7 +255,8 @@ class PanzaVerdeChatbot {
             this.removeTypingIndicator(typingId);
 
             if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `API error: ${response.status}`);
             }
 
             const data = await response.json();
@@ -190,11 +265,17 @@ class PanzaVerdeChatbot {
             // Add AI response to UI
             this.addMessage(aiResponse, 'bot');
 
+            // Save bot response to Firebase
+            await this.saveMessageToFirebase('assistant', aiResponse);
+
             // Update conversation history
             this.conversationHistory.push(
-                { role: 'user', content: message },
+                { role: 'user', content: userMessage },
                 { role: 'assistant', content: aiResponse }
             );
+
+            // Save conversation to Firebase
+            await this.saveConversationToFirebase(userMessage, aiResponse);
 
             // Keep history manageable (last 20 messages)
             if (this.conversationHistory.length > 20) {
@@ -204,10 +285,14 @@ class PanzaVerdeChatbot {
         } catch (error) {
             console.error('Chatbot error:', error);
             this.removeTypingIndicator(typingId);
-            this.addMessage(
-                'Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo o contáctanos directamente por WhatsApp al +525526627851.',
-                'bot'
-            );
+            const errorMessage = error.message?.includes('API') 
+                ? 'Lo siento, hubo un error al comunicarme con el servidor. Por favor, intenta de nuevo o contáctanos directamente por WhatsApp al +525526627851.'
+                : 'Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo o contáctanos directamente por WhatsApp al +525526627851.';
+            
+            this.addMessage(errorMessage, 'bot');
+            
+            // Save error to Firebase for monitoring
+            await this.saveMessageToFirebase('system', `Error: ${error.message}`);
         } finally {
             input.disabled = false;
             if (sendBtn) sendBtn.disabled = false;
@@ -215,6 +300,39 @@ class PanzaVerdeChatbot {
             if (input) {
                 setTimeout(() => input.focus(), 100);
             }
+        }
+    }
+
+    async saveMessageToFirebase(role, content) {
+        try {
+            await addDoc(collection(db, 'chatbot_messages'), {
+                userId: this.userId,
+                sessionId: this.sessionId,
+                role: role,
+                content: content,
+                timestamp: serverTimestamp(),
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            });
+        } catch (error) {
+            console.error('Error saving message to Firebase:', error);
+        }
+    }
+
+    async saveConversationToFirebase(userMessage, botResponse) {
+        try {
+            await addDoc(collection(db, 'chatbot_conversations'), {
+                userId: this.userId,
+                sessionId: this.sessionId,
+                messages: [
+                    { role: 'user', content: userMessage },
+                    { role: 'assistant', content: botResponse }
+                ],
+                timestamp: serverTimestamp(),
+                productCount: this.products.length
+            });
+        } catch (error) {
+            console.error('Error saving conversation to Firebase:', error);
         }
     }
 

@@ -13,7 +13,8 @@ import {
     updateDoc,
     deleteDoc,
     doc,
-    serverTimestamp
+    serverTimestamp,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -257,6 +258,98 @@ function registerListeners() {
             deleteBlog(blogId);
         }
     });
+
+    // Chatbot management
+    const refreshChatbotStatsBtn = document.getElementById("refresh-chatbot-stats");
+    if (refreshChatbotStatsBtn) {
+        refreshChatbotStatsBtn.addEventListener("click", loadChatbotData);
+    }
+}
+
+// Chatbot Management Functions
+async function loadChatbotData() {
+    try {
+        const [messagesSnapshot, conversationsSnapshot] = await Promise.all([
+            getDocs(collection(db, 'chatbot_messages')),
+            getDocs(collection(db, 'chatbot_conversations'))
+        ]);
+
+        const messages = [];
+        const conversations = [];
+        const uniqueUsers = new Set();
+
+        messagesSnapshot.forEach((doc) => {
+            const data = doc.data();
+            messages.push({ id: doc.id, ...data });
+            if (data.userId) uniqueUsers.add(data.userId);
+        });
+
+        conversationsSnapshot.forEach((doc) => {
+            conversations.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Update stats
+        document.getElementById('chatbot-total-messages').textContent = messages.length;
+        document.getElementById('chatbot-total-users').textContent = uniqueUsers.size;
+        document.getElementById('chatbot-total-conversations').textContent = conversations.length;
+
+        // Render recent conversations
+        renderChatbotConversations(conversations.slice(0, 20));
+
+    } catch (error) {
+        console.error('Error loading chatbot data:', error);
+        showToast('Error al cargar datos del chatbot', 'error');
+    }
+}
+
+function renderChatbotConversations(conversations) {
+    const container = document.getElementById('admin-chatbot-conversations');
+    if (!container) return;
+
+    if (conversations.length === 0) {
+        container.innerHTML = '<div class="admin-hint">No hay conversaciones aún</div>';
+        return;
+    }
+
+    container.innerHTML = conversations.map(conv => {
+        const timestamp = conv.timestamp?.toDate ? conv.timestamp.toDate() : new Date();
+        const dateStr = timestamp.toLocaleString('es-MX', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const userMsg = conv.messages?.find(m => m.role === 'user')?.content || 'Sin mensaje';
+        const botMsg = conv.messages?.find(m => m.role === 'assistant')?.content || 'Sin respuesta';
+
+        return `
+            <div class="admin-order-card">
+                <div class="admin-order-header">
+                    <div>
+                        <h4>Usuario: ${conv.userId?.substring(0, 20) || 'Desconocido'}...</h4>
+                        <p class="admin-order-info">
+                            <i class="fas fa-calendar"></i> ${dateStr}
+                            <span style="margin-left: 1rem;">
+                                <i class="fas fa-box"></i> ${conv.productCount || 0} productos disponibles
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="admin-order-items">
+                    <div class="admin-order-item">
+                        <strong>Usuario:</strong>
+                        <span>${userMsg.substring(0, 100)}${userMsg.length > 100 ? '...' : ''}</span>
+                    </div>
+                    <div class="admin-order-item">
+                        <strong>Chatbot:</strong>
+                        <span>${botMsg.substring(0, 100)}${botMsg.length > 100 ? '...' : ''}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function handleAdminLogin(event) {
@@ -1405,6 +1498,9 @@ function initSidebarNavigation() {
                 targetElement = document.getElementById("blog-management");
             } else if (section === "buyers") {
                 targetElement = document.getElementById("buyers-management");
+            } else if (section === "chatbot") {
+                targetElement = document.getElementById("chatbot-management");
+                loadChatbotData();
             }
 
             if (targetElement) {

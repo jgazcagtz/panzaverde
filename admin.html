@@ -88,6 +88,10 @@
                         <i class="fas fa-users"></i>
                         <span>Compradores</span>
                     </a>
+                    <a href="#chatbot-management" class="admin-nav-item" data-section="chatbot">
+                        <i class="fas fa-robot"></i>
+                        <span>Chatbot</span>
+                    </a>
                 </nav>
                 <div class="admin-sidebar-footer">
                     <a href="index.html" class="admin-nav-item">
@@ -455,6 +459,64 @@
                         <h2><i class="fas fa-users"></i> Información de Compradores</h2>
                     </div>
                     <div id="admin-buyers-list" class="admin-buyers-list"></div>
+                </section>
+
+                <!-- Chatbot Management Section -->
+                <section class="admin-section" id="chatbot-management">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-robot"></i> Gestión del Chatbot</h2>
+                        <div class="admin-actions">
+                            <button id="refresh-chatbot-stats" class="btn-secondary">
+                                <i class="fas fa-sync"></i> Actualizar estadísticas
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Chatbot Stats -->
+                    <div class="admin-stats" id="chatbot-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-orders">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="chatbot-total-messages">0</h3>
+                                <p>Mensajes totales</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-revenue">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="chatbot-total-users">0</h3>
+                                <p>Usuarios únicos</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-featured">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="chatbot-total-conversations">0</h3>
+                                <p>Conversaciones</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-value">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="chatbot-avg-response-time">-</h3>
+                                <p>Tiempo promedio</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Conversations -->
+                    <div class="admin-section-header">
+                        <h3><i class="fas fa-history"></i> Conversaciones Recientes</h3>
+                    </div>
+                    <div id="admin-chatbot-conversations" class="admin-orders-list"></div>
                 </section>
                 </main>
             </div>

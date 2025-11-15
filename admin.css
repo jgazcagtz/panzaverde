@@ -1521,7 +1521,7 @@
 .panza-chatbot {
     position: fixed;
     bottom: 2rem;
-    right: 2rem;
+    left: 2rem;
     z-index: 9999;
     font-family: 'Poppins', sans-serif;
 }
@@ -1557,11 +1557,11 @@
 .chatbot-window {
     position: absolute;
     bottom: 80px;
-    right: 0;
+    left: 0;
     width: 380px;
     max-width: calc(100vw - 2rem);
     height: 600px;
-    max-height: calc(100vh - 8rem);
+    max-height: calc(100dvh - 8rem);
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -1782,7 +1782,7 @@
 @media (max-width: 768px) {
     .panza-chatbot {
         bottom: max(1rem, env(safe-area-inset-bottom));
-        right: max(1rem, env(safe-area-inset-right));
+        left: max(1rem, env(safe-area-inset-left));
     }
 
     .chatbot-toggle {
@@ -1799,8 +1799,8 @@
         height: calc(100vh - 8rem);
         max-height: calc(100dvh - 8rem);
         bottom: 70px;
-        right: 0;
         left: 1rem;
+        right: auto;
         border-radius: 20px 20px 0 0;
     }
 
@@ -1835,8 +1835,8 @@
 @media (max-width: 480px) {
     .panza-chatbot {
         bottom: 0;
-        right: 0;
         left: 0;
+        right: auto;
     }
 
     .chatbot-toggle {
@@ -1846,7 +1846,7 @@
         min-height: 52px;
         font-size: 1.2rem;
         bottom: max(1rem, env(safe-area-inset-bottom));
-        right: max(1rem, env(safe-area-inset-right));
+        left: max(1rem, env(safe-area-inset-left));
     }
 
     .chatbot-window {
@@ -1855,8 +1855,8 @@
         height: calc(100vh - 4rem);
         max-height: calc(100dvh - 4rem);
         bottom: 0;
-        right: 0;
         left: 0;
+        right: auto;
         border-radius: 0;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;

@@ -2411,7 +2411,7 @@ footer {
 .panza-chatbot {
     position: fixed;
     bottom: max(1rem, env(safe-area-inset-bottom));
-    right: max(1rem, env(safe-area-inset-right));
+    left: max(1rem, env(safe-area-inset-left));
     z-index: 9999;
     font-family: 'Poppins', sans-serif;
 }
@@ -2452,11 +2452,10 @@ footer {
 .chatbot-window {
     position: absolute;
     bottom: 80px;
-    right: 0;
+    left: 0;
     width: 380px;
     max-width: calc(100vw - 2rem);
     height: 600px;
-    max-height: calc(100vh - 8rem);
     max-height: calc(100dvh - 8rem);
     background: white;
     border-radius: 20px;
@@ -2700,7 +2699,7 @@ footer {
 @media (max-width: 768px) {
     .panza-chatbot {
         bottom: max(1rem, env(safe-area-inset-bottom));
-        right: max(1rem, env(safe-area-inset-right));
+        left: max(1rem, env(safe-area-inset-left));
     }
 
     .chatbot-toggle {
@@ -2717,8 +2716,8 @@ footer {
         height: calc(100vh - 8rem);
         max-height: calc(100dvh - 8rem);
         bottom: 70px;
-        right: 0;
         left: 1rem;
+        right: auto;
         border-radius: 20px 20px 0 0;
     }
 
@@ -2753,8 +2752,8 @@ footer {
 @media (max-width: 480px) {
     .panza-chatbot {
         bottom: 0;
-        right: 0;
         left: 0;
+        right: auto;
     }
 
     .chatbot-toggle {
@@ -2764,7 +2763,7 @@ footer {
         min-height: 52px;
         font-size: 1.2rem;
         bottom: max(1rem, env(safe-area-inset-bottom));
-        right: max(1rem, env(safe-area-inset-right));
+        left: max(1rem, env(safe-area-inset-left));
     }
 
     .chatbot-window {
@@ -2773,8 +2772,8 @@ footer {
         height: calc(100vh - 4rem);
         max-height: calc(100dvh - 4rem);
         bottom: 0;
-        right: 0;
         left: 0;
+        right: auto;
         border-radius: 0;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
@@ -2797,17 +2796,18 @@ footer {
     }
 }
 
-/* Ensure chatbot doesn't overlap with cart button on mobile */
+/* Ensure chatbot (left) and cart button (right) don't overlap on mobile */
 @media (max-width: 768px) {
     .floating-cart-btn {
-        bottom: max(5rem, calc(env(safe-area-inset-bottom) + 4rem));
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        right: max(1rem, env(safe-area-inset-right));
         z-index: 9998; /* Just below chatbot */
     }
 }
 
 @media (max-width: 480px) {
     .floating-cart-btn {
-        bottom: max(4rem, calc(env(safe-area-inset-bottom) + 3rem));
+        bottom: max(1rem, env(safe-area-inset-bottom));
         right: max(1rem, env(safe-area-inset-right));
         z-index: 9998; /* Just below chatbot */
     }

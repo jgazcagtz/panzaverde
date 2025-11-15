@@ -708,7 +708,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function closeProductModal() {
         const modal = document.getElementById("product-modal");
-        if (!modal) return;
+        if (!modal) {
+            console.warn('Product modal not found');
+            return;
+        }
         modal.style.display = "none";
         document.body.style.overflow = "auto";
     }
@@ -722,14 +725,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function toggleCart() {
         const cartPanel = document.getElementById("cart");
-        if (!cartPanel) return;
+        if (!cartPanel) {
+            console.warn('Cart panel not found');
+            return;
+        }
         cartPanel.classList.toggle("active");
         document.body.style.overflow = cartPanel.classList.contains("active") ? "hidden" : "auto";
     }
 
     function toggleModal() {
         const modal = document.getElementById("edit-modal");
-        if (!modal) return;
+        if (!modal) {
+            console.warn('Edit modal not found');
+            return;
+        }
         const shouldOpen = modal.style.display === "none" || modal.style.display === "";
         modal.style.display = shouldOpen ? "block" : "none";
         document.body.style.overflow = shouldOpen ? "hidden" : "auto";
