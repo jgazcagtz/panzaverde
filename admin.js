@@ -101,6 +101,84 @@ let editingBlogId = null;
 let editingInventoryId = null;
 let isAdminAuthenticated = false;
 
+// Store unsubscribe functions for cleanup
+const unsubscribeFunctions = {
+    products: null,
+    categories: null,
+    orders: null,
+    blogPosts: null,
+    users: null,
+    inventory: null
+};
+
+// Debounce function for optimizing rapid updates
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Connection state management
+let isOnline = navigator.onLine;
+let firebaseConnected = true;
+
+function updateConnectionStatus() {
+    const statusEl = document.getElementById("connection-status");
+    if (!statusEl) return;
+    
+    const icon = statusEl.querySelector("i");
+    const text = statusEl.querySelector(".connection-text");
+    
+    if (isOnline && firebaseConnected) {
+        statusEl.className = "connection-status connected";
+        if (icon) icon.className = "fas fa-circle";
+        if (text) text.textContent = "Conectado";
+        statusEl.title = "Sincronización en tiempo real activa";
+    } else if (!isOnline) {
+        statusEl.className = "connection-status offline";
+        if (icon) icon.className = "fas fa-circle";
+        if (text) text.textContent = "Sin conexión";
+        statusEl.title = "Sin conexión a internet";
+    } else {
+        statusEl.className = "connection-status syncing";
+        if (icon) icon.className = "fas fa-circle";
+        if (text) text.textContent = "Sincronizando...";
+        statusEl.title = "Sincronizando con Firebase...";
+    }
+}
+
+window.addEventListener('online', () => {
+    isOnline = true;
+    firebaseConnected = true;
+    updateConnectionStatus();
+    showToast("Conexión restaurada. Sincronizando datos...", "success");
+    // Re-subscribe to ensure data is fresh
+    if (isAdminAuthenticated) {
+        setTimeout(() => {
+            subscribeToProducts();
+            subscribeToCategories();
+            subscribeToOrders();
+            subscribeToBlogPosts();
+            subscribeToInventory();
+        }, 500);
+    }
+});
+
+window.addEventListener('offline', () => {
+    isOnline = false;
+    updateConnectionStatus();
+    showToast("Sin conexión. Los datos se sincronizarán cuando se restaure la conexión.", "warning");
+});
+
+// Initialize connection status
+updateConnectionStatus();
+
 const dom = {
     loginScreen: document.getElementById("admin-login-screen"),
     dashboardScreen: document.getElementById("admin-dashboard-screen"),
@@ -192,10 +270,15 @@ function checkAuthState() {
         } else {
             isAdminAuthenticated = false;
             showLogin();
-            // Clear data subscriptions when logged out
+            // Unsubscribe from all real-time listeners to optimize Firebase usage
+            unsubscribeAll();
+            // Clear data when logged out
             products = [];
             categories = [];
             orders = [];
+            blogPosts = [];
+            users = [];
+            inventory = [];
             if (dom.adminProductList) dom.adminProductList.innerHTML = '';
             if (dom.adminCategoriesList) dom.adminCategoriesList.innerHTML = '';
             if (dom.adminOrdersList) dom.adminOrdersList.innerHTML = '';
@@ -728,11 +811,19 @@ function updateWelcomeText(user) {
 }
 
 function subscribeToCategories() {
+    // Unsubscribe from previous listener if exists
+    if (unsubscribeFunctions.categories) {
+        unsubscribeFunctions.categories();
+    }
+
     try {
         const categoriesRef = collection(db, "categories");
-        onSnapshot(
+        
+        unsubscribeFunctions.categories = onSnapshot(
             categoriesRef,
             (snapshot) => {
+                firebaseConnected = true;
+                updateConnectionStatus();
                 if (snapshot.empty) {
                     // Initialize with default categories if none exist
                     const defaultCategories = ["Dulces", "Dulces picositos", "Botanas", "Otros"];
@@ -753,9 +844,17 @@ function subscribeToCategories() {
             },
             (error) => {
                 console.error("Error al escuchar categorías", error);
+                firebaseConnected = false;
+                updateConnectionStatus();
                 // Fallback to default categories
                 categories = ["Dulces", "Dulces picositos", "Botanas", "Otros"].map(name => ({ name, id: name }));
                 updateCategoryDropdown();
+                // Retry subscription after 3 seconds
+                setTimeout(() => {
+                    if (isAdminAuthenticated) {
+                        subscribeToCategories();
+                    }
+                }, 3000);
             }
         );
     } catch (error) {
@@ -884,40 +983,66 @@ function clearCategoryForm() {
 }
 
 function subscribeToProducts() {
+    // Unsubscribe from previous listener if exists
+    if (unsubscribeFunctions.products) {
+        unsubscribeFunctions.products();
+    }
+
     try {
         const productsRef = collection(db, "products");
-        onSnapshot(
+        
+        // Debounced update function to optimize rapid changes
+        const debouncedUpdate = debounce((snapshot) => {
+            if (snapshot.empty) {
+                products = [];
+            } else {
+                products = snapshot.docs.map((docSnap) => {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        name: data.name || "Producto sin nombre",
+                        price: Number(data.price) || 0,
+                        img: data.img || defaultImage,
+                        includes: data.includes || "",
+                        category: data.category || "Otros",
+                        featured: data.featured ?? false
+                    };
+                });
+            }
+            updateStats();
+            renderProductList();
+            if (dom.adminCategoriesList) {
+                renderCategoriesList();
+            }
+            // Update order form product selects if form is visible
+            if (dom.orderFormContainer && dom.orderFormContainer.style.display !== "none") {
+                populateOrderProductSelects();
+            }
+        }, 100);
+
+        unsubscribeFunctions.products = onSnapshot(
             productsRef,
             (snapshot) => {
-                if (snapshot.empty) {
-                    products = [];
-                } else {
-                    products = snapshot.docs.map((docSnap) => {
-                        const data = docSnap.data();
-                        return {
-                            id: docSnap.id,
-                            name: data.name || "Producto sin nombre",
-                            price: Number(data.price) || 0,
-                            img: data.img || defaultImage,
-                            includes: data.includes || "",
-                            category: data.category || "Otros",
-                            featured: data.featured ?? false
-                        };
-                    });
-                }
-                updateStats();
-                renderProductList();
-                if (dom.adminCategoriesList) {
-                    renderCategoriesList();
-                }
-                // Update order form product selects if form is visible
-                if (dom.orderFormContainer && dom.orderFormContainer.style.display !== "none") {
-                    populateOrderProductSelects();
-                }
+                firebaseConnected = true;
+                updateConnectionStatus();
+                // Process snapshot - debounce will handle rapid updates
+                debouncedUpdate(snapshot);
             },
             (error) => {
                 console.error("Error al escuchar productos", error);
-                showToast("Error al sincronizar con Firebase.", "error");
+                firebaseConnected = false;
+                updateConnectionStatus();
+                if (error.code === 'unavailable') {
+                    showToast("Firebase no está disponible. Verificando conexión...", "warning");
+                } else {
+                    showToast("Error al sincronizar productos.", "error");
+                }
+                // Retry subscription after 3 seconds
+                setTimeout(() => {
+                    if (isAdminAuthenticated) {
+                        subscribeToProducts();
+                    }
+                }, 3000);
             }
         );
     } catch (error) {
@@ -1181,6 +1306,11 @@ function parseFirebaseError(error) {
 }
 
 function subscribeToOrders() {
+    // Unsubscribe from previous listener if exists
+    if (unsubscribeFunctions.orders) {
+        unsubscribeFunctions.orders();
+    }
+
     try {
         const ordersRef = collection(db, "orders");
         let q;
@@ -1190,36 +1320,89 @@ function subscribeToOrders() {
             // If orderBy fails (no index), just get all orders
             q = ordersRef;
         }
-        onSnapshot(
+        
+        // Debounced update to optimize rapid order changes
+        const debouncedUpdate = debounce((snapshot) => {
+            const ordersData = [];
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                ordersData.push({
+                    id: docSnap.id,
+                    ...data,
+                    cart: JSON.parse(data.cart || "[]")
+                });
+            });
+            // Sort by timestamp if orderBy didn't work
+            ordersData.sort((a, b) => {
+                const timeA = a.timestamp || a.createdAt?.toDate?.() || new Date(0);
+                const timeB = b.timestamp || b.createdAt?.toDate?.() || new Date(0);
+                return timeB - timeA;
+            });
+            orders = ordersData;
+            window.allOrders = ordersData; // Store for filtering
+            renderOrdersList(ordersData);
+            renderBuyersList(ordersData);
+            updateStats();
+            // Update users from orders (optimize: derive users from orders instead of separate subscription)
+            updateUsersFromOrders(ordersData);
+        }, 150);
+
+        unsubscribeFunctions.orders = onSnapshot(
             q,
             (snapshot) => {
-                const orders = [];
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    orders.push({
-                        id: docSnap.id,
-                        ...data,
-                        cart: JSON.parse(data.cart || "[]")
-                    });
-                });
-                // Sort by timestamp if orderBy didn't work
-                orders.sort((a, b) => {
-                    const timeA = a.timestamp || a.createdAt?.toDate?.() || new Date(0);
-                    const timeB = b.timestamp || b.createdAt?.toDate?.() || new Date(0);
-                    return timeB - timeA;
-                });
-                window.allOrders = orders; // Store for filtering
-                renderOrdersList(orders);
-                renderBuyersList(orders);
-                updateStats();
+                firebaseConnected = true;
+                updateConnectionStatus();
+                // Process snapshot - debounce will handle rapid updates
+                debouncedUpdate(snapshot);
             },
             (error) => {
                 console.error("Error al escuchar pedidos", error);
+                firebaseConnected = false;
+                updateConnectionStatus();
+                if (error.code === 'unavailable') {
+                    showToast("Firebase no está disponible. Verificando conexión...", "warning");
+                }
+                // Retry subscription after 3 seconds
+                setTimeout(() => {
+                    if (isAdminAuthenticated) {
+                        subscribeToOrders();
+                    }
+                }, 3000);
             }
         );
     } catch (error) {
         console.error("Error de Firebase en pedidos", error);
     }
+}
+
+// Optimize: Derive users from orders instead of separate subscription
+function updateUsersFromOrders(ordersData) {
+    const usersMap = new Map();
+    ordersData.forEach(order => {
+        const data = order;
+        if (data.userId && data.userEmail) {
+            if (!usersMap.has(data.userId)) {
+                usersMap.set(data.userId, {
+                    uid: data.userId,
+                    email: data.userEmail,
+                    name: data.userName || data.userEmail,
+                    orderCount: 0,
+                    totalSpent: 0,
+                    lastOrder: data.timestamp || data.createdAt
+                });
+            }
+            const user = usersMap.get(data.userId);
+            user.orderCount++;
+            user.totalSpent += parseFloat(data.total || 0);
+            const orderTime = data.timestamp || data.createdAt?.toDate?.() || new Date(0);
+            const lastOrderTime = user.lastOrder?.toDate?.() || new Date(0);
+            if (orderTime > lastOrderTime) {
+                user.lastOrder = data.timestamp || data.createdAt;
+            }
+        }
+    });
+    users = Array.from(usersMap.values());
+    renderUsersList();
 }
 
 function filterOrders(searchQuery) {
@@ -1607,11 +1790,19 @@ function viewBuyerOrders(email) {
 
 // Blog Management Functions
 function subscribeToBlogPosts() {
+    // Unsubscribe from previous listener if exists
+    if (unsubscribeFunctions.blogPosts) {
+        unsubscribeFunctions.blogPosts();
+    }
+
     try {
         const blogRef = collection(db, "blogPosts");
-        onSnapshot(
+        
+        unsubscribeFunctions.blogPosts = onSnapshot(
             blogRef,
             (snapshot) => {
+                firebaseConnected = true;
+                updateConnectionStatus();
                 blogPosts = snapshot.docs.map((docSnap) => {
                     const data = docSnap.data();
                     return {
@@ -1630,7 +1821,19 @@ function subscribeToBlogPosts() {
             },
             (error) => {
                 console.error("Error al escuchar blog posts", error);
-                showToast("Error al cargar artículos del blog", "error");
+                firebaseConnected = false;
+                updateConnectionStatus();
+                if (error.code === 'unavailable') {
+                    showToast("Firebase no está disponible. Verificando conexión...", "warning");
+                } else {
+                    showToast("Error al cargar artículos del blog", "error");
+                }
+                // Retry subscription after 3 seconds
+                setTimeout(() => {
+                    if (isAdminAuthenticated) {
+                        subscribeToBlogPosts();
+                    }
+                }, 3000);
             }
         );
     } catch (error) {
@@ -1673,6 +1876,9 @@ function renderBlogList(posts) {
                     </div>
                 </div>
                 <div class="admin-blog-actions">
+                    <button class="read" onclick="viewBlogPost('${post.id}')" title="Ver artículo">
+                        <i class="fas fa-eye"></i> Ver
+                    </button>
                     <button class="edit" title="Editar artículo">
                         <i class="fas fa-edit"></i> Editar
                     </button>
@@ -1739,6 +1945,46 @@ function startEditBlog(blogId) {
 
     dom.blogFormContainer.style.display = "block";
     dom.blogFormContainer.scrollIntoView({ behavior: "smooth" });
+}
+
+function viewBlogPost(blogId) {
+    const post = blogPosts.find(p => p.id === blogId);
+    if (!post) {
+        showToast("Artículo no encontrado", "error");
+        return;
+    }
+    
+    // Create modal to view blog post
+    const modal = document.createElement('div');
+    modal.className = 'blog-view-modal';
+    modal.innerHTML = `
+        <div class="blog-view-content">
+            <div class="blog-view-header">
+                <h2>${post.title}</h2>
+                <button class="blog-view-close" onclick="this.closest('.blog-view-modal').remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="blog-view-body">
+                <div class="blog-view-image">
+                    <img src="${post.image}" alt="${post.title}">
+                </div>
+                <div class="blog-view-meta">
+                    <span><i class="fas fa-tag"></i> ${post.category}</span>
+                    <span><i class="fas fa-user"></i> ${post.author}</span>
+                    <span><i class="fas fa-calendar"></i> ${post.date instanceof Date ? post.date.toLocaleDateString('es-MX') : (post.date?.toDate?.()?.toLocaleDateString('es-MX') || 'N/A')}</span>
+                </div>
+                <div class="blog-view-excerpt">
+                    <p><strong>Resumen:</strong> ${post.excerpt}</p>
+                </div>
+                <div class="blog-view-content-text">
+                    ${post.content.replace(/\n/g, '<br>')}
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
 }
 
 async function deleteBlog(blogId) {
@@ -1918,46 +2164,14 @@ async function createSEOBlogPosts() {
 }
 
 // User Management Functions
-async function subscribeToUsers() {
-    try {
-        // Get all users from Firebase Auth (we'll need to use Admin SDK for this, but for now we'll get from orders)
-        // For now, we'll extract unique users from orders
-        // In production, you'd want to use Firebase Admin SDK to list all users
-        const ordersRef = collection(db, "orders");
-        onSnapshot(
-            ordersRef,
-            (snapshot) => {
-                const usersMap = new Map();
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if (data.userId && data.userEmail) {
-                        if (!usersMap.has(data.userId)) {
-                            usersMap.set(data.userId, {
-                                uid: data.userId,
-                                email: data.userEmail,
-                                name: data.userName || data.userEmail,
-                                orderCount: 0,
-                                totalSpent: 0,
-                                lastOrder: data.timestamp || data.createdAt
-                            });
-                        }
-                        const user = usersMap.get(data.userId);
-                        user.orderCount++;
-                        user.totalSpent += parseFloat(data.total || 0);
-                        if (data.timestamp > user.lastOrder) {
-                            user.lastOrder = data.timestamp;
-                        }
-                    }
-                });
-                users = Array.from(usersMap.values());
-                renderUsersList();
-            },
-            (error) => {
-                console.error("Error al escuchar usuarios", error);
-            }
-        );
-    } catch (error) {
-        console.error("Error de Firebase en usuarios", error);
+// OPTIMIZED: Users are now derived from orders subscription to avoid duplicate reads
+// This function is kept for backward compatibility but users are updated via updateUsersFromOrders()
+function subscribeToUsers() {
+    // Users are now derived from orders, so we don't need a separate subscription
+    // This reduces Firebase reads and improves performance
+    // Users will be updated automatically when orders update via updateUsersFromOrders()
+    if (orders.length > 0) {
+        updateUsersFromOrders(orders);
     }
 }
 
@@ -2302,35 +2516,70 @@ function initInventoryManagement() {
 }
 
 function subscribeToInventory() {
+    // Unsubscribe from previous listener if exists
+    if (unsubscribeFunctions.inventory) {
+        unsubscribeFunctions.inventory();
+    }
+
     try {
         const inventoryRef = collection(db, "inventory");
-        onSnapshot(
+        
+        // Debounced update to optimize rapid inventory changes
+        const debouncedUpdate = debounce((snapshot) => {
+            inventory = snapshot.docs.map((docSnap) => {
+                const data = docSnap.data();
+                return {
+                    id: docSnap.id,
+                    productId: data.productId || "",
+                    productName: data.productName || "",
+                    quantity: Number(data.quantity) || 0,
+                    minStock: Number(data.minStock) || 0,
+                    location: data.location || "",
+                    notes: data.notes || "",
+                    lastUpdated: data.lastUpdated || serverTimestamp(),
+                    createdAt: data.createdAt || serverTimestamp()
+                };
+            });
+            renderInventoryList();
+            updateAnalytics();
+        }, 150);
+
+        unsubscribeFunctions.inventory = onSnapshot(
             inventoryRef,
             (snapshot) => {
-                inventory = snapshot.docs.map((docSnap) => {
-                    const data = docSnap.data();
-                    return {
-                        id: docSnap.id,
-                        productId: data.productId || "",
-                        productName: data.productName || "",
-                        quantity: Number(data.quantity) || 0,
-                        minStock: Number(data.minStock) || 0,
-                        location: data.location || "",
-                        notes: data.notes || "",
-                        lastUpdated: data.lastUpdated || serverTimestamp(),
-                        createdAt: data.createdAt || serverTimestamp()
-                    };
-                });
-                renderInventoryList();
-                updateAnalytics();
+                firebaseConnected = true;
+                updateConnectionStatus();
+                // Process snapshot - debounce will handle rapid updates
+                debouncedUpdate(snapshot);
             },
             (error) => {
                 console.error("Error al escuchar inventario", error);
+                firebaseConnected = false;
+                updateConnectionStatus();
+                if (error.code === 'unavailable') {
+                    showToast("Firebase no está disponible. Verificando conexión...", "warning");
+                }
+                // Retry subscription after 3 seconds
+                setTimeout(() => {
+                    if (isAdminAuthenticated) {
+                        subscribeToInventory();
+                    }
+                }, 3000);
             }
         );
     } catch (error) {
         console.error("Error de Firebase en inventario", error);
     }
+}
+
+// Function to unsubscribe from all Firebase listeners
+function unsubscribeAll() {
+    Object.keys(unsubscribeFunctions).forEach(key => {
+        if (unsubscribeFunctions[key]) {
+            unsubscribeFunctions[key]();
+            unsubscribeFunctions[key] = null;
+        }
+    });
 }
 
 function populateInventoryProductSelect() {

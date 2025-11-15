@@ -28,8 +28,9 @@ service cloud.firestore {
     
     // User profiles collection (for future buyer accounts)
     match /users/{userId} {
-      // Users can read their own profile
-      allow read: if isAuthenticated() && request.auth.uid == userId;
+      // Users can read their own profile, admin can read all
+      allow read: if isAdmin() || 
+                     (isAuthenticated() && request.auth.uid == userId);
       
       // Users can create their own profile
       allow create: if isAuthenticated() && request.auth.uid == userId;
@@ -39,6 +40,11 @@ service cloud.firestore {
       
       // Only admin can delete user profiles
       allow delete: if isAdmin();
+    }
+    
+    // Allow list queries on users (needed for admin onSnapshot)
+    match /users/{document=**} {
+      allow list: if isAdmin();
     }
     
     // Orders collection
@@ -57,6 +63,11 @@ service cloud.firestore {
       // Only admin can update or delete orders
       allow update: if isAdmin();
       allow delete: if isAdmin();
+    }
+    
+    // Allow list queries on orders (needed for onSnapshot)
+    match /orders/{document=**} {
+      allow list: if isAdmin();
     }
     
     // Categories collection
@@ -104,6 +115,25 @@ service cloud.firestore {
       allow read: if isAdmin();
     }
     
+    // Allow list queries on chatbot conversations (needed for onSnapshot)
+    match /chatbot_conversations/{document=**} {
+      allow list: if isAdmin();
+    }
+    
+    // Contact form submissions collection
+    match /contact_submissions/{submissionId} {
+      // Anyone can create contact submissions
+      allow create: if true;
+      
+      // Only admin can read contact submissions
+      allow read: if isAdmin();
+    }
+    
+    // Allow list queries on contact submissions (needed for admin onSnapshot)
+    match /contact_submissions/{document=**} {
+      allow list: if isAdmin();
+    }
+    
     // Admin settings collection (optional, for future use)
     match /admin/{document=**} {
       // Only admin can read/write admin settings
@@ -120,6 +150,11 @@ service cloud.firestore {
     match /inventory/{inventoryId} {
       // Only admin can read/write inventory
       allow read, write: if isAdmin();
+    }
+    
+    // Allow list queries on inventory (needed for onSnapshot)
+    match /inventory/{document=**} {
+      allow list: if isAdmin();
     }
     
     // Default deny for all other collections

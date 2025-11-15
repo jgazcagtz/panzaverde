@@ -348,8 +348,28 @@
                 <div class="chatbot-message bot-message">
                     <div class="message-content">
                         <p>¡Hola! 👋 Soy el asistente de Panza Verde. ¿En qué puedo ayudarte hoy? Puedo ayudarte a encontrar productos, información sobre pedidos, o cualquier pregunta sobre nuestros dulces artesanales mexicanos.</p>
+                        <button class="contact-form-btn" onclick="window.chatbotInstance?.showContactForm()">
+                            <i class="fas fa-envelope"></i> Contactar directamente
+                        </button>
                     </div>
                 </div>
+            </div>
+            <div class="chatbot-contact-form" id="chatbot-contact-form" style="display: none;">
+                <div class="contact-form-header">
+                    <h4>Formulario de Contacto</h4>
+                    <button class="contact-form-close" onclick="window.chatbotInstance?.hideContactForm()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="contact-form" onsubmit="window.chatbotInstance?.handleContactSubmit(event)">
+                    <input type="text" id="contact-name" placeholder="Tu nombre *" required>
+                    <input type="email" id="contact-email" placeholder="Tu email *" required>
+                    <input type="tel" id="contact-phone" placeholder="Tu teléfono">
+                    <textarea id="contact-message" placeholder="Tu mensaje *" rows="4" required></textarea>
+                    <button type="submit" class="contact-submit-btn">
+                        <i class="fas fa-paper-plane"></i> Enviar
+                    </button>
+                </form>
             </div>
             <div class="chatbot-input-container">
                 <input type="text" id="chatbot-input" placeholder="Escribe tu mensaje..." autocomplete="off">

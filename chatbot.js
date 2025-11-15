@@ -422,7 +422,82 @@ class PanzaVerdeChatbot {
             element.remove();
         }
     }
+
+    showContactForm() {
+        const contactForm = document.getElementById('chatbot-contact-form');
+        const messagesContainer = document.getElementById(this.messagesId);
+        const inputContainer = document.querySelector('.chatbot-input-container');
+        
+        if (contactForm) {
+            contactForm.style.display = 'block';
+            if (messagesContainer) messagesContainer.style.display = 'none';
+            if (inputContainer) inputContainer.style.display = 'none';
+            contactForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    hideContactForm() {
+        const contactForm = document.getElementById('chatbot-contact-form');
+        const messagesContainer = document.getElementById(this.messagesId);
+        const inputContainer = document.querySelector('.chatbot-input-container');
+        
+        if (contactForm) {
+            contactForm.style.display = 'none';
+            if (messagesContainer) messagesContainer.style.display = 'block';
+            if (inputContainer) inputContainer.style.display = 'flex';
+        }
+    }
+
+    async handleContactSubmit(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('contact-name')?.value.trim();
+        const email = document.getElementById('contact-email')?.value.trim();
+        const phone = document.getElementById('contact-phone')?.value.trim();
+        const message = document.getElementById('contact-message')?.value.trim();
+        
+        if (!name || !email || !message) {
+            this.addMessage('Por favor completa todos los campos requeridos (*)', 'bot');
+            return;
+        }
+
+        try {
+            // Save contact submission to Firebase
+            await addDoc(collection(db, 'contact_submissions'), {
+                name: name,
+                email: email,
+                phone: phone || '',
+                message: message,
+                userId: this.userId,
+                sessionId: this.sessionId,
+                timestamp: serverTimestamp(),
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                status: 'new'
+            });
+
+            // Show success message
+            this.hideContactForm();
+            this.addMessage(`¡Gracias ${name}! Tu mensaje ha sido enviado. Te contactaremos pronto a ${email}.`, 'bot');
+            
+            // Reset form
+            const form = document.getElementById('contact-form');
+            if (form) form.reset();
+            
+            // Also add a message suggesting they can continue chatting
+            setTimeout(() => {
+                this.addMessage('¿Hay algo más en lo que pueda ayudarte?', 'bot');
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Error saving contact submission:', error);
+            this.addMessage('Hubo un error al enviar tu mensaje. Por favor, intenta de nuevo o contáctanos directamente por WhatsApp al +525526627851.', 'bot');
+        }
+    }
 }
+
+// Make chatbot instance globally accessible
+window.chatbotInstance = null;
 
 // Initialize chatbot when DOM is ready
 function initializeChatbot() {
@@ -444,6 +519,7 @@ function initializeChatbot() {
     
     try {
         window.panzaVerdeChatbot = new PanzaVerdeChatbot();
+        window.chatbotInstance = window.panzaVerdeChatbot;
         console.log('Chatbot initialized successfully');
     } catch (error) {
         console.error('Error initializing chatbot:', error);
