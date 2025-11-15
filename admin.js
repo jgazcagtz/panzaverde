@@ -667,14 +667,28 @@ function initAdminChatbot() {
                 typing.remove();
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    let errorData;
+                    try {
+                        const errorText = await response.text();
+                        errorData = errorText ? JSON.parse(errorText) : { error: 'Unknown error' };
+                    } catch (e) {
+                        errorData = { error: 'Unknown error' };
+                    }
+                    
                     console.error('DeepSeek API error:', response.status, errorData);
                     
                     let errorMessage = 'Error al comunicarse con DeepSeek API.';
-                    if (response.status === 500 && errorData.error?.includes('DEEPSEEK_API_KEY')) {
+                    
+                    if (response.status === 504) {
+                        errorMessage = 'El servidor tardó demasiado en responder (timeout). Esto puede deberse a que la API de DeepSeek está lenta o hay un problema de conexión. Por favor, intenta de nuevo.';
+                    } else if (response.status === 500 && errorData.error?.includes('DEEPSEEK_API_KEY')) {
                         errorMessage = 'La API de DeepSeek no está configurada. Verifica que DEEPSEEK_API_KEY esté configurada en Vercel.';
                     } else if (response.status === 404) {
                         errorMessage = 'El endpoint de la API no se encontró. Verifica que el proyecto esté desplegado en Vercel.';
+                    } else if (response.status === 503) {
+                        errorMessage = 'El servicio está temporalmente no disponible. Por favor, intenta más tarde.';
+                    } else if (response.status === 500) {
+                        errorMessage = 'Error en el servidor. Por favor, intenta de nuevo más tarde.';
                     } else if (errorData.error) {
                         errorMessage = errorData.error;
                     }

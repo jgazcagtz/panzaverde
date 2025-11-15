@@ -51,21 +51,38 @@ export default async function handler(req, res) {
             }
         ];
 
-        // Call DeepSeek API
-        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: 'deepseek-chat',
-                messages: messages,
-                temperature: 0.7,
-                max_tokens: 1000,
-                stream: false
-            })
-        });
+        // Call DeepSeek API with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 second timeout (Vercel functions have 10s free tier, 60s pro)
+        
+        let response;
+        try {
+            response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 1000,
+                    stream: false
+                }),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+        } catch (fetchError) {
+            clearTimeout(timeoutId);
+            if (fetchError.name === 'AbortError') {
+                return res.status(504).json({ 
+                    error: 'Request timeout: The AI service took too long to respond',
+                    details: 'The request exceeded the maximum allowed time'
+                });
+            }
+            throw fetchError;
+        }
 
         if (!response.ok) {
             const errorData = await response.text();
