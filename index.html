@@ -12,37 +12,124 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <div class="header-content">
             <img src="https://i.imgur.com/8zf86ss.png" alt="Logo Panza Verde" class="logo">
             <div class="header-text">
                 <h1>Panza Verde</h1>
-                <p class="tagline">Dulces y botanas artesanales con calidad gourmet</p>
+                <p class="tagline">Dulces y botanas artesanales con visión 2026</p>
             </div>
         </div>
+        <nav class="top-nav">
+            <a href="#hero">Inicio</a>
+            <a href="#featured">Favoritos</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#account">Cuenta</a>
+            <a href="#admin">Admin</a>
+            <button class="nav-pill" type="button" onclick="document.getElementById('cart-btn').click()">
+                <i class="fas fa-shopping-bag"></i> Carrito
+            </button>
+        </nav>
     </header>
 
     <main>
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <p class="eyebrow">Colección 2026 · Hecho en México</p>
+                <h2>Sabores artesanales que elevan cada momento.</h2>
+                <p>Renovamos Panza Verde con experiencias inmersivas, pagos inteligentes y membresías digitales para compradores mayoristas y minoristas.</p>
+                <p class="highlight">Explora, crea tu cuenta y gestiona pedidos 24/7.</p>
+                <div class="hero-cta">
+                    <button class="btn-primary" type="button" onclick="document.querySelector('#catalogo').scrollIntoView({ behavior: 'smooth' })">
+                        Ver catálogo
+                    </button>
+                    <button class="btn-secondary" type="button" onclick="document.querySelector('#account').scrollIntoView({ behavior: 'smooth' })">
+                        Crear cuenta
+                    </button>
+                </div>
+            </div>
+            <div class="hero-metrics">
+                <div>
+                    <span>+120</span>
+                    <small>SKU artesanales</small>
+                </div>
+                <div>
+                    <span>48h</span>
+                    <small>Entrega CDMX</small>
+                </div>
+                <div>
+                    <span>24/7</span>
+                    <small>Pedidos digitales</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="experience-grid" id="experiencia">
+            <article class="experience-card">
+                <i class="fas fa-wand-magic-sparkles"></i>
+                <h3>UI inmersiva</h3>
+                <p>Vistas dinámicas, filtros inteligentes y fichas con storytelling para que los compradores encuentren su snack ideal más rápido.</p>
+            </article>
+            <article class="experience-card">
+                <i class="fas fa-shield-halved"></i>
+                <h3>Checkout seguro</h3>
+                <p>Integración con PayPal, pedidos via WhatsApp y trazabilidad en Google Sheets para mantener la operación siempre bajo control.</p>
+            </article>
+            <article class="experience-card">
+                <i class="fas fa-user-astronaut"></i>
+                <h3>Experiencia 2026</h3>
+                <p>Panel para compradores registrados, registro con Google y tablero administrativo para lanzar productos en segundos.</p>
+            </article>
+        </section>
+
         <div class="search-container">
             <div class="search-bar">
-               
                 <input type="text" id="search-input" placeholder="Buscar productos..." oninput="window.searchProducts(this.value)">
                 <i class="fas fa-times clear-search" onclick="document.getElementById('search-input').value = ''; window.searchProducts('')"></i>
             </div>
         </div>
 
-        <section class="hero">
-            <div class="hero-content">
-                <h2>¡Bienvenidos a Panza Verde!</h2>
-                <p>Nos especializamos en la comercialización de dulces y botanas artesanales con calidad gourmet de diferentes estados del país.</p>
-                <p class="highlight">¡Descubre nuestro catálogo y déjate sorprender!</p>
-                <button class="scroll-down-btn" onclick="document.querySelector('.featured-products').scrollIntoView({ behavior: 'smooth' })">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
+        <section class="auth-hub" id="account">
+            <div class="section-header">
+                <h2><i class="fas fa-user-circle"></i> Cuenta Panza Verde</h2>
+                <p>Guarda tus datos, recibe lanzamientos exclusivos y acelera pedidos con autenticación por correo o Google.</p>
+            </div>
+            <div class="auth-grid">
+                <article class="auth-card status-card">
+                    <h3>Estado actual</h3>
+                    <p id="account-status">Navegas como invitado. Inicia sesión para desbloquear beneficios y agilizar tus compras.</p>
+                    <button id="signout-btn" type="button" class="ghost-btn">Cerrar sesión</button>
+                </article>
+                <article class="auth-card">
+                    <h3>Crear cuenta</h3>
+                    <form id="buyer-signup-form">
+                        <label for="signup-name">Nombre</label>
+                        <input type="text" id="signup-name" name="name" placeholder="Nombre completo" required>
+                        <label for="signup-email">Correo</label>
+                        <input type="email" id="signup-email" name="email" placeholder="email@panza.com" required>
+                        <label for="signup-password">Contraseña</label>
+                        <input type="password" id="signup-password" name="password" placeholder="8 caracteres mínimo" minlength="8" required>
+                        <button type="submit" class="btn-primary">Registrarme</button>
+                    </form>
+                </article>
+                <article class="auth-card">
+                    <h3>Iniciar sesión</h3>
+                    <form id="buyer-signin-form">
+                        <label for="signin-email">Correo</label>
+                        <input type="email" id="signin-email" name="email" placeholder="tu_correo@dominio.com" required>
+                        <label for="signin-password">Contraseña</label>
+                        <input type="password" id="signin-password" name="password" placeholder="Tu contraseña" required>
+                        <button type="submit" class="btn-secondary">Entrar</button>
+                    </form>
+                    <div class="divider"><span>o</span></div>
+                    <button type="button" id="google-signin-btn" class="google-btn">
+                        <i class="fab fa-google"></i> Continuar con Google
+                    </button>
+                </article>
             </div>
         </section>
 
-        <section class="featured-products">
+        <section class="featured-products" id="featured">
             <div class="section-header">
                 <h2><i class="fas fa-star"></i> Nuestros Favoritos</h2>
                 <div class="section-divider"></div>
@@ -53,7 +140,7 @@
         <section class="distributor-section">
             <div class="distributor-content">
                 <h3><i class="fas fa-handshake"></i> ¿Quieres ser distribuidor?</h3>
-                <p>¡Pregunta a nuestro Bot por el Programa de Distribuidores Panza Verde!</p>
+                <p>Pregunta por el Programa de Distribuidores Panza Verde y recibe precios especiales con onboarding digital.</p>
                 <p>Contáctanos al +5526627851 para más información:</p>
                 <a href="https://wa.me/5526627851" class="whatsapp-btn" target="_blank">
                     <i class="fab fa-whatsapp"></i> Escríbenos por WhatsApp
@@ -61,12 +148,12 @@
             </div>
         </section>
 
-        <section class="product-catalog">
+        <section class="product-catalog" id="catalogo">
             <div class="section-header">
                 <div class="category-selector">
                     <h2><i class="fas fa-store"></i> Catálogo</h2>
                     <div class="category-dropdown">
-                        <button class="category-toggle"><i class="fas fa-filter"></i> Filtrar</button>
+                        <button class="category-toggle" type="button"><i class="fas fa-filter"></i> Filtrar</button>
                         <div class="category-menu">
                             <a href="#" onclick="window.filterProducts('Todos'); event.preventDefault();">Todos</a>
                             <a href="#" onclick="window.filterProducts('Dulces'); event.preventDefault();">Dulces</a>
@@ -79,6 +166,70 @@
                 <div class="section-divider"></div>
             </div>
             <div id="menu-vertical" class="product-grid"></div>
+        </section>
+
+        <section class="admin-section" id="admin">
+            <div class="section-header">
+                <h2><i class="fas fa-lock"></i> Panel Administrador</h2>
+                <p>Gestiona productos en tiempo real y sincroniza con Firebase.</p>
+            </div>
+            <div class="admin-grid">
+                <article class="admin-card" id="admin-login-card">
+                    <h3>Acceso seguro</h3>
+                    <p>Solo personal autorizado. Usa las credenciales oficiales.</p>
+                    <form id="admin-login-form">
+                        <label for="admin-email">Correo</label>
+                        <input type="email" id="admin-email" name="email" placeholder="erandi@panzaverde.com" required>
+                        <label for="admin-password">Contraseña</label>
+                        <input type="password" id="admin-password" name="password" placeholder="********" required>
+                        <button type="submit" class="btn-primary">Entrar al panel</button>
+                    </form>
+                </article>
+                <article class="admin-card admin-dashboard" id="admin-dashboard" hidden>
+                    <div class="admin-dashboard-header">
+                        <div>
+                            <p class="subtitle">Hola, Erandi</p>
+                            <h3 id="product-form-title">Crea o edita productos</h3>
+                        </div>
+                        <button id="admin-logout-btn" type="button" class="ghost-btn">Cerrar sesión</button>
+                    </div>
+                    <form id="product-form">
+                        <div class="form-grid">
+                            <label for="product-name">Nombre</label>
+                            <input type="text" id="product-name" name="name" placeholder="Nombre del producto" required>
+
+                            <label for="product-price">Precio</label>
+                            <input type="number" id="product-price" name="price" min="1" step="0.01" placeholder="0.00" required>
+
+                            <label for="product-category">Categoría</label>
+                            <select id="product-category" name="category" required>
+                                <option value="Dulces">Dulces</option>
+                                <option value="Dulces picositos">Dulces picositos</option>
+                                <option value="Botanas">Botanas</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+
+                            <label for="product-image">Imagen (URL)</label>
+                            <input type="url" id="product-image" name="img" placeholder="https://">
+
+                            <label for="product-description">Descripción</label>
+                            <textarea id="product-description" name="includes" rows="3" placeholder="Qué incluye, notas de sabor, etc."></textarea>
+                        </div>
+                        <label class="checkbox-field">
+                            <input type="checkbox" id="product-featured" name="featured">
+                            <span>Marcar como destacado</span>
+                        </label>
+                        <div class="admin-form-actions">
+                            <button type="button" id="clear-product-form" class="ghost-btn">Limpiar</button>
+                            <button type="submit" class="btn-primary" id="product-form-submit">Guardar producto</button>
+                        </div>
+                    </form>
+                    <button type="button" id="seed-catalog-btn" class="chip-btn">
+                        <i class="fas fa-bolt"></i> Importar catálogo base
+                    </button>
+                </article>
+            </div>
+            <div id="admin-product-list" class="admin-product-list"></div>
         </section>
 
         <div id="cart" class="cart-panel">
@@ -165,7 +316,9 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="script.js"></script>
     <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
 </body>
 </html>
