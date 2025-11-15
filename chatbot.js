@@ -105,13 +105,23 @@ class PanzaVerdeChatbot {
         const input = document.getElementById(this.inputId);
         const window = document.getElementById(this.windowId);
 
-        if (toggle) {
-            toggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.toggleChatbot();
-            });
+        if (!toggle) {
+            console.warn(`Chatbot toggle not found with ID: ${this.toggleId}`);
+            return;
         }
+
+        if (!window) {
+            console.warn(`Chatbot window not found with ID: ${this.windowId}`);
+            return;
+        }
+
+        // Add click event listener to toggle
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Chatbot toggle clicked');
+            this.toggleChatbot();
+        });
 
         if (close) {
             close.addEventListener('click', (e) => {
@@ -185,20 +195,28 @@ class PanzaVerdeChatbot {
         const window = document.getElementById(this.windowId);
         const toggle = document.getElementById(this.toggleId);
         
+        console.log('Toggling chatbot, isOpen:', this.isOpen);
+        
         if (window) {
             if (this.isOpen) {
                 window.classList.add('open');
+                console.log('Chatbot window opened');
                 const input = document.getElementById(this.inputId);
                 if (input) {
                     setTimeout(() => input.focus(), 100);
                 }
             } else {
                 window.classList.remove('open');
+                console.log('Chatbot window closed');
             }
+        } else {
+            console.error('Chatbot window element not found');
         }
 
         if (toggle) {
             toggle.classList.toggle('active', this.isOpen);
+        } else {
+            console.error('Chatbot toggle element not found');
         }
     }
 
@@ -407,11 +425,35 @@ class PanzaVerdeChatbot {
 }
 
 // Initialize chatbot when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+function initializeChatbot() {
+    // Only initialize if we're on the main store page (not admin)
+    // Admin has its own chatbot initialization
+    if (window.location.pathname.includes('admin.html')) {
+        // Don't initialize main chatbot on admin page
+        return;
+    }
+    
+    // Check if chatbot elements exist
+    const toggle = document.getElementById('chatbot-toggle');
+    if (!toggle) {
+        console.warn('Chatbot toggle not found, retrying...');
+        // Retry after a short delay
+        setTimeout(initializeChatbot, 500);
+        return;
+    }
+    
+    try {
         window.panzaVerdeChatbot = new PanzaVerdeChatbot();
-    });
+        console.log('Chatbot initialized successfully');
+    } catch (error) {
+        console.error('Error initializing chatbot:', error);
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeChatbot);
 } else {
-    window.panzaVerdeChatbot = new PanzaVerdeChatbot();
+    // DOM already loaded
+    initializeChatbot();
 }
 

@@ -2467,12 +2467,15 @@ footer {
     transform: translateY(20px) scale(0.95);
     transition: all 0.3s ease;
     overflow: hidden;
+    pointer-events: none;
+    z-index: 10000;
 }
 
 .chatbot-window.open {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
+    pointer-events: auto;
 }
 
 .chatbot-header {

@@ -612,6 +612,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updatePaymentMethod(method) {
         selectedPaymentMethod = method;
+        updatePayPalForm(); // Update PayPal form when payment method changes
         updateWhatsAppLink();
     }
 
