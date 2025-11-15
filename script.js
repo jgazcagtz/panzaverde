@@ -40,6 +40,41 @@ const db = getFirestore(app);
 
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
+// Initialize currentLanguage before DOMContentLoaded
+let currentLanguage = localStorage.getItem('language') || 'es';
+
+// Expose functions to window immediately (before DOMContentLoaded)
+window.toggleCart = function() {
+    const cartPanel = document.getElementById("cart");
+    if (!cartPanel) {
+        console.warn('Cart panel not found');
+        return;
+    }
+    cartPanel.classList.toggle("active");
+    document.body.style.overflow = cartPanel.classList.contains("active") ? "hidden" : "auto";
+};
+
+window.closeProductModal = function() {
+    const modal = document.getElementById("product-modal");
+    if (!modal) {
+        console.warn('Product modal not found');
+        return;
+    }
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+};
+
+window.toggleModal = function() {
+    const modal = document.getElementById("edit-modal");
+    if (!modal) {
+        console.warn('Edit modal not found');
+        return;
+    }
+    const shouldOpen = modal.style.display === "none" || modal.style.display === "";
+    modal.style.display = shouldOpen ? "block" : "none";
+    document.body.style.overflow = shouldOpen ? "hidden" : "auto";
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const defaultImage = "https://i.imgur.com/8zf86ss.png";
 
@@ -775,12 +810,16 @@ document.addEventListener("DOMContentLoaded", () => {
     window.filterProducts = filterProducts;
     window.searchProducts = searchProducts;
     window.openProductModal = openProductModal;
-    window.closeProductModal = closeProductModal;
+    // Update window functions (they're already set above, but update references to use local functions)
     window.toggleCart = toggleCart;
+    window.closeProductModal = closeProductModal;
     window.toggleModal = toggleModal;
 
-    // Translation system
-    let currentLanguage = localStorage.getItem('language') || 'es';
+    // Translation system (currentLanguage already declared at top level)
+    // Ensure it's synced with localStorage
+    if (!currentLanguage) {
+        currentLanguage = localStorage.getItem('language') || 'es';
+    }
 
     const translations = {
         es: {
@@ -883,8 +922,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 blogRef,
                 (snapshot) => {
                     if (snapshot.empty) {
-                        // Create initial blog posts if none exist
-                        createInitialBlogPosts();
+                        // Show default posts if collection is empty
+                        renderDefaultBlogPosts();
                     } else {
                         const posts = snapshot.docs.map((docSnap) => {
                             const data = docSnap.data();
@@ -894,17 +933,18 @@ document.addEventListener("DOMContentLoaded", () => {
                                 content: data.content || "",
                                 excerpt: data.excerpt || "",
                                 author: data.author || "Panza Verde",
-                                date: data.date || data.createdAt?.toDate?.() || new Date(),
+                                date: data.date || data.createdAt || data.createdAt?.toDate?.() || new Date(),
                                 image: data.image || "https://i.imgur.com/8zf86ss.png",
-                                category: data.category || "Dulcería Mexicana"
+                                category: data.category || "Dulcería Mexicana",
+                                published: data.published !== false
                             };
-                        });
+                        }).filter(post => post.published); // Only show published posts
                         renderBlogPosts(posts);
                     }
                 },
                 (error) => {
                     console.error("Error al escuchar blog posts", error);
-                    // Show default posts on error
+                    // Show default posts on error (permission errors are expected for unauthenticated users)
                     renderDefaultBlogPosts();
                 }
             );
@@ -1003,7 +1043,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         blogContainer.innerHTML = posts.slice(0, 3).map(post => {
             const date = post.date instanceof Date ? post.date : (post.date?.toDate?.() || new Date());
-            const formattedDate = date.toLocaleDateString(currentLanguage === 'es' ? 'es-MX' : 'en-US', {
+            const lang = currentLanguage || 'es';
+            const formattedDate = date.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
@@ -1023,7 +1064,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <span class="blog-post-date"><i class="fas fa-calendar"></i> ${formattedDate}</span>
                         </div>
                         <button class="blog-read-more" onclick="openBlogPost('${post.id}')">
-                            ${currentLanguage === 'es' ? 'Leer más' : 'Read more'}
+                            ${(currentLanguage || 'es') === 'es' ? 'Leer más' : 'Read more'}
                         </button>
                     </div>
                 </article>

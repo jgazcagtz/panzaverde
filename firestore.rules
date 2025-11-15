@@ -6,7 +6,8 @@ service cloud.firestore {
     // Helper function to check if user is admin
     function isAdmin() {
       return request.auth != null && 
-             request.auth.token.email == 'erandi@panzaverde.com';
+             (request.auth.token.email == 'erandi@panzaverde.com' ||
+              request.auth.token.email == 'erandi@panzaverde.store');
     }
     
     // Helper function to check if user is authenticated
@@ -42,9 +43,11 @@ service cloud.firestore {
     
     // Orders collection
     match /orders/{orderId} {
-      // Users can read their own orders, admin can read all
-      allow read: if isAuthenticated() && 
-                     (resource.data.userId == request.auth.uid || isAdmin());
+      // Admin can read all orders, users can read their own
+      allow read: if isAdmin() || 
+                     (isAuthenticated() && 
+                      resource != null && 
+                      resource.data.userId == request.auth.uid);
       
       // Authenticated users can create their own orders, admin can create any order
       allow create: if isAuthenticated() && 
@@ -76,6 +79,29 @@ service cloud.firestore {
       allow create: if isAdmin();
       allow update: if isAdmin();
       allow delete: if isAdmin();
+    }
+    
+    // Allow list queries on blogPosts (needed for onSnapshot)
+    match /blogPosts/{document=**} {
+      allow list: if true;
+    }
+    
+    // Chatbot messages collection
+    match /chatbot_messages/{messageId} {
+      // Anyone can create messages (for chatbot functionality)
+      allow create: if true;
+      
+      // Only admin can read all messages
+      allow read: if isAdmin();
+    }
+    
+    // Chatbot conversations collection
+    match /chatbot_conversations/{conversationId} {
+      // Anyone can create conversations (for chatbot functionality)
+      allow create: if true;
+      
+      // Only admin can read all conversations
+      allow read: if isAdmin();
     }
     
     // Admin settings collection (optional, for future use)
