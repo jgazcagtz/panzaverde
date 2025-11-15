@@ -305,6 +305,14 @@
     background: linear-gradient(135deg, #43e97b, #38f9d7);
 }
 
+.stat-icon-orders {
+    background: linear-gradient(135deg, #fa709a, #fee140);
+}
+
+.stat-icon-revenue {
+    background: linear-gradient(135deg, #30cfd0, #330867);
+}
+
 .stat-content h3 {
     font-size: 2rem;
     font-weight: 700;
@@ -883,11 +891,104 @@
 
 .admin-buyer-footer {
     margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .admin-buyer-footer small {
     color: #999;
     font-size: 0.85rem;
+}
+
+.admin-buyer-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.admin-buyer-actions .admin-action-link {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Order Creation Form Styles */
+.order-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.order-item-row {
+    display: grid;
+    grid-template-columns: 1fr 100px auto;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.order-product-select {
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.order-product-select:focus {
+    outline: none;
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.order-quantity-input {
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.order-quantity-input:focus {
+    outline: none;
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.btn-remove-order-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-order-item:hover {
+    background: rgba(244, 67, 54, 0.2);
+    transform: scale(1.1);
+}
+
+.order-total-display {
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(255, 193, 7, 0.1));
+    border-radius: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2e7d32;
+    text-align: center;
+    border: 2px solid #2e7d32;
+    margin-top: 0.5rem;
 }
 
 @media (max-width: 768px) {
@@ -902,6 +1003,15 @@
     .admin-order-footer {
         flex-direction: column;
         align-items: flex-start;
+    }
+    
+    .order-item-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .btn-remove-order-item {
+        width: 100%;
     }
 }
 

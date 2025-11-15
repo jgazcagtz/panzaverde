@@ -110,6 +110,24 @@
                             <p>Valor inventario</p>
                         </div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-orders">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-total-orders">0</h3>
+                            <p>Pedidos totales</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-revenue">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-total-revenue">$0</h3>
+                            <p>Ingresos totales</p>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Product Management Section -->
@@ -228,9 +246,88 @@
                     <div class="admin-section-header">
                         <h2><i class="fas fa-shopping-cart"></i> Gestionar Pedidos</h2>
                         <div class="admin-actions">
+                            <button id="new-order-btn" class="btn-new-product">
+                                <i class="fas fa-plus"></i> Crear pedido
+                            </button>
                             <input type="text" id="admin-order-search" class="admin-search" placeholder="Buscar pedidos...">
                         </div>
                     </div>
+                    
+                    <!-- Order Creation Form -->
+                    <div class="admin-form-container" id="order-form-container" style="display: none;">
+                        <form id="order-form" class="admin-product-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="order-customer-name">
+                                        <i class="fas fa-user"></i> Nombre del cliente
+                                    </label>
+                                    <input type="text" id="order-customer-name" name="customerName" placeholder="Nombre completo" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="order-customer-email">
+                                        <i class="fas fa-envelope"></i> Correo del cliente
+                                    </label>
+                                    <input type="email" id="order-customer-email" name="customerEmail" placeholder="cliente@email.com" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="order-payment-method">
+                                        <i class="fas fa-credit-card"></i> Método de pago
+                                    </label>
+                                    <select id="order-payment-method" name="paymentMethod" required>
+                                        <option value="en línea">En línea (PayPal)</option>
+                                        <option value="efectivo">Efectivo</option>
+                                        <option value="Transferencia">Transferencia</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="order-status">
+                                        <i class="fas fa-info-circle"></i> Estado inicial
+                                    </label>
+                                    <select id="order-status" name="status" required>
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="confirmado">Confirmado</option>
+                                        <option value="en_preparacion">En preparación</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-shopping-bag"></i> Productos del pedido
+                                </label>
+                                <div id="order-items-container" class="order-items-container">
+                                    <div class="order-item-row">
+                                        <select class="order-product-select" required>
+                                            <option value="">Seleccionar producto</option>
+                                        </select>
+                                        <input type="number" class="order-quantity-input" min="1" value="1" placeholder="Cantidad" required>
+                                        <button type="button" class="btn-remove-order-item" onclick="removeOrderItem(this)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-secondary" onclick="addOrderItem()" style="margin-top: 0.5rem;">
+                                    <i class="fas fa-plus"></i> Agregar producto
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-dollar-sign"></i> Total calculado
+                                </label>
+                                <div id="order-total-display" class="order-total-display">$0.00</div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="cancel-order-form" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary" id="order-form-submit">
+                                    <i class="fas fa-save"></i> Crear pedido
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
                     <div id="admin-orders-list" class="admin-orders-list"></div>
                 </section>
 

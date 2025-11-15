@@ -40,17 +40,29 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
-    // Orders collection (for future order tracking)
+    // Orders collection
     match /orders/{orderId} {
-      // Users can read their own orders
+      // Users can read their own orders, admin can read all
       allow read: if isAuthenticated() && 
                      (resource.data.userId == request.auth.uid || isAdmin());
       
-      // Authenticated users can create orders
+      // Authenticated users can create their own orders, admin can create any order
       allow create: if isAuthenticated() && 
-                       request.resource.data.userId == request.auth.uid;
+                       (request.resource.data.userId == request.auth.uid || 
+                        (isAdmin() && request.resource.data.createdBy == 'admin'));
       
       // Only admin can update or delete orders
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Categories collection
+    match /categories/{categoryId} {
+      // Anyone can read categories (public)
+      allow read: if true;
+      
+      // Only admin can create, update, or delete categories
+      allow create: if isAdmin();
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }

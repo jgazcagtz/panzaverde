@@ -86,6 +86,7 @@ const seedProducts = rawSeedProducts.map((product, index) => ({
 
 let products = [];
 let categories = [];
+let orders = [];
 let editingProductId = null;
 let editingCategoryId = null;
 let isAdminAuthenticated = false;
@@ -119,7 +120,14 @@ const dom = {
     newCategoryBtn: document.getElementById("new-category-btn"),
     cancelCategoryFormBtn: document.getElementById("cancel-category-form"),
     categoryName: document.getElementById("category-name"),
-    adminCategoriesList: document.getElementById("admin-categories-list")
+    adminCategoriesList: document.getElementById("admin-categories-list"),
+    orderForm: document.getElementById("order-form"),
+    orderFormContainer: document.getElementById("order-form-container"),
+    newOrderBtn: document.getElementById("new-order-btn"),
+    cancelOrderFormBtn: document.getElementById("cancel-order-form"),
+    adminOrderSearch: document.getElementById("admin-order-search"),
+    statTotalOrders: document.getElementById("stat-total-orders"),
+    statTotalRevenue: document.getElementById("stat-total-revenue")
 };
 
 function init() {
@@ -166,6 +174,20 @@ function registerListeners() {
         dom.categoryFormContainer.style.display = "none";
     });
     dom.categoryForm?.addEventListener("submit", handleCategoryFormSubmit);
+    dom.newOrderBtn?.addEventListener("click", () => {
+        clearOrderForm();
+        populateOrderProductSelects();
+        dom.orderFormContainer.style.display = "block";
+        dom.orderFormContainer.scrollIntoView({ behavior: "smooth" });
+    });
+    dom.cancelOrderFormBtn?.addEventListener("click", () => {
+        clearOrderForm();
+        dom.orderFormContainer.style.display = "none";
+    });
+    dom.orderForm?.addEventListener("submit", handleOrderFormSubmit);
+    dom.adminOrderSearch?.addEventListener("input", (e) => {
+        filterOrders(e.target.value);
+    });
 
     dom.adminProductList?.addEventListener("click", (event) => {
         const row = event.target.closest(".admin-product-row");
@@ -423,6 +445,10 @@ function subscribeToProducts() {
                 if (dom.adminCategoriesList) {
                     renderCategoriesList();
                 }
+                // Update order form product selects if form is visible
+                if (dom.orderFormContainer && dom.orderFormContainer.style.display !== "none") {
+                    populateOrderProductSelects();
+                }
             },
             (error) => {
                 console.error("Error al escuchar productos", error);
@@ -438,13 +464,17 @@ function subscribeToProducts() {
 function updateStats() {
     const totalProducts = products.length;
     const featuredProducts = products.filter(p => p.featured).length;
-    const categories = new Set(products.map(p => p.category)).size;
+    const categoriesCount = new Set(products.map(p => p.category)).size;
     const totalValue = products.reduce((sum, p) => sum + p.price, 0);
+    const totalOrders = orders.length;
+    const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
 
     if (dom.statTotalProducts) dom.statTotalProducts.textContent = totalProducts;
     if (dom.statFeaturedProducts) dom.statFeaturedProducts.textContent = featuredProducts;
-    if (dom.statCategories) dom.statCategories.textContent = categories;
+    if (dom.statCategories) dom.statCategories.textContent = categoriesCount;
     if (dom.statTotalValue) dom.statTotalValue.textContent = `$${totalValue.toFixed(2)}`;
+    if (dom.statTotalOrders) dom.statTotalOrders.textContent = totalOrders;
+    if (dom.statTotalRevenue) dom.statTotalRevenue.textContent = `$${totalRevenue.toFixed(2)}`;
 }
 
 function renderProductList(searchQuery = "") {
@@ -713,8 +743,10 @@ function subscribeToOrders() {
                     const timeB = b.timestamp || b.createdAt?.toDate?.() || new Date(0);
                     return timeB - timeA;
                 });
+                window.allOrders = orders; // Store for filtering
                 renderOrdersList(orders);
                 renderBuyersList(orders);
+                updateStats();
             },
             (error) => {
                 console.error("Error al escuchar pedidos", error);
@@ -725,16 +757,33 @@ function subscribeToOrders() {
     }
 }
 
-function renderOrdersList(orders) {
+function filterOrders(searchQuery) {
+    if (!window.allOrders) return;
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) {
+        renderOrdersList(window.allOrders);
+        return;
+    }
+    const filtered = window.allOrders.filter(order => {
+        const orderNum = String(order.orderNumber || order.id || "").toLowerCase();
+        const userName = (order.userName || "").toLowerCase();
+        const userEmail = (order.userEmail || "").toLowerCase();
+        const status = (order.status || "").toLowerCase();
+        return orderNum.includes(query) || userName.includes(query) || userEmail.includes(query) || status.includes(query);
+    });
+    renderOrdersList(filtered);
+}
+
+function renderOrdersList(ordersToRender) {
     const ordersList = document.getElementById("admin-orders-list");
     if (!ordersList) return;
 
-    if (orders.length === 0) {
+    if (!ordersToRender || ordersToRender.length === 0) {
         ordersList.innerHTML = '<p class="admin-hint">No hay pedidos aún.</p>';
         return;
     }
 
-    ordersList.innerHTML = orders.map(order => `
+    ordersList.innerHTML = ordersToRender.map(order => `
         <div class="admin-order-card">
             <div class="admin-order-header">
                 <div>
@@ -833,9 +882,17 @@ function renderBuyersList(orders) {
         return;
     }
 
+    // Sort buyers by total spent (descending)
+    buyers.sort((a, b) => b.totalSpent - a.totalSpent);
+    
     buyersList.innerHTML = `
         <div class="admin-buyers-grid">
-            ${buyers.map(buyer => `
+            ${buyers.map(buyer => {
+                // Get buyer's orders
+                const buyerOrders = orders.filter(o => o.userEmail === buyer.email);
+                const avgOrderValue = buyer.totalOrders > 0 ? (buyer.totalSpent / buyer.totalOrders).toFixed(2) : 0;
+                
+                return `
                 <div class="admin-buyer-card">
                     <div class="admin-buyer-header">
                         <h4>${buyer.name}</h4>
@@ -852,18 +909,218 @@ function renderBuyersList(orders) {
                             <i class="fas fa-dollar-sign"></i>
                             <span>$${buyer.totalSpent.toFixed(2)}</span>
                         </div>
+                        <div class="admin-buyer-stat">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Promedio: $${avgOrderValue}</span>
+                        </div>
                     </div>
                     <div class="admin-buyer-footer">
                         <small>Último pedido: ${buyer.lastOrder || "N/A"}</small>
+                        <div class="admin-buyer-actions">
+                            <a href="mailto:${buyer.email}" class="admin-action-link" title="Enviar correo">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                            <button class="admin-action-link" onclick="viewBuyerOrders('${buyer.email}')" title="Ver pedidos">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            `).join("")}
+            `;
+            }).join("")}
         </div>
     `;
 }
 
+function populateOrderProductSelects() {
+    const selects = document.querySelectorAll(".order-product-select");
+    selects.forEach(select => {
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">Seleccionar producto</option>' +
+            products.map(p => `<option value="${p.id}" data-price="${p.price}" data-name="${p.name}">${p.name} - $${p.price.toFixed(2)}</option>`).join("");
+        if (currentValue) select.value = currentValue;
+        select.addEventListener("change", calculateOrderTotal);
+    });
+    calculateOrderTotal();
+}
+
+function addOrderItem() {
+    const container = document.getElementById("order-items-container");
+    if (!container) return;
+    
+    const newRow = document.createElement("div");
+    newRow.className = "order-item-row";
+    newRow.innerHTML = `
+        <select class="order-product-select" required>
+            <option value="">Seleccionar producto</option>
+            ${products.map(p => `<option value="${p.id}" data-price="${p.price}" data-name="${p.name}">${p.name} - $${p.price.toFixed(2)}</option>`).join("")}
+        </select>
+        <input type="number" class="order-quantity-input" min="1" value="1" placeholder="Cantidad" required>
+        <button type="button" class="btn-remove-order-item" onclick="removeOrderItem(this)">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(newRow);
+    
+    const select = newRow.querySelector(".order-product-select");
+    const quantityInput = newRow.querySelector(".order-quantity-input");
+    select.addEventListener("change", calculateOrderTotal);
+    quantityInput.addEventListener("input", calculateOrderTotal);
+}
+
+function removeOrderItem(button) {
+    const container = document.getElementById("order-items-container");
+    if (!container) return;
+    if (container.children.length <= 1) {
+        showToast("Debe haber al menos un producto en el pedido.", "warning");
+        return;
+    }
+    button.closest(".order-item-row").remove();
+    calculateOrderTotal();
+}
+
+function calculateOrderTotal() {
+    const container = document.getElementById("order-items-container");
+    const totalDisplay = document.getElementById("order-total-display");
+    if (!container || !totalDisplay) return;
+    
+    let total = 0;
+    const rows = container.querySelectorAll(".order-item-row");
+    rows.forEach(row => {
+        const select = row.querySelector(".order-product-select");
+        const quantityInput = row.querySelector(".order-quantity-input");
+        if (select && select.value && quantityInput) {
+            const price = parseFloat(select.options[select.selectedIndex].dataset.price || 0);
+            const quantity = parseInt(quantityInput.value || 0, 10);
+            total += price * quantity;
+        }
+    });
+    
+    totalDisplay.textContent = `$${total.toFixed(2)}`;
+}
+
+async function handleOrderFormSubmit(event) {
+    event.preventDefault();
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador para crear pedidos.", "warning");
+        return;
+    }
+    
+    const formData = new FormData(event.target);
+    const customerName = formData.get("customerName").trim();
+    const customerEmail = formData.get("customerEmail").trim();
+    const paymentMethod = formData.get("paymentMethod");
+    const status = formData.get("status");
+    
+    // Collect order items
+    const container = document.getElementById("order-items-container");
+    const orderItems = [];
+    const rows = container.querySelectorAll(".order-item-row");
+    
+    for (const row of rows) {
+        const select = row.querySelector(".order-product-select");
+        const quantityInput = row.querySelector(".order-quantity-input");
+        if (!select || !select.value || !quantityInput) continue;
+        
+        const productId = select.value;
+        const product = products.find(p => p.id === productId);
+        if (!product) continue;
+        
+        const quantity = parseInt(quantityInput.value || 1, 10);
+        orderItems.push({
+            name: product.name,
+            price: product.price,
+            quantity: quantity,
+            img: product.img
+        });
+    }
+    
+    if (orderItems.length === 0) {
+        showToast("Agrega al menos un producto al pedido.", "warning");
+        return;
+    }
+    
+    const total = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const orderNumber = Math.floor(Math.random() * 1000000) + 1;
+    const timestamp = new Date().toLocaleString("es-MX");
+    
+    const submitBtn = document.getElementById("order-form-submit");
+    const originalText = submitBtn?.innerHTML;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+    }
+    
+    try {
+        const orderData = {
+            orderNumber,
+            timestamp,
+            paymentMethod,
+            cart: JSON.stringify(orderItems),
+            total: total.toFixed(2),
+            userEmail: customerEmail,
+            userName: customerName,
+            status: status || "pendiente",
+            createdBy: "admin",
+            createdAt: serverTimestamp()
+        };
+        
+        await addDoc(collection(db, "orders"), orderData);
+        showToast("Pedido creado correctamente.", "success");
+        clearOrderForm();
+        dom.orderFormContainer.style.display = "none";
+    } catch (error) {
+        console.error("Error al crear pedido", error);
+        showToast("No pudimos crear el pedido. Revisa la consola o tus reglas de Firebase.", "error");
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText || '<i class="fas fa-save"></i> Crear pedido';
+        }
+    }
+}
+
+function clearOrderForm() {
+    if (!dom.orderForm) return;
+    dom.orderForm.reset();
+    const container = document.getElementById("order-items-container");
+    if (container) {
+        container.innerHTML = `
+            <div class="order-item-row">
+                <select class="order-product-select" required>
+                    <option value="">Seleccionar producto</option>
+                </select>
+                <input type="number" class="order-quantity-input" min="1" value="1" placeholder="Cantidad" required>
+                <button type="button" class="btn-remove-order-item" onclick="removeOrderItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        populateOrderProductSelects();
+    }
+    const totalDisplay = document.getElementById("order-total-display");
+    if (totalDisplay) totalDisplay.textContent = "$0.00";
+}
+
+function viewBuyerOrders(email) {
+    if (!email || !window.allOrders) return;
+    const buyerOrders = window.allOrders.filter(o => o.userEmail === email);
+    if (buyerOrders.length === 0) {
+        showToast("Este comprador no tiene pedidos.", "info");
+        return;
+    }
+    // Filter orders list to show only this buyer's orders
+    renderOrdersList(buyerOrders);
+    showToast(`Mostrando ${buyerOrders.length} pedido(s) de este comprador.`, "info");
+    // Scroll to orders section
+    document.querySelector("#admin-orders-list")?.scrollIntoView({ behavior: "smooth" });
+}
+
 window.updateOrderStatus = updateOrderStatus;
 window.deleteCategory = deleteCategory;
+window.addOrderItem = addOrderItem;
+window.removeOrderItem = removeOrderItem;
+window.viewBuyerOrders = viewBuyerOrders;
 
 // Initialize when DOM is ready
 document.addEventListener("DOMContentLoaded", init);
