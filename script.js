@@ -957,31 +957,69 @@ document.addEventListener("DOMContentLoaded", () => {
     // Blog functionality
     // Store blog posts globally for openBlogPost function
     let allBlogPosts = [];
+    let blogUnsubscribe = null; // Store unsubscribe function to prevent duplicates
 
     function subscribeToBlogPosts() {
+        // Unsubscribe from previous listener if exists to prevent duplicates
+        if (blogUnsubscribe) {
+            blogUnsubscribe();
+            blogUnsubscribe = null;
+        }
+
         try {
             const blogRef = collection(db, "blogPosts");
-            onSnapshot(
+            blogUnsubscribe = onSnapshot(
                 blogRef,
                 (snapshot) => {
                     if (snapshot.empty) {
                         // Show default posts if collection is empty
                         renderDefaultBlogPosts();
                     } else {
-                        const posts = snapshot.docs.map((docSnap) => {
+                        // Remove duplicates by using a Map with id as key
+                        const postsMap = new Map();
+                        snapshot.docs.forEach((docSnap) => {
                             const data = docSnap.data();
-                            return {
-                                id: docSnap.id,
-                                title: data.title || "",
-                                content: data.content || "",
-                                excerpt: data.excerpt || "",
-                                author: data.author || "Panza Verde",
-                                date: data.date || data.createdAt || data.createdAt?.toDate?.() || new Date(),
-                                image: data.image || "https://i.imgur.com/8zf86ss.png",
-                                category: data.category || "Dulcería Mexicana",
-                                published: data.published !== false
-                            };
-                        }).filter(post => post.published); // Only show published posts
+                            // Only process published posts
+                            if (data.published !== false) {
+                                // Handle date conversion properly
+                                let postDate = new Date();
+                                if (data.createdAt && data.createdAt.toDate) {
+                                    postDate = data.createdAt.toDate();
+                                } else if (data.date && data.date.toDate) {
+                                    postDate = data.date.toDate();
+                                } else if (data.date instanceof Date) {
+                                    postDate = data.date;
+                                } else if (data.createdAt instanceof Date) {
+                                    postDate = data.createdAt;
+                                } else if (data.date) {
+                                    postDate = new Date(data.date);
+                                } else if (data.createdAt) {
+                                    postDate = new Date(data.createdAt);
+                                }
+                                
+                                const post = {
+                                    id: docSnap.id,
+                                    title: data.title || "",
+                                    content: data.content || "",
+                                    excerpt: data.excerpt || "",
+                                    author: data.author || "Panza Verde",
+                                    date: postDate,
+                                    image: data.image || "https://i.imgur.com/8zf86ss.png",
+                                    category: data.category || "Dulcería Mexicana",
+                                    published: data.published !== false
+                                };
+                                // Use Map to prevent duplicates
+                                postsMap.set(docSnap.id, post);
+                            }
+                        });
+                        
+                        // Convert Map to array and sort by date (newest first)
+                        const posts = Array.from(postsMap.values()).sort((a, b) => {
+                            const dateA = a.date instanceof Date ? a.date : (a.date?.toDate?.() || new Date());
+                            const dateB = b.date instanceof Date ? b.date : (b.date?.toDate?.() || new Date());
+                            return dateB - dateA;
+                        });
+                        
                         allBlogPosts = posts; // Store globally for openBlogPost
                         renderBlogPosts(posts);
                     }
@@ -1088,14 +1126,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderBlogPosts(posts) {
         const blogContainer = document.getElementById("blog-posts");
-        if (!blogContainer) return;
+        if (!blogContainer) {
+            console.warn("Blog container not found, retrying...");
+            // Retry after a short delay in case DOM isn't ready
+            setTimeout(() => {
+                const retryContainer = document.getElementById("blog-posts");
+                if (retryContainer && posts && posts.length > 0) {
+                    renderBlogPosts(posts);
+                }
+            }, 500);
+            return;
+        }
 
         if (!posts || posts.length === 0) {
             blogContainer.innerHTML = '<p class="empty-state">No hay artículos del blog aún.</p>';
             return;
         }
 
-        blogContainer.innerHTML = posts.slice(0, 3).map(post => {
+        // Clear container first to prevent duplicates
+        blogContainer.innerHTML = '';
+        
+        // Render only the first 3 posts (newest first, already sorted)
+        const postsToRender = posts.slice(0, 3);
+        blogContainer.innerHTML = postsToRender.map(post => {
             const date = post.date instanceof Date ? post.date : (post.date?.toDate?.() || new Date());
             const lang = currentLanguage || 'es';
             const formattedDate = date.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', {
