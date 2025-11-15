@@ -55,7 +55,7 @@
                         <img src="https://i.imgur.com/8zf86ss.png" alt="Logo" class="admin-header-logo">
                         <div>
                             <h2>Panel Administrador</h2>
-                            <p id="admin-welcome-text">Bienvenido, Administrador</p>
+                            <p id="admin-welcome-text">Bienvenida, Erandi</p>
                         </div>
                     </div>
                     <div class="admin-header-right">
@@ -180,6 +180,35 @@
                     </div>
                 </section>
 
+                <!-- Category Management Section -->
+                <section class="admin-section">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-tags"></i> Gestionar Categorías</h2>
+                        <button id="new-category-btn" class="btn-new-product">
+                            <i class="fas fa-plus"></i> Nueva categoría
+                        </button>
+                    </div>
+                    <div class="admin-form-container" id="category-form-container" style="display: none;">
+                        <form id="category-form" class="admin-product-form">
+                            <div class="form-group">
+                                <label for="category-name">
+                                    <i class="fas fa-tag"></i> Nombre de la categoría
+                                </label>
+                                <input type="text" id="category-name" name="name" placeholder="Ej: Snacks saludables" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="cancel-category-form" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary" id="category-form-submit">
+                                    <i class="fas fa-save"></i> Guardar categoría
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="admin-categories-list" class="admin-categories-list"></div>
+                </section>
+
                 <!-- Products List Section -->
                 <section class="admin-section">
                     <div class="admin-section-header">
@@ -192,6 +221,25 @@
                         </div>
                     </div>
                     <div id="admin-product-list" class="admin-product-list"></div>
+                </section>
+
+                <!-- Orders Management Section -->
+                <section class="admin-section">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-shopping-cart"></i> Gestionar Pedidos</h2>
+                        <div class="admin-actions">
+                            <input type="text" id="admin-order-search" class="admin-search" placeholder="Buscar pedidos...">
+                        </div>
+                    </div>
+                    <div id="admin-orders-list" class="admin-orders-list"></div>
+                </section>
+
+                <!-- Buyers Management Section -->
+                <section class="admin-section">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-users"></i> Información de Compradores</h2>
+                    </div>
+                    <div id="admin-buyers-list" class="admin-buyers-list"></div>
                 </section>
             </main>
         </div>

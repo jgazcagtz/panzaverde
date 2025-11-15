@@ -17,7 +17,11 @@ import {
     updateDoc,
     deleteDoc,
     doc,
-    serverTimestamp
+    serverTimestamp,
+    query,
+    where,
+    orderBy,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -89,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
 
     let products = [...seedProducts];
+    let categories = [];
     let filteredProducts = [...products];
     let cart = [];
     let total = 0;
@@ -119,8 +124,15 @@ document.addEventListener("DOMContentLoaded", () => {
         registerAuthListeners();
         registerCategoryToggle();
         subscribeToProducts();
+        subscribeToCategories();
         onAuthStateChanged(auth, (user) => {
             updateAuthUI(user);
+            if (user) {
+                loadOrderHistory(user.uid);
+                document.getElementById("pedidos-link")?.style.setProperty("display", "inline-flex");
+            } else {
+                document.getElementById("pedidos-link")?.style.setProperty("display", "none");
+            }
         });
     }
 
@@ -138,6 +150,47 @@ document.addEventListener("DOMContentLoaded", () => {
                 dom.categoryMenu.classList.toggle("open");
             });
         }
+    }
+
+    function subscribeToCategories() {
+        try {
+            const categoriesRef = collection(db, "categories");
+            onSnapshot(
+                categoriesRef,
+                (snapshot) => {
+                    if (snapshot.empty) {
+                        categories = ["Dulces", "Dulces picositos", "Botanas", "Otros"];
+                    } else {
+                        categories = snapshot.docs.map((docSnap) => {
+                            const data = docSnap.data();
+                            return data.name || "Sin nombre";
+                        });
+                    }
+                    updateCategoryMenu();
+                },
+                (error) => {
+                    console.error("Error al escuchar categorías", error);
+                    categories = ["Dulces", "Dulces picositos", "Botanas", "Otros"];
+                    updateCategoryMenu();
+                }
+            );
+        } catch (error) {
+            console.error("Error de Firebase en categorías", error);
+            categories = ["Dulces", "Dulces picositos", "Botanas", "Otros"];
+            updateCategoryMenu();
+        }
+    }
+
+    function updateCategoryMenu() {
+        const categoryMenu = document.querySelector(".category-menu");
+        if (!categoryMenu) return;
+        
+        categoryMenu.innerHTML = `
+            <a href="#" onclick="window.filterProducts('Todos'); event.preventDefault();">Todos</a>
+            ${categories.map(cat => 
+                `<a href="#" onclick="window.filterProducts('${cat}'); event.preventDefault();">${cat}</a>`
+            ).join("")}
+        `;
     }
 
     function subscribeToProducts() {
@@ -241,9 +294,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (user) {
             dom.accountStatus.innerHTML = `Bienvenido, <strong>${user.displayName || user.email}</strong>. Tus datos están guardados para tus próximos pedidos.`;
             dom.signoutBtn?.classList.add("visible");
+            document.getElementById("pedidos")?.style.setProperty("display", "block");
+            document.getElementById("pedidos-link")?.style.setProperty("display", "inline-flex");
         } else {
             dom.accountStatus.textContent = "Navegas como invitado. Inicia sesión para desbloquear beneficios y agilizar tus compras.";
             dom.signoutBtn?.classList.remove("visible");
+            document.getElementById("pedidos")?.style.setProperty("display", "none");
+            document.getElementById("pedidos-link")?.style.setProperty("display", "none");
         }
     }
 
@@ -458,20 +515,38 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!paypalForm) return;
 
         if (cart.length === 0) {
-            paypalForm.innerHTML = "";
+            paypalForm.innerHTML = `
+                <div class="paypal-placeholder">
+                    <p>Selecciona productos para ver opciones de pago</p>
+                </div>
+            `;
             return;
         }
 
-        paypalForm.innerHTML = `
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-                <input type="hidden" name="cmd" value="_xclick" />
-                <input type="hidden" name="business" value="erandi27gasca@gmail.com" />
-                <input type="hidden" name="currency_code" value="MXN" />
-                <input type="hidden" name="amount" value="${total.toFixed(2)}" />
-                <input type="hidden" name="item_name" value="${cart.map((item) => `${item.name} (${item.quantity})`).join(", ")}" />
-                <input type="image" src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/silver-pill-paypal-44px.png" border="0" name="submit" title="Pay with PayPal" alt="PayPal - The safer, easier way to pay online!" />
-            </form>
-        `;
+        if (selectedPaymentMethod === "en línea") {
+            paypalForm.innerHTML = `
+                <div class="paypal-button-wrapper">
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" class="paypal-form">
+                        <input type="hidden" name="cmd" value="_xclick" />
+                        <input type="hidden" name="business" value="erandi27gasca@gmail.com" />
+                        <input type="hidden" name="currency_code" value="MXN" />
+                        <input type="hidden" name="amount" value="${total.toFixed(2)}" />
+                        <input type="hidden" name="item_name" value="Panza Verde - ${cart.map((item) => `${item.name} (${item.quantity})`).join(", ")}" />
+                        <button type="submit" class="paypal-button">
+                            <i class="fab fa-paypal"></i>
+                            <span>Pagar $${total.toFixed(2)} con PayPal</span>
+                        </button>
+                    </form>
+                    <p class="paypal-note">Pago seguro y protegido por PayPal</p>
+                </div>
+            `;
+        } else {
+            paypalForm.innerHTML = `
+                <div class="paypal-placeholder">
+                    <p>Para pagar con ${selectedPaymentMethod}, confirma tu pedido por WhatsApp</p>
+                </div>
+            `;
+        }
     }
 
     function updateWhatsAppLink() {
@@ -503,6 +578,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        const user = auth.currentUser;
+        if (!user) {
+            showToast("Por favor inicia sesión para guardar tu pedido en tu historial.", "warning");
+            updateWhatsAppLink();
+            return;
+        }
+
         if (!orderNumber) {
             orderNumber = Math.floor(Math.random() * 1000000) + 1;
         }
@@ -512,22 +594,40 @@ document.addEventListener("DOMContentLoaded", () => {
             orderNumber,
             paymentMethod: selectedPaymentMethod,
             cart: JSON.stringify(cart),
-            total: total.toFixed(2)
+            total: total.toFixed(2),
+            userId: user.uid,
+            userEmail: user.email,
+            userName: user.displayName || user.email,
+            status: "pendiente",
+            createdAt: serverTimestamp()
         };
 
         updateWhatsAppLink();
 
         try {
-            await fetch("https://script.google.com/macros/s/AKfycbzRuFIWEDIAmaWXRcEGT-N4D6PAhH35I04hAArX_-vuR2MzLpdb-4bVTCr51z8O0bGjYg/exec", {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(orderData)
-            });
-            showToast("Pedido enviado correctamente. Confirma por WhatsApp.", "success");
+            // Save to Firestore
+            const orderRef = await addDoc(collection(db, "orders"), orderData);
+            showToast("Pedido guardado correctamente. Confirma por WhatsApp.", "success");
             document.getElementById("whatsapp-btn").style.display = "flex";
+            
+            // Also send to Google Sheets (optional)
+            try {
+                await fetch("https://script.google.com/macros/s/AKfycbzRuFIWEDIAmaWXRcEGT-N4D6PAhH35I04hAArX_-vuR2MzLpdb-4bVTCr51z8O0bGjYg/exec", {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(orderData)
+                });
+            } catch (e) {
+                console.log("Google Sheets sync failed, but order saved to Firestore");
+            }
+            
+            // Clear cart after successful order
+            cart = [];
+            orderNumber = null;
+            updateCart();
         } catch (error) {
             console.error("Error al enviar el pedido:", error);
             showToast("Hubo un error al enviar tu pedido. Inténtalo nuevamente.", "error");
@@ -662,5 +762,94 @@ document.addEventListener("DOMContentLoaded", () => {
     window.closeProductModal = closeProductModal;
     window.toggleCart = toggleCart;
     window.toggleModal = toggleModal;
+
+    async function loadOrderHistory(userId) {
+        try {
+            const ordersRef = collection(db, "orders");
+            let q;
+            try {
+                q = query(ordersRef, where("userId", "==", userId), orderBy("createdAt", "desc"));
+            } catch (e) {
+                // If orderBy fails (no index), just filter by userId
+                q = query(ordersRef, where("userId", "==", userId));
+            }
+            const querySnapshot = await getDocs(q);
+            
+            const orders = [];
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                orders.push({
+                    id: docSnap.id,
+                    ...data,
+                    cart: JSON.parse(data.cart || "[]")
+                });
+            });
+            
+            // Sort by timestamp if orderBy didn't work
+            orders.sort((a, b) => {
+                const timeA = a.timestamp || a.createdAt?.toDate?.() || new Date(0);
+                const timeB = b.timestamp || b.createdAt?.toDate?.() || new Date(0);
+                return timeB - timeA;
+            });
+            
+            renderOrderHistory(orders);
+        } catch (error) {
+            console.error("Error loading order history:", error);
+            // Show empty state on error
+            renderOrderHistory([]);
+        }
+    }
+
+    function renderOrderHistory(orders) {
+        const pedidosSection = document.getElementById("pedidos-section");
+        if (!pedidosSection) return;
+        
+        if (orders.length === 0) {
+            pedidosSection.innerHTML = `
+                <div class="empty-orders">
+                    <i class="fas fa-shopping-bag"></i>
+                    <p>Aún no tienes pedidos. ¡Empieza a comprar!</p>
+                    <button class="btn-primary" onclick="document.querySelector('#catalogo').scrollIntoView({ behavior: 'smooth' })">
+                        Ver catálogo
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        pedidosSection.innerHTML = `
+            <div class="orders-list">
+                ${orders.map(order => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <h3>Pedido #${order.orderNumber}</h3>
+                                <p class="order-date">${order.timestamp}</p>
+                            </div>
+                            <span class="order-status order-status-${order.status || 'pendiente'}">
+                                ${order.status || 'Pendiente'}
+                            </span>
+                        </div>
+                        <div class="order-items">
+                            ${order.cart.map(item => `
+                                <div class="order-item">
+                                    <span>${item.name} x${item.quantity}</span>
+                                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            `).join("")}
+                        </div>
+                        <div class="order-footer">
+                            <div class="order-total">
+                                <strong>Total: $${order.total}</strong>
+                            </div>
+                            <div class="order-payment">
+                                <i class="fas fa-credit-card"></i> ${order.paymentMethod}
+                            </div>
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    }
 });
 

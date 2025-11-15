@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panza Verde - Dulces y Botanas Artesanales</title>
-    <meta name="description" content="Tienda en línea de dulces y botanas artesanales con calidad gourmet">
+    <title>Panza Verde - Dulces y Botanas Artesanales Mexicanas | Envío CDMX</title>
+    <meta name="description" content="Transformamos tu negocio con sabores auténticos mexicanos. Más de 120 productos artesanales para mayoristas y minoristas. Experiencias inmersivas, pagos inteligentes y membresías digitales. Envío rápido en CDMX.">
+    <meta name="keywords" content="dulces artesanales, botanas mexicanas, dulces picositos, botanas gourmet, envío CDMX, panza verde, dulces mexicanos">
+    <meta name="author" content="Panza Verde">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://panzaverde.com/">
+    <meta property="og:title" content="Panza Verde - Dulces y Botanas Artesanales Mexicanas">
+    <meta property="og:description" content="Transformamos tu negocio con sabores auténticos. Experiencias inmersivas, pagos inteligentes y membresías digitales para mayoristas y minoristas.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://i.imgur.com/8zf86ss.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Panza Verde - Dulces y Botanas Artesanales">
+    <meta name="twitter:description" content="Más de 120 productos artesanales únicos. Envío rápido en CDMX.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
@@ -17,14 +28,15 @@
             <img src="https://i.imgur.com/8zf86ss.png" alt="Logo Panza Verde" class="logo">
             <div class="header-text">
                 <h1>Panza Verde</h1>
-                <p class="tagline">Dulces y botanas artesanales con visión 2026</p>
+                <p class="tagline">Dulces y botanas artesanales mexicanas</p>
             </div>
         </div>
         <nav class="top-nav">
             <a href="#hero">Inicio</a>
             <a href="#featured">Favoritos</a>
             <a href="#catalogo">Catálogo</a>
-            <a href="#account">Cuenta</a>
+            <a href="#account">Mi Cuenta</a>
+            <a href="#pedidos" id="pedidos-link" style="display: none;">Mis Pedidos</a>
             <a href="admin.html" class="admin-link">Admin</a>
             <button class="nav-pill" type="button" onclick="document.getElementById('cart-btn').click()">
                 <i class="fas fa-shopping-bag"></i> Carrito
@@ -35,16 +47,16 @@
     <main>
         <section class="hero" id="hero">
             <div class="hero-content">
-                <p class="eyebrow">Colección 2026 · Hecho en México</p>
-                <h2>Sabores artesanales que elevan cada momento.</h2>
-                <p>Renovamos Panza Verde con experiencias inmersivas, pagos inteligentes y membresías digitales para compradores mayoristas y minoristas.</p>
-                <p class="highlight">Explora, crea tu cuenta y gestiona pedidos 24/7.</p>
+                <p class="eyebrow">Hecho en México · 100% Artesanal</p>
+                <h2>Transformamos tu negocio con sabores auténticos y membresías digitales</h2>
+                <p>Más de 120 productos artesanales únicos para mayoristas y minoristas. Experiencias inmersivas, pagos inteligentes y membresías digitales que impulsan tu crecimiento.</p>
+                <p class="highlight">Envío rápido en CDMX · Pago seguro con PayPal · Panel para compradores registrados</p>
                 <div class="hero-cta">
                     <button class="btn-primary" type="button" onclick="document.querySelector('#catalogo').scrollIntoView({ behavior: 'smooth' })">
-                        Ver catálogo
+                        <i class="fas fa-shopping-bag"></i> Comprar ahora
                     </button>
-                    <button class="btn-secondary" type="button" onclick="document.querySelector('#account').scrollIntoView({ behavior: 'smooth' })">
-                        Crear cuenta
+                    <button class="btn-secondary" type="button" onclick="document.querySelector('#featured').scrollIntoView({ behavior: 'smooth' })">
+                        <i class="fas fa-star"></i> Ver favoritos
                     </button>
                 </div>
             </div>
@@ -64,21 +76,21 @@
             </div>
         </section>
 
-        <section class="experience-grid" id="experiencia">
+        <section class="experience-grid" id="beneficios">
             <article class="experience-card">
-                <i class="fas fa-wand-magic-sparkles"></i>
-                <h3>UI inmersiva</h3>
-                <p>Vistas dinámicas, filtros inteligentes y fichas con storytelling para que los compradores encuentren su snack ideal más rápido.</p>
+                <i class="fas fa-users"></i>
+                <h3>Panel para Compradores</h3>
+                <p>Accede a tu cuenta personalizada, revisa tu historial de pedidos y gestiona tus compras mayoristas o minoristas desde un solo lugar.</p>
             </article>
             <article class="experience-card">
-                <i class="fas fa-shield-halved"></i>
-                <h3>Checkout seguro</h3>
-                <p>Integración con PayPal, pedidos via WhatsApp y trazabilidad en Google Sheets para mantener la operación siempre bajo control.</p>
+                <i class="fas fa-credit-card"></i>
+                <h3>Pagos Inteligentes</h3>
+                <p>Integración con PayPal, pedidos vía WhatsApp y múltiples métodos de pago. Trazabilidad completa para mantener tu operación bajo control.</p>
             </article>
             <article class="experience-card">
-                <i class="fas fa-user-astronaut"></i>
-                <h3>Experiencia 2026</h3>
-                <p>Panel para compradores registrados, registro con Google y tablero administrativo para lanzar productos en segundos.</p>
+                <i class="fas fa-crown"></i>
+                <h3>Membresías Digitales</h3>
+                <p>Registro con Google, beneficios exclusivos para compradores registrados y acceso prioritario a nuevos productos y promociones especiales.</p>
             </article>
         </section>
 
@@ -89,10 +101,18 @@
             </div>
         </div>
 
+        <section class="auth-hub" id="pedidos" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Mis Pedidos</h2>
+                <p>Historial de todos tus pedidos en Panza Verde</p>
+            </div>
+            <div id="pedidos-section" class="pedidos-container"></div>
+        </section>
+
         <section class="auth-hub" id="account">
             <div class="section-header">
-                <h2><i class="fas fa-user-circle"></i> Cuenta Panza Verde</h2>
-                <p>Guarda tus datos, recibe lanzamientos exclusivos y acelera pedidos con autenticación por correo o Google.</p>
+                <h2><i class="fas fa-user-circle"></i> Mi Cuenta</h2>
+                <p>Crea tu cuenta para guardar tus pedidos, ver tu historial y agilizar tus próximas compras.</p>
             </div>
             <div class="auth-grid">
                 <article class="auth-card status-card">
@@ -131,7 +151,8 @@
 
         <section class="featured-products" id="featured">
             <div class="section-header">
-                <h2><i class="fas fa-star"></i> Nuestros Favoritos</h2>
+                <h2><i class="fas fa-star"></i> Productos Destacados</h2>
+                <p>Los más populares y mejor valorados por nuestros clientes</p>
                 <div class="section-divider"></div>
             </div>
             <div id="menu-horizontal" class="horizontal-product-grid"></div>
@@ -151,7 +172,8 @@
         <section class="product-catalog" id="catalogo">
             <div class="section-header">
                 <div class="category-selector">
-                    <h2><i class="fas fa-store"></i> Catálogo</h2>
+                    <h2><i class="fas fa-store"></i> Catálogo Completo</h2>
+                    <p>Explora todos nuestros productos artesanales</p>
                     <div class="category-dropdown">
                         <button class="category-toggle" type="button"><i class="fas fa-filter"></i> Filtrar</button>
                         <div class="category-menu">
@@ -188,7 +210,11 @@
                         <label><input type="radio" name="payment-method" value="Transferencia" onchange="window.updatePaymentMethod(this.value)"> Transferencia</label>
                     </div>
                 </div>
-                <div id="paypal-form" class="paypal-container"></div>
+                <div id="paypal-form" class="paypal-container">
+                    <div class="paypal-placeholder">
+                        <p>Selecciona productos para ver opciones de pago</p>
+                    </div>
+                </div>
                 <div class="cart-actions">
                     <button id="refresh-btn" class="btn-clear" onclick="window.clearCart()">
                         <i class="fas fa-trash"></i> Vaciar carrito
@@ -255,6 +281,26 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Store",
+        "name": "Panza Verde",
+        "description": "Tienda en línea de dulces y botanas artesanales mexicanas. Más de 120 productos únicos con calidad gourmet.",
+        "url": "https://panzaverde.com",
+        "image": "https://i.imgur.com/8zf86ss.png",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "MX",
+            "addressLocality": "Ciudad de México"
+        },
+        "priceRange": "$$",
+        "telephone": "+525526627851",
+        "openingHours": "Mo-Su 00:00-23:59",
+        "paymentAccepted": "PayPal, Efectivo, Transferencia",
+        "currenciesAccepted": "MXN"
+    }
+    </script>
     <script type="module" src="script.js"></script>
     <chat-bot platform_id="d90c6bd1-aa16-40db-a9b4-c8e3bb46275c" user_id="9d9eab1e-9322-4b63-a470-9f71a3625f23" chatbot_id="57b2da9f-e042-41bf-9d3d-4642898cae74"><a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">chatsimple</a></chat-bot><script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer></script>
 </body>
