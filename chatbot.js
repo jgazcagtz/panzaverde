@@ -41,8 +41,18 @@ class PanzaVerdeChatbot {
             this.apiEndpoint = 'http://localhost:3000/api/chatbot';
         } else {
             // Use current domain for API endpoint
+            // Try to use the API endpoint, fallback to a placeholder if it doesn't exist
             this.apiEndpoint = `${window.location.origin}/api/chatbot`;
         }
+        
+        // Check if we're on admin page - use different IDs
+        this.isAdminPage = window.location.pathname.includes('admin.html');
+        this.toggleId = this.isAdminPage ? 'admin-chatbot-toggle' : 'chatbot-toggle';
+        this.windowId = this.isAdminPage ? 'admin-chatbot-window' : 'chatbot-window';
+        this.closeId = this.isAdminPage ? 'admin-chatbot-close' : 'chatbot-close';
+        this.sendId = this.isAdminPage ? 'admin-chatbot-send' : 'chatbot-send';
+        this.inputId = this.isAdminPage ? 'admin-chatbot-input' : 'chatbot-input';
+        this.messagesId = this.isAdminPage ? 'admin-chatbot-messages' : 'chatbot-messages';
         
         this.init();
         this.subscribeToProducts();
@@ -89,11 +99,11 @@ class PanzaVerdeChatbot {
     }
 
     init() {
-        const toggle = document.getElementById('chatbot-toggle');
-        const close = document.getElementById('chatbot-close');
-        const send = document.getElementById('chatbot-send');
-        const input = document.getElementById('chatbot-input');
-        const window = document.getElementById('chatbot-window');
+        const toggle = document.getElementById(this.toggleId);
+        const close = document.getElementById(this.closeId);
+        const send = document.getElementById(this.sendId);
+        const input = document.getElementById(this.inputId);
+        const window = document.getElementById(this.windowId);
 
         if (toggle) {
             toggle.addEventListener('click', (e) => {
@@ -172,13 +182,13 @@ class PanzaVerdeChatbot {
 
     toggleChatbot() {
         this.isOpen = !this.isOpen;
-        const window = document.getElementById('chatbot-window');
-        const toggle = document.getElementById('chatbot-toggle');
+        const window = document.getElementById(this.windowId);
+        const toggle = document.getElementById(this.toggleId);
         
         if (window) {
             if (this.isOpen) {
                 window.classList.add('open');
-                const input = document.getElementById('chatbot-input');
+                const input = document.getElementById(this.inputId);
                 if (input) {
                     setTimeout(() => input.focus(), 100);
                 }
@@ -194,8 +204,8 @@ class PanzaVerdeChatbot {
 
     closeChatbot() {
         this.isOpen = false;
-        const window = document.getElementById('chatbot-window');
-        const toggle = document.getElementById('chatbot-toggle');
+        const window = document.getElementById(this.windowId);
+        const toggle = document.getElementById(this.toggleId);
         
         if (window) {
             window.classList.remove('open');
@@ -206,9 +216,9 @@ class PanzaVerdeChatbot {
     }
 
     async sendMessage() {
-        const input = document.getElementById('chatbot-input');
-        const sendBtn = document.getElementById('chatbot-send');
-        const messagesContainer = document.getElementById('chatbot-messages');
+        const input = document.getElementById(this.inputId);
+        const sendBtn = document.getElementById(this.sendId);
+        const messagesContainer = document.getElementById(this.messagesId);
 
         if (!input || !messagesContainer) return;
 
@@ -236,20 +246,26 @@ class PanzaVerdeChatbot {
             // Save user message to Firebase
             await this.saveMessageToFirebase('user', userMessage);
 
-            // Call API
-            const response = await fetch(this.apiEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    message: userMessage,
-                    conversationHistory: recentHistory,
-                    products: this.products,
-                    userId: this.userId,
-                    sessionId: this.sessionId
-                })
-            });
+            // Call API - handle errors gracefully
+            let response;
+            try {
+                response = await fetch(this.apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: userMessage,
+                        conversationHistory: recentHistory,
+                        products: this.products,
+                        userId: this.userId,
+                        sessionId: this.sessionId
+                    })
+                });
+            } catch (fetchError) {
+                // Network error or API not available
+                throw new Error('No se pudo conectar con el servidor. Por favor, verifica tu conexión o contacta directamente por WhatsApp al +525526627851.');
+            }
 
             // Remove typing indicator
             this.removeTypingIndicator(typingId);
@@ -337,7 +353,7 @@ class PanzaVerdeChatbot {
     }
 
     addMessage(text, role) {
-        const messagesContainer = document.getElementById('chatbot-messages');
+        const messagesContainer = document.getElementById(this.messagesId);
         if (!messagesContainer) return;
 
         const messageDiv = document.createElement('div');
@@ -358,7 +374,7 @@ class PanzaVerdeChatbot {
     }
 
     addTypingIndicator() {
-        const messagesContainer = document.getElementById('chatbot-messages');
+        const messagesContainer = document.getElementById(this.messagesId);
         if (!messagesContainer) return null;
 
         const typingId = 'typing-' + Date.now();

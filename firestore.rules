@@ -110,6 +110,12 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
     
+    // Chatbot training collection
+    match /chatbot_training/{trainingId} {
+      // Only admin can read/write training data
+      allow read, write: if isAdmin();
+    }
+    
     // Default deny for all other collections
     match /{document=**} {
       allow read, write: if false;

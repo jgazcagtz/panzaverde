@@ -92,6 +92,10 @@
                         <i class="fas fa-robot"></i>
                         <span>Chatbot</span>
                     </a>
+                    <a href="#users-management" class="admin-nav-item" data-section="users">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Usuarios</span>
+                    </a>
                 </nav>
                 <div class="admin-sidebar-footer">
                     <a href="index.html" class="admin-nav-item">
@@ -461,6 +465,51 @@
                     <div id="admin-buyers-list" class="admin-buyers-list"></div>
                 </section>
 
+                <!-- Users Management Section -->
+                <section class="admin-section" id="users-management">
+                    <div class="admin-section-header">
+                        <h2><i class="fas fa-user-cog"></i> Gestión de Usuarios</h2>
+                        <button id="new-user-btn" class="btn-new-product">
+                            <i class="fas fa-plus"></i> Nuevo usuario
+                        </button>
+                    </div>
+                    
+                    <div class="admin-form-container" id="user-form-container" style="display: none;">
+                        <form id="user-form" class="admin-product-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="user-name">
+                                        <i class="fas fa-user"></i> Nombre completo
+                                    </label>
+                                    <input type="text" id="user-name" name="name" placeholder="Nombre completo" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="user-email">
+                                        <i class="fas fa-envelope"></i> Correo electrónico
+                                    </label>
+                                    <input type="email" id="user-email" name="email" placeholder="usuario@email.com" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password">
+                                    <i class="fas fa-lock"></i> Contraseña
+                                </label>
+                                <input type="password" id="user-password" name="password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="cancel-user-form" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary" id="user-form-submit">
+                                    <i class="fas fa-save"></i> Crear usuario
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="admin-users-list" class="admin-users-list"></div>
+                </section>
+
                 <!-- Chatbot Management Section -->
                 <section class="admin-section" id="chatbot-management">
                     <div class="admin-section-header">
@@ -512,6 +561,32 @@
                         </div>
                     </div>
 
+                    <!-- Chatbot Training Section -->
+                    <div class="admin-section-header">
+                        <h3><i class="fas fa-graduation-cap"></i> Entrenar Chatbot</h3>
+                    </div>
+                    <div class="admin-form-container" style="margin-bottom: 2rem;">
+                        <form id="chatbot-training-form" class="admin-product-form">
+                            <div class="form-group">
+                                <label for="training-prompt">
+                                    <i class="fas fa-comment-dots"></i> Pregunta o contexto
+                                </label>
+                                <input type="text" id="training-prompt" name="prompt" placeholder="Ej: ¿Cuál es el precio de las gomitas?" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="training-response">
+                                    <i class="fas fa-reply"></i> Respuesta esperada
+                                </label>
+                                <textarea id="training-response" name="response" rows="4" placeholder="Ej: Las gomitas de frutas cuestan $45 MXN y vienen en presentación de 250g..." required></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary" id="training-form-submit">
+                                    <i class="fas fa-save"></i> Guardar entrenamiento
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
                     <!-- Recent Conversations -->
                     <div class="admin-section-header">
                         <h3><i class="fas fa-history"></i> Conversaciones Recientes</h3>
@@ -525,7 +600,42 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+    <!-- Admin Chatbot Widget -->
+    <div id="admin-chatbot" class="panza-chatbot">
+        <div class="chatbot-toggle" id="admin-chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="admin-chatbot-window">
+            <div class="chatbot-header">
+                <div class="chatbot-header-info">
+                    <img src="https://i.imgur.com/8zf86ss.png" alt="Panza Verde" class="chatbot-logo">
+                    <div>
+                        <h3>Panza Verde Admin</h3>
+                        <p>Asistente Virtual</p>
+                    </div>
+                </div>
+                <button class="chatbot-close" id="admin-chatbot-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chatbot-messages" id="admin-chatbot-messages">
+                <div class="chatbot-message bot-message">
+                    <div class="message-content">
+                        <p>¡Hola! 👋 Soy el asistente de administración de Panza Verde. ¿En qué puedo ayudarte? Puedo ayudarte con información sobre pedidos, productos, usuarios y más.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-container">
+                <input type="text" id="admin-chatbot-input" placeholder="Escribe tu mensaje..." autocomplete="off">
+                <button id="admin-chatbot-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="admin.js"></script>
+    <script src="chatbot.js" defer></script>
 </body>
 </html>
 

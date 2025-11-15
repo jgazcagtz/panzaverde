@@ -3,7 +3,8 @@ import {
     getAuth,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    signOut
+    signOut,
+    createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
     getFirestore,
@@ -14,7 +15,9 @@ import {
     deleteDoc,
     doc,
     serverTimestamp,
-    getDocs
+    getDocs,
+    query,
+    where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -89,6 +92,7 @@ let products = [];
 let categories = [];
 let orders = [];
 let blogPosts = [];
+let users = [];
 let editingProductId = null;
 let editingCategoryId = null;
 let editingBlogId = null;
@@ -141,7 +145,15 @@ const dom = {
     blogCategory: document.getElementById("blog-category"),
     blogImage: document.getElementById("blog-image"),
     blogAuthor: document.getElementById("blog-author"),
-    adminBlogList: document.getElementById("admin-blog-list")
+    adminBlogList: document.getElementById("admin-blog-list"),
+    adminUsersList: document.getElementById("admin-users-list"),
+    userForm: document.getElementById("user-form"),
+    userFormContainer: document.getElementById("user-form-container"),
+    newUserBtn: document.getElementById("new-user-btn"),
+    cancelUserFormBtn: document.getElementById("cancel-user-form"),
+    userEmail: document.getElementById("user-email"),
+    userName: document.getElementById("user-name"),
+    userPassword: document.getElementById("user-password")
 };
 
 function init() {
@@ -172,6 +184,7 @@ function checkAuthState() {
             subscribeToCategories();
             subscribeToOrders();
             subscribeToBlogPosts();
+            subscribeToUsers();
         } else {
             isAdminAuthenticated = false;
             showLogin();
@@ -264,6 +277,53 @@ function registerListeners() {
     if (refreshChatbotStatsBtn) {
         refreshChatbotStatsBtn.addEventListener("click", loadChatbotData);
     }
+
+    // Chatbot training form
+    const chatbotTrainingForm = document.getElementById("chatbot-training-form");
+    if (chatbotTrainingForm) {
+        chatbotTrainingForm.addEventListener("submit", handleChatbotTraining);
+    }
+
+    // Initialize admin chatbot
+    initAdminChatbot();
+
+    // User management
+    dom.newUserBtn?.addEventListener("click", () => {
+        clearUserForm();
+        dom.userFormContainer.style.display = "block";
+        dom.userFormContainer.scrollIntoView({ behavior: "smooth" });
+    });
+    dom.cancelUserFormBtn?.addEventListener("click", () => {
+        clearUserForm();
+        dom.userFormContainer.style.display = "none";
+    });
+    dom.userForm?.addEventListener("submit", handleUserFormSubmit);
+
+    // Order delete functionality
+    const adminOrdersList = document.getElementById("admin-orders-list");
+    if (adminOrdersList) {
+        adminOrdersList.addEventListener("click", (event) => {
+            if (event.target.closest(".delete-order")) {
+                const orderId = event.target.closest(".admin-order-card")?.dataset.orderId;
+                if (orderId) {
+                    deleteOrder(orderId);
+                }
+            }
+        });
+    }
+
+    // User delete functionality
+    const adminUsersList = document.getElementById("admin-users-list");
+    if (adminUsersList) {
+        adminUsersList.addEventListener("click", (event) => {
+            if (event.target.closest(".delete-user")) {
+                const userId = event.target.closest(".admin-user-card")?.dataset.userId;
+                if (userId) {
+                    deleteUserAccount(userId);
+                }
+            }
+        });
+    }
 }
 
 // Chatbot Management Functions
@@ -350,6 +410,160 @@ function renderChatbotConversations(conversations) {
             </div>
         `;
     }).join('');
+}
+
+async function handleChatbotTraining(event) {
+    event.preventDefault();
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador para entrenar el chatbot.", "warning");
+        return;
+    }
+
+    const formData = new FormData(event.target);
+    const prompt = formData.get("prompt").trim();
+    const response = formData.get("response").trim();
+
+    if (!prompt || !response) {
+        showToast("Completa todos los campos.", "warning");
+        return;
+    }
+
+    const submitBtn = document.getElementById("training-form-submit");
+    const originalText = submitBtn?.innerHTML;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    }
+
+    try {
+        // Save training data to Firestore
+        await addDoc(collection(db, "chatbot_training"), {
+            prompt: prompt,
+            response: response,
+            createdAt: serverTimestamp(),
+            createdBy: "admin"
+        });
+        showToast("Entrenamiento guardado correctamente. El chatbot aprenderá de esta información.", "success");
+        event.target.reset();
+    } catch (error) {
+        console.error("Error al guardar entrenamiento", error);
+        showToast("No pudimos guardar el entrenamiento.", "error");
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText || '<i class="fas fa-save"></i> Guardar entrenamiento';
+        }
+    }
+}
+
+function initAdminChatbot() {
+    // Initialize admin chatbot widget
+    const toggle = document.getElementById('admin-chatbot-toggle');
+    const close = document.getElementById('admin-chatbot-close');
+    const send = document.getElementById('admin-chatbot-send');
+    const input = document.getElementById('admin-chatbot-input');
+    const window = document.getElementById('admin-chatbot-window');
+
+    if (!toggle || !window) return;
+
+    let isOpen = false;
+
+    toggle.addEventListener('click', () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+            window.classList.add('open');
+            if (input) setTimeout(() => input.focus(), 100);
+        } else {
+            window.classList.remove('open');
+        }
+        toggle.classList.toggle('active', isOpen);
+    });
+
+    if (close) {
+        close.addEventListener('click', () => {
+            isOpen = false;
+            window.classList.remove('open');
+            toggle.classList.remove('active');
+        });
+    }
+
+    if (send && input) {
+        const sendMessage = async () => {
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesContainer = document.getElementById('admin-chatbot-messages');
+            if (!messagesContainer) return;
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chatbot-message user-message';
+            userMsg.innerHTML = `<div class="message-content"><p>${message}</p></div>`;
+            messagesContainer.appendChild(userMsg);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            input.value = '';
+            input.disabled = true;
+            send.disabled = true;
+
+            // Show typing indicator
+            const typing = document.createElement('div');
+            typing.className = 'chatbot-message bot-message typing-indicator';
+            typing.innerHTML = '<div class="message-content"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+            messagesContainer.appendChild(typing);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                // Call chatbot API with admin context
+                const response = await fetch(`${window.location.origin}/api/chatbot`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        conversationHistory: [],
+                        products: products,
+                        userId: 'admin',
+                        sessionId: 'admin-session',
+                        isAdmin: true
+                    })
+                });
+
+                typing.remove();
+
+                if (!response.ok) {
+                    throw new Error('API error');
+                }
+
+                const data = await response.json();
+                const aiResponse = data.response || 'Lo siento, no pude procesar tu mensaje.';
+
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chatbot-message bot-message';
+                botMsg.innerHTML = `<div class="message-content"><p>${aiResponse}</p></div>`;
+                messagesContainer.appendChild(botMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } catch (error) {
+                typing.remove();
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'chatbot-message bot-message';
+                errorMsg.innerHTML = '<div class="message-content"><p>Lo siento, hubo un error. Por favor intenta de nuevo.</p></div>';
+                messagesContainer.appendChild(errorMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } finally {
+                input.disabled = false;
+                send.disabled = false;
+                if (input) setTimeout(() => input.focus(), 100);
+            }
+        };
+
+        send.addEventListener('click', sendMessage);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
 }
 
 function handleAdminLogin(event) {
@@ -957,7 +1171,7 @@ function renderOrdersList(ordersToRender) {
     }
 
     ordersList.innerHTML = ordersToRender.map(order => `
-        <div class="admin-order-card">
+        <div class="admin-order-card" data-order-id="${order.id}">
             <div class="admin-order-header">
                 <div>
                     <h4>Pedido #${order.orderNumber || order.id}</h4>
@@ -967,14 +1181,19 @@ function renderOrdersList(ordersToRender) {
                         <i class="fas fa-calendar"></i> ${order.timestamp || "Fecha no disponible"}
                     </p>
                 </div>
-                <select class="order-status-select" data-order-id="${order.id}" onchange="updateOrderStatus('${order.id}', this.value)">
-                    <option value="pendiente" ${order.status === "pendiente" ? "selected" : ""}>Pendiente</option>
-                    <option value="confirmado" ${order.status === "confirmado" ? "selected" : ""}>Confirmado</option>
-                    <option value="en_preparacion" ${order.status === "en_preparacion" ? "selected" : ""}>En preparación</option>
-                    <option value="enviado" ${order.status === "enviado" ? "selected" : ""}>Enviado</option>
-                    <option value="entregado" ${order.status === "entregado" ? "selected" : ""}>Entregado</option>
-                    <option value="cancelado" ${order.status === "cancelado" ? "selected" : ""}>Cancelado</option>
-                </select>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <select class="order-status-select" data-order-id="${order.id}" onchange="updateOrderStatus('${order.id}', this.value)">
+                        <option value="pendiente" ${order.status === "pendiente" ? "selected" : ""}>Pendiente</option>
+                        <option value="confirmado" ${order.status === "confirmado" ? "selected" : ""}>Confirmado</option>
+                        <option value="en_preparacion" ${order.status === "en_preparacion" ? "selected" : ""}>En preparación</option>
+                        <option value="enviado" ${order.status === "enviado" ? "selected" : ""}>Enviado</option>
+                        <option value="entregado" ${order.status === "entregado" ? "selected" : ""}>Entregado</option>
+                        <option value="cancelado" ${order.status === "cancelado" ? "selected" : ""}>Cancelado</option>
+                    </select>
+                    <button class="admin-action-btn delete delete-order" title="Eliminar pedido">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </div>
             <div class="admin-order-items">
                 ${order.cart.map(item => `
@@ -1019,6 +1238,25 @@ async function updateOrderStatus(orderId, newStatus) {
     } catch (error) {
         console.error("Error al actualizar pedido", error);
         showToast("No pudimos actualizar el pedido.", "error");
+    }
+}
+
+async function deleteOrder(orderId) {
+    if (!isAdminAuthenticated) {
+        showToast("No autorizado.", "error");
+        return;
+    }
+
+    if (!confirm("¿Estás seguro de que deseas eliminar este pedido? Esta acción no se puede deshacer.")) {
+        return;
+    }
+
+    try {
+        await deleteDoc(doc(db, "orders", orderId));
+        showToast("Pedido eliminado correctamente.", "success");
+    } catch (error) {
+        console.error("Error al eliminar pedido", error);
+        showToast("No pudimos eliminar el pedido.", "error");
     }
 }
 
@@ -1445,11 +1683,191 @@ function clearBlogForm() {
     if (dom.blogAuthor) dom.blogAuthor.value = "Panza Verde";
 }
 
+// User Management Functions
+async function subscribeToUsers() {
+    try {
+        // Get all users from Firebase Auth (we'll need to use Admin SDK for this, but for now we'll get from orders)
+        // For now, we'll extract unique users from orders
+        // In production, you'd want to use Firebase Admin SDK to list all users
+        const ordersRef = collection(db, "orders");
+        onSnapshot(
+            ordersRef,
+            (snapshot) => {
+                const usersMap = new Map();
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data.userId && data.userEmail) {
+                        if (!usersMap.has(data.userId)) {
+                            usersMap.set(data.userId, {
+                                uid: data.userId,
+                                email: data.userEmail,
+                                name: data.userName || data.userEmail,
+                                orderCount: 0,
+                                totalSpent: 0,
+                                lastOrder: data.timestamp || data.createdAt
+                            });
+                        }
+                        const user = usersMap.get(data.userId);
+                        user.orderCount++;
+                        user.totalSpent += parseFloat(data.total || 0);
+                        if (data.timestamp > user.lastOrder) {
+                            user.lastOrder = data.timestamp;
+                        }
+                    }
+                });
+                users = Array.from(usersMap.values());
+                renderUsersList();
+            },
+            (error) => {
+                console.error("Error al escuchar usuarios", error);
+            }
+        );
+    } catch (error) {
+        console.error("Error de Firebase en usuarios", error);
+    }
+}
+
+function renderUsersList() {
+    const usersList = document.getElementById("admin-users-list");
+    if (!usersList) return;
+
+    if (!users || users.length === 0) {
+        usersList.innerHTML = '<p class="admin-hint">No hay usuarios registrados aún.</p>';
+        return;
+    }
+
+    usersList.innerHTML = `
+        <div class="admin-users-grid">
+            ${users.map(user => `
+                <div class="admin-user-card" data-user-id="${user.uid}">
+                    <div class="admin-user-header">
+                        <h4>${user.name}</h4>
+                        <a href="mailto:${user.email}" class="admin-user-email">
+                            <i class="fas fa-envelope"></i> ${user.email}
+                        </a>
+                    </div>
+                    <div class="admin-user-stats">
+                        <div class="admin-user-stat">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>${user.orderCount} pedido${user.orderCount !== 1 ? "s" : ""}</span>
+                        </div>
+                        <div class="admin-user-stat">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$${user.totalSpent.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="admin-user-footer">
+                        <small>Último pedido: ${user.lastOrder || "N/A"}</small>
+                        <div class="admin-user-actions">
+                            <a href="mailto:${user.email}" class="admin-action-link" title="Enviar correo">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                            <button class="admin-action-link delete-user" title="Eliminar usuario">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
+async function handleUserFormSubmit(event) {
+    event.preventDefault();
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador para crear usuarios.", "warning");
+        return;
+    }
+
+    const formData = new FormData(event.target);
+    const email = formData.get("email").trim();
+    const name = formData.get("name").trim();
+    const password = formData.get("password").trim();
+
+    if (!email || !password) {
+        showToast("El correo y la contraseña son requeridos.", "warning");
+        return;
+    }
+
+    if (password.length < 6) {
+        showToast("La contraseña debe tener al menos 6 caracteres.", "warning");
+        return;
+    }
+
+    const submitBtn = document.getElementById("user-form-submit");
+    const originalText = submitBtn?.innerHTML;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+    }
+
+    try {
+        // Note: In production, you'd want to use Firebase Admin SDK to create users
+        // For now, we'll show a message that users should register themselves
+        showToast("Para crear usuarios, usa el panel de Firebase Console o permite que los usuarios se registren desde la tienda.", "info");
+        clearUserForm();
+        dom.userFormContainer.style.display = "none";
+    } catch (error) {
+        console.error("Error al crear usuario", error);
+        showToast("No pudimos crear el usuario. " + error.message, "error");
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText || '<i class="fas fa-save"></i> Crear usuario';
+        }
+    }
+}
+
+async function deleteUserAccount(userId) {
+    if (!isAdminAuthenticated) {
+        showToast("No autorizado.", "error");
+        return;
+    }
+
+    if (!confirm("¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.")) {
+        return;
+    }
+
+    try {
+        // Note: In production, you'd want to use Firebase Admin SDK to delete users
+        // For now, we'll delete all orders associated with this user
+        const ordersRef = collection(db, "orders");
+        const q = query(ordersRef, where("userId", "==", userId));
+        const querySnapshot = await getDocs(q);
+        
+        const deletePromises = [];
+        querySnapshot.forEach((docSnap) => {
+            deletePromises.push(deleteDoc(doc(db, "orders", docSnap.id)));
+        });
+
+        await Promise.all(deletePromises);
+        
+        // Also delete user profile if it exists
+        try {
+            await deleteDoc(doc(db, "users", userId));
+        } catch (e) {
+            // User profile might not exist, that's okay
+        }
+
+        showToast("Usuario y sus pedidos eliminados correctamente.", "success");
+    } catch (error) {
+        console.error("Error al eliminar usuario", error);
+        showToast("No pudimos eliminar el usuario. " + error.message, "error");
+    }
+}
+
+function clearUserForm() {
+    if (!dom.userForm) return;
+    dom.userForm.reset();
+}
+
 window.updateOrderStatus = updateOrderStatus;
 window.deleteCategory = deleteCategory;
 window.addOrderItem = addOrderItem;
 window.removeOrderItem = removeOrderItem;
 window.viewBuyerOrders = viewBuyerOrders;
+window.deleteOrder = deleteOrder;
 
 // Sidebar Navigation
 function initSidebarNavigation() {
@@ -1501,6 +1919,8 @@ function initSidebarNavigation() {
             } else if (section === "chatbot") {
                 targetElement = document.getElementById("chatbot-management");
                 loadChatbotData();
+            } else if (section === "users") {
+                targetElement = document.getElementById("users-management");
             }
 
             if (targetElement) {

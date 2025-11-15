@@ -155,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         renderFeaturedProducts();
         displayProducts(filteredProducts, "vertical");
+        updateCart(); // Initialize cart display
         updateCartCount();
         registerAuthListeners();
         registerCategoryToggle();
