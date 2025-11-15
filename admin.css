@@ -2877,3 +2877,34 @@ html {
     }
 }
 
+/* ==================== CONTACT SUBMISSIONS STATUS BADGES ==================== */
+.new-badge {
+    background: rgba(33, 150, 243, 0.1);
+    color: #2196f3;
+}
+
+.read-badge {
+    background: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+}
+
+.replied-badge {
+    background: rgba(46, 125, 50, 0.1);
+    color: #2e7d32;
+}
+
+.contact-status-select {
+    padding: 0.5rem;
+    border: 1px solid var(--medium-gray);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.contact-status-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+

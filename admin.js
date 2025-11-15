@@ -95,6 +95,7 @@ let orders = [];
 let blogPosts = [];
 let users = [];
 let inventory = [];
+let contactSubmissions = [];
 let editingProductId = null;
 let editingCategoryId = null;
 let editingBlogId = null;
@@ -108,7 +109,8 @@ const unsubscribeFunctions = {
     orders: null,
     blogPosts: null,
     users: null,
-    inventory: null
+    inventory: null,
+    contactSubmissions: null
 };
 
 // Debounce function for optimizing rapid updates
@@ -166,6 +168,7 @@ window.addEventListener('online', () => {
             subscribeToOrders();
             subscribeToBlogPosts();
             subscribeToInventory();
+            subscribeToContactSubmissions();
         }, 500);
     }
 });
@@ -267,6 +270,7 @@ function checkAuthState() {
             subscribeToBlogPosts();
             subscribeToUsers();
             subscribeToInventory();
+            subscribeToContactSubmissions();
         } else {
             isAdminAuthenticated = false;
             showLogin();
@@ -279,6 +283,7 @@ function checkAuthState() {
             blogPosts = [];
             users = [];
             inventory = [];
+            contactSubmissions = [];
             if (dom.adminProductList) dom.adminProductList.innerHTML = '';
             if (dom.adminCategoriesList) dom.adminCategoriesList.innerHTML = '';
             if (dom.adminOrdersList) dom.adminOrdersList.innerHTML = '';
@@ -424,6 +429,39 @@ function registerListeners() {
                     deleteUserAccount(userId);
                 }
             }
+        });
+    }
+
+    // Contact submissions delete functionality
+    const adminContactList = document.getElementById("admin-contact-list");
+    if (adminContactList) {
+        adminContactList.addEventListener("click", (event) => {
+            if (event.target.closest(".delete-contact")) {
+                const contactId = event.target.closest(".admin-order-card")?.dataset.contactId;
+                if (contactId) {
+                    window.deleteContact(contactId);
+                }
+            }
+        });
+    }
+
+    // Contact search functionality
+    const contactSearch = document.getElementById("contact-search");
+    if (contactSearch) {
+        contactSearch.addEventListener("input", (e) => {
+            const searchQuery = e.target.value.toLowerCase().trim();
+            if (!searchQuery) {
+                renderContactSubmissions(contactSubmissions);
+                return;
+            }
+            
+            const filtered = contactSubmissions.filter(submission => 
+                submission.name.toLowerCase().includes(searchQuery) ||
+                submission.email.toLowerCase().includes(searchQuery) ||
+                (submission.phone && submission.phone.toLowerCase().includes(searchQuery)) ||
+                submission.message.toLowerCase().includes(searchQuery)
+            );
+            renderContactSubmissions(filtered);
         });
     }
 }
@@ -1874,6 +1912,183 @@ function viewBuyerOrders(email) {
     document.querySelector("#admin-orders-list")?.scrollIntoView({ behavior: "smooth" });
 }
 
+// Contact Submissions Management Functions
+function subscribeToContactSubmissions() {
+    // Unsubscribe from previous listener if exists
+    if (unsubscribeFunctions.contactSubmissions) {
+        unsubscribeFunctions.contactSubmissions();
+    }
+
+    try {
+        const contactRef = collection(db, "contact_submissions");
+        
+        // Debounced update to optimize rapid changes
+        const debouncedUpdate = debounce((snapshot) => {
+            firebaseConnected = true;
+            updateConnectionStatus();
+            
+            contactSubmissions = snapshot.docs.map((docSnap) => {
+                const data = docSnap.data();
+                return {
+                    id: docSnap.id,
+                    name: data.name || "",
+                    email: data.email || "",
+                    phone: data.phone || "",
+                    message: data.message || "",
+                    userId: data.userId || "",
+                    sessionId: data.sessionId || "",
+                    timestamp: data.timestamp || data.createdAt || new Date(),
+                    userAgent: data.userAgent || "",
+                    url: data.url || "",
+                    status: data.status || "new"
+                };
+            });
+            
+            // Sort by timestamp (newest first)
+            contactSubmissions.sort((a, b) => {
+                const timeA = a.timestamp?.toDate?.() || new Date(0);
+                const timeB = b.timestamp?.toDate?.() || new Date(0);
+                return timeB - timeA;
+            });
+            
+            renderContactSubmissions(contactSubmissions);
+        }, 150);
+
+        unsubscribeFunctions.contactSubmissions = onSnapshot(
+            contactRef,
+            (snapshot) => {
+                debouncedUpdate(snapshot);
+            },
+            (error) => {
+                console.error("Error al escuchar contact submissions", error);
+                firebaseConnected = false;
+                updateConnectionStatus();
+                if (error.code === 'unavailable') {
+                    showToast("Firebase no está disponible. Verificando conexión...", "warning");
+                } else {
+                    showToast("Error al cargar formularios de contacto", "error");
+                }
+                // Retry subscription after 3 seconds
+                setTimeout(() => {
+                    if (isAdminAuthenticated) {
+                        subscribeToContactSubmissions();
+                    }
+                }, 3000);
+            }
+        );
+    } catch (error) {
+        console.error("Error de Firebase en contact submissions", error);
+        showToast("Error de conexión con Firebase", "error");
+    }
+}
+
+function renderContactSubmissions(submissions) {
+    const contactList = document.getElementById("admin-contact-list");
+    if (!contactList) return;
+
+    if (!submissions || submissions.length === 0) {
+        contactList.innerHTML = '<p class="empty-state">No hay formularios de contacto aún.</p>';
+        return;
+    }
+
+    contactList.innerHTML = submissions.map(submission => {
+        const timestamp = submission.timestamp?.toDate?.() || new Date();
+        const formattedDate = timestamp.toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const statusClass = submission.status === 'new' ? 'new-badge' : 
+                           submission.status === 'read' ? 'read-badge' : 
+                           submission.status === 'replied' ? 'replied-badge' : 'new-badge';
+        const statusText = submission.status === 'new' ? 'Nuevo' : 
+                          submission.status === 'read' ? 'Leído' : 
+                          submission.status === 'replied' ? 'Respondido' : 'Nuevo';
+
+        return `
+            <div class="admin-order-card" data-contact-id="${submission.id}">
+                <div class="admin-order-header">
+                    <div>
+                        <h4>${submission.name}</h4>
+                        <p class="admin-order-info">
+                            <i class="fas fa-envelope"></i> ${submission.email}
+                            ${submission.phone ? `<span style="margin-left: 1rem;"><i class="fas fa-phone"></i> ${submission.phone}</span>` : ''}
+                            <span style="margin-left: 1rem;"><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                            <span class="${statusClass}" style="margin-left: 1rem; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">${statusText}</span>
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <select class="contact-status-select" data-contact-id="${submission.id}" onchange="window.updateContactStatus('${submission.id}', this.value)">
+                            <option value="new" ${submission.status === "new" ? "selected" : ""}>Nuevo</option>
+                            <option value="read" ${submission.status === "read" ? "selected" : ""}>Leído</option>
+                            <option value="replied" ${submission.status === "replied" ? "selected" : ""}>Respondido</option>
+                        </select>
+                        <button class="admin-action-btn delete delete-contact" title="Eliminar contacto">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="admin-order-items">
+                    <div class="admin-order-item">
+                        <strong>Mensaje:</strong>
+                        <p style="margin-top: 0.5rem; white-space: pre-wrap; line-height: 1.6;">${submission.message}</p>
+                    </div>
+                    ${submission.url ? `<div class="admin-order-item">
+                        <strong>URL de origen:</strong>
+                        <span><a href="${submission.url}" target="_blank" style="color: var(--primary-color);">${submission.url}</a></span>
+                    </div>` : ''}
+                </div>
+                <div class="admin-order-footer">
+                    <div class="admin-order-actions">
+                        <a href="mailto:${submission.email}?subject=Re: Contacto Panza Verde&body=Hola ${submission.name},%0D%0A%0D%0A" class="admin-action-link" title="Responder por email">
+                            <i class="fas fa-envelope"></i> Responder
+                        </a>
+                        ${submission.phone ? `<a href="https://wa.me/${submission.phone.replace(/\D/g, '')}" target="_blank" class="admin-action-link" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+// Make functions globally accessible
+window.updateContactStatus = async function(contactId, newStatus) {
+    if (!isAdminAuthenticated) {
+        showToast("Inicia sesión como administrador.", "warning");
+        return;
+    }
+
+    try {
+        await updateDoc(doc(db, "contact_submissions", contactId), {
+            status: newStatus,
+            updatedAt: serverTimestamp()
+        });
+        showToast("Estado actualizado correctamente", "success");
+    } catch (error) {
+        console.error("Error al actualizar estado", error);
+        showToast("Error al actualizar el estado", "error");
+    }
+};
+
+window.deleteContact = async function(contactId) {
+    if (!confirm("¿Estás seguro de que deseas eliminar este formulario de contacto?")) {
+        return;
+    }
+
+    try {
+        await deleteDoc(doc(db, "contact_submissions", contactId));
+        showToast("Formulario eliminado exitosamente", "success");
+    } catch (error) {
+        console.error("Error al eliminar contacto", error);
+        showToast("Error al eliminar el formulario", "error");
+    }
+};
+
 // Blog Management Functions
 function subscribeToBlogPosts() {
     // Unsubscribe from previous listener if exists
@@ -1891,13 +2106,29 @@ function subscribeToBlogPosts() {
                 updateConnectionStatus();
                 blogPosts = snapshot.docs.map((docSnap) => {
                     const data = docSnap.data();
+                    // Handle date conversion properly
+                    let postDate = new Date();
+                    if (data.createdAt && typeof data.createdAt.toDate === 'function') {
+                        postDate = data.createdAt.toDate();
+                    } else if (data.date && typeof data.date.toDate === 'function') {
+                        postDate = data.date.toDate();
+                    } else if (data.date instanceof Date) {
+                        postDate = data.date;
+                    } else if (data.createdAt instanceof Date) {
+                        postDate = data.createdAt;
+                    } else if (data.date) {
+                        postDate = new Date(data.date);
+                    } else if (data.createdAt) {
+                        postDate = new Date(data.createdAt);
+                    }
+                    
                     return {
                         id: docSnap.id,
-                        title: data.title || "",
+                        title: data.title || "Sin título",
                         content: data.content || "",
-                        excerpt: data.excerpt || "",
+                        excerpt: data.excerpt || data.content?.substring(0, 150) || "Sin resumen",
                         author: data.author || "Panza Verde",
-                        date: data.createdAt?.toDate?.() || new Date(),
+                        date: postDate,
                         image: data.image || "https://i.imgur.com/8zf86ss.png",
                         category: data.category || "Dulcería Mexicana",
                         published: data.published !== false
@@ -2509,6 +2740,8 @@ function initSidebarNavigation() {
                 loadChatbotData();
             } else if (section === "users") {
                 targetSectionId = "users-management";
+            } else if (section === "contacts") {
+                targetSectionId = "contact-submissions";
             } else if (section === "help") {
                 targetSectionId = "help-tutorial";
             }

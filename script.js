@@ -971,7 +971,9 @@ document.addEventListener("DOMContentLoaded", () => {
             blogUnsubscribe = onSnapshot(
                 blogRef,
                 (snapshot) => {
+                    console.log("Blog posts snapshot received:", snapshot.size, "documents");
                     if (snapshot.empty) {
+                        console.log("Blog collection is empty, showing default posts");
                         // Show default posts if collection is empty
                         renderDefaultBlogPosts();
                     } else {
@@ -979,13 +981,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         const postsMap = new Map();
                         snapshot.docs.forEach((docSnap) => {
                             const data = docSnap.data();
-                            // Only process published posts
-                            if (data.published !== false) {
+                            // Only process published posts (default to true if not specified)
+                            const isPublished = data.published !== false && data.published !== undefined;
+                            
+                            if (isPublished) {
                                 // Handle date conversion properly
                                 let postDate = new Date();
-                                if (data.createdAt && data.createdAt.toDate) {
+                                if (data.createdAt && typeof data.createdAt.toDate === 'function') {
                                     postDate = data.createdAt.toDate();
-                                } else if (data.date && data.date.toDate) {
+                                } else if (data.date && typeof data.date.toDate === 'function') {
                                     postDate = data.date.toDate();
                                 } else if (data.date instanceof Date) {
                                     postDate = data.date;
@@ -999,14 +1003,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                 
                                 const post = {
                                     id: docSnap.id,
-                                    title: data.title || "",
+                                    title: data.title || "Sin título",
                                     content: data.content || "",
-                                    excerpt: data.excerpt || "",
+                                    excerpt: data.excerpt || data.content?.substring(0, 150) || "Sin resumen",
                                     author: data.author || "Panza Verde",
                                     date: postDate,
                                     image: data.image || "https://i.imgur.com/8zf86ss.png",
                                     category: data.category || "Dulcería Mexicana",
-                                    published: data.published !== false
+                                    published: true
                                 };
                                 // Use Map to prevent duplicates
                                 postsMap.set(docSnap.id, post);
@@ -1015,13 +1019,20 @@ document.addEventListener("DOMContentLoaded", () => {
                         
                         // Convert Map to array and sort by date (newest first)
                         const posts = Array.from(postsMap.values()).sort((a, b) => {
-                            const dateA = a.date instanceof Date ? a.date : (a.date?.toDate?.() || new Date());
-                            const dateB = b.date instanceof Date ? b.date : (b.date?.toDate?.() || new Date());
+                            const dateA = a.date instanceof Date ? a.date : (a.date?.toDate?.() || new Date(0));
+                            const dateB = b.date instanceof Date ? b.date : (b.date?.toDate?.() || new Date(0));
                             return dateB - dateA;
                         });
                         
+                        console.log("Rendering", posts.length, "published blog posts");
                         allBlogPosts = posts; // Store globally for openBlogPost
-                        renderBlogPosts(posts);
+                        
+                        if (posts.length > 0) {
+                            renderBlogPosts(posts);
+                        } else {
+                            // If no published posts, show default
+                            renderDefaultBlogPosts();
+                        }
                     }
                 },
                 (error) => {
