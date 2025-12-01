@@ -168,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
         subscribeToCategories();
         subscribeToBlogPosts();
         initLanguageToggle();
-        initMobileMenu();
         onAuthStateChanged(auth, (user) => {
             updateAuthUI(user);
             if (user) {
@@ -197,67 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (dom.categoryToggle && dom.categoryMenu) {
             dom.categoryToggle.addEventListener("click", () => {
                 dom.categoryMenu.classList.toggle("open");
-            });
-        }
-    }
-
-    function initMobileMenu() {
-        const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
-        const topNav = document.getElementById("top-nav");
-        const backdrop = document.getElementById("mobile-nav-backdrop");
-        
-        function closeMenu() {
-            if (topNav) topNav.classList.remove("open");
-            if (mobileMenuToggle) mobileMenuToggle.classList.remove("active");
-            if (backdrop) backdrop.classList.remove("active");
-            document.body.style.overflow = "auto";
-        }
-        
-        function openMenu() {
-            if (topNav) topNav.classList.add("open");
-            if (mobileMenuToggle) mobileMenuToggle.classList.add("active");
-            if (backdrop) backdrop.classList.add("active");
-            document.body.style.overflow = "hidden";
-        }
-        
-        if (mobileMenuToggle && topNav) {
-            mobileMenuToggle.addEventListener("click", (e) => {
-                e.stopPropagation();
-                if (topNav.classList.contains("open")) {
-                    closeMenu();
-                } else {
-                    openMenu();
-                }
-            });
-            
-            if (backdrop) {
-                backdrop.addEventListener("click", closeMenu);
-            }
-            
-            // Close menu when clicking on a link
-            const navLinks = topNav.querySelectorAll("a");
-            navLinks.forEach(link => {
-                link.addEventListener("click", () => {
-                    if (window.innerWidth <= 768) {
-                        closeMenu();
-                    }
-                });
-            });
-            
-            // Close menu when clicking outside
-            document.addEventListener("click", (e) => {
-                if (window.innerWidth <= 768 && topNav.classList.contains("open")) {
-                    if (!topNav.contains(e.target) && !mobileMenuToggle.contains(e.target) && !backdrop?.contains(e.target)) {
-                        closeMenu();
-                    }
-                }
-            });
-            
-            // Close menu on window resize if it becomes desktop size
-            window.addEventListener("resize", () => {
-                if (window.innerWidth > 768 && topNav.classList.contains("open")) {
-                    closeMenu();
-                }
             });
         }
     }
