@@ -1241,6 +1241,298 @@ h1 {
     box-shadow: var(--box-shadow-medium);
 }
 
+/* María AI Assistant Section */
+.maria-assistant-section {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+    padding: 3rem 1rem;
+    margin: 3rem 0;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.maria-assistant-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(139, 92, 246, 0.15), transparent 70%);
+    pointer-events: none;
+}
+
+.maria-assistant-container {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.maria-assistant-content {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.maria-assistant-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(139, 92, 246, 0.1);
+}
+
+.maria-assistant-icon {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 2rem;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+    }
+}
+
+.maria-assistant-info h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.8rem;
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.maria-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.maria-assistant-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.maria-call-btn,
+.maria-web-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.maria-call-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.maria-call-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.maria-call-btn:hover::before {
+    left: 100%;
+}
+
+.maria-call-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.maria-web-btn {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.maria-web-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.maria-web-btn:hover::before {
+    left: 100%;
+}
+
+.maria-web-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.maria-call-btn i,
+.maria-web-btn i {
+    font-size: 1.5rem;
+    min-width: 24px;
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+}
+
+.btn-text span {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.btn-text small {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* Responsive Design for María Assistant */
+@media (max-width: 768px) {
+    .maria-assistant-section {
+        padding: 2rem 1rem;
+        margin: 2rem 0;
+        border-radius: 16px;
+    }
+
+    .maria-assistant-content {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .maria-assistant-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .maria-assistant-icon {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        font-size: 1.5rem;
+    }
+
+    .maria-assistant-info h3 {
+        font-size: 1.5rem;
+    }
+
+    .maria-assistant-actions {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .maria-call-btn,
+    .maria-web-btn {
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+    }
+
+    .maria-call-btn i,
+    .maria-web-btn i {
+        font-size: 1.25rem;
+    }
+
+    .btn-text span {
+        font-size: 0.95rem;
+    }
+
+    .btn-text small {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .maria-assistant-section {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .maria-assistant-content {
+        padding: 1.25rem;
+    }
+
+    .maria-assistant-icon {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        font-size: 1.25rem;
+    }
+
+    .maria-assistant-info h3 {
+        font-size: 1.3rem;
+    }
+
+    .maria-call-btn,
+    .maria-web-btn {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .btn-text {
+        align-items: center;
+    }
+}
+
 .product-catalog {
     padding: 2rem 1rem;
     max-width: 1200px;
@@ -1970,6 +2262,7 @@ footer {
     justify-content: center;
     gap: 2rem;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .footer-links a {
@@ -1980,10 +2273,14 @@ footer {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
 }
 
 .footer-links a:hover {
     color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
 }
 
 .footer-copyright {
@@ -3121,6 +3418,34 @@ footer {
     body {
         overflow-x: hidden;
         width: 100%;
+    }
+
+    /* Footer responsive */
+    .footer-links {
+        gap: 1rem;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-links a {
+        padding: 0.75rem 1.5rem;
+        width: 100%;
+        max-width: 250px;
+        justify-content: center;
+    }
+
+    .footer-logo {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .footer-logo img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .footer-logo h3 {
+        font-size: 1.3rem;
     }
     
     /* Improve horizontal product scroll */

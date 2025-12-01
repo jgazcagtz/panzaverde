@@ -191,6 +191,41 @@
             </div>
         </section>
 
+        <section class="maria-assistant-section" id="maria-assistant">
+            <div class="maria-assistant-container">
+                <div class="maria-assistant-content">
+                    <div class="maria-assistant-header">
+                        <div class="maria-assistant-icon">
+                            <i class="fas fa-microphone-alt"></i>
+                        </div>
+                        <div class="maria-assistant-info">
+                            <h3>María AI Assistant</h3>
+                            <p class="maria-status">
+                                <span class="status-indicator"></span>
+                                Asistente de Voz con IA - Lista para ayudarte
+                            </p>
+                        </div>
+                    </div>
+                    <div class="maria-assistant-actions">
+                        <a href="tel:+18057020247" class="maria-call-btn">
+                            <i class="fas fa-phone"></i>
+                            <div class="btn-text">
+                                <span>Llamar a María</span>
+                                <small>+1 (805) 702-0247</small>
+                            </div>
+                        </a>
+                        <a href="https://zentix.solutions/voice-agent?slug=maria-9g4jbv" target="_blank" rel="noopener noreferrer" class="maria-web-btn">
+                            <i class="fas fa-headphones"></i>
+                            <div class="btn-text">
+                                <span>Agente Web en Vivo</span>
+                                <small>Abrir conversación de voz</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="product-catalog" id="catalogo">
             <div class="section-header">
                 <div class="category-selector">
@@ -294,6 +329,8 @@
             </div>
             <div class="footer-links">
                 <a href="https://wa.me/525526627851" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="tel:+18057020247"><i class="fas fa-phone"></i> Llamar a María</a>
+                <a href="https://zentix.solutions/voice-agent?slug=maria-9g4jbv" target="_blank" rel="noopener noreferrer"><i class="fas fa-headphones"></i> Agente Web</a>
                 <a href="#" onclick="window.toggleCart()"><i class="fas fa-shopping-cart"></i> Carrito</a>
             </div>
             <div class="footer-copyright">
@@ -326,59 +363,12 @@
     </script>
     <script type="module" src="script.js"></script>
     
-    <!-- Panza Verde Chatbot -->
-    <div id="panza-verde-chatbot" class="panza-chatbot">
-        <div class="chatbot-toggle" id="chatbot-toggle">
-            <i class="fas fa-comments"></i>
-        </div>
-        <div class="chatbot-window" id="chatbot-window">
-            <div class="chatbot-header">
-                <div class="chatbot-header-info">
-                    <img src="https://i.imgur.com/8zf86ss.png" alt="Panza Verde" class="chatbot-logo">
-                    <div>
-                        <h3>Panza Verde</h3>
-                        <p>Asistente Virtual</p>
-                    </div>
-                </div>
-                <button class="chatbot-close" id="chatbot-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="chatbot-messages" id="chatbot-messages">
-                <div class="chatbot-message bot-message">
-                    <div class="message-content">
-                        <p>¡Hola! 👋 Soy el asistente de Panza Verde. ¿En qué puedo ayudarte hoy? Puedo ayudarte a encontrar productos, información sobre pedidos, o cualquier pregunta sobre nuestros dulces artesanales mexicanos.</p>
-                        <button class="contact-form-btn" onclick="window.chatbotInstance?.showContactForm()">
-                            <i class="fas fa-envelope"></i> Contactar directamente
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="chatbot-contact-form" id="chatbot-contact-form" style="display: none;">
-                <div class="contact-form-header">
-                    <h4>Formulario de Contacto</h4>
-                    <button class="contact-form-close" onclick="window.chatbotInstance?.hideContactForm()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <form id="contact-form" onsubmit="window.chatbotInstance?.handleContactSubmit(event)">
-                    <input type="text" id="contact-name" placeholder="Tu nombre *" required>
-                    <input type="email" id="contact-email" placeholder="Tu email *" required>
-                    <input type="tel" id="contact-phone" placeholder="Tu teléfono">
-                    <textarea id="contact-message" placeholder="Tu mensaje *" rows="4" required></textarea>
-                    <button type="submit" class="contact-submit-btn">
-                        <i class="fas fa-paper-plane"></i> Enviar
-                    </button>
-                </form>
-            </div>
-            <div class="chatbot-input-container">
-                <input type="text" id="chatbot-input" placeholder="Escribe tu mensaje..." autocomplete="off">
-                <button id="chatbot-send">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <script type="module" src="chatbot.js"></script>
+    <!-- Zentix AI Voice Agent Widget -->
+    <script 
+        src="https://zentix.solutions/widget.js" 
+        data-agent="maria-9g4jbv"
+        data-position="left"
+        data-color="#8b5cf6">
+    </script>
 </body>
 </html>
