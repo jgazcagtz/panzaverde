@@ -7,25 +7,42 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Panza Verde Admin">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#2e7d32">
+    <meta name="theme-color" content="#163f32">
     <title>Panel Administrador - Panza Verde</title>
     <meta name="description" content="Panel de administración para gestionar productos de Panza Verde">
+    <link rel="icon" type="image/svg+xml" href="assets/brand-mark.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="admin-design.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="admin-page">
     <div class="admin-container">
         <!-- Login Screen -->
         <div class="admin-login-screen" id="admin-login-screen">
+            <aside class="admin-brand-story" aria-label="Panza Verde">
+                <a href="index.html" class="admin-brand-wordmark">
+                    <img src="assets/brand-mark.svg" alt="" width="48" height="48">
+                    <span>panza verde<span class="admin-brand-caption">ANTOJOS CON PERSONALIDAD</span></span>
+                </a>
+                <div class="admin-brand-message">
+                    <span class="admin-eyebrow">EL SABOR EMPIEZA AQUÍ</span>
+                    <h2>Detrás de <br>cada antojo,<br><em>un gran equipo.</em></h2>
+                    <p>Un espacio para cuidar los detalles que hacen especial a Panza Verde.</p>
+                </div>
+                <div class="admin-brand-bottom">
+                    <span>Hecho con cariño.<br>Gestionado contigo.</span>
+                    <span class="admin-brand-flower" aria-hidden="true">✳</span>
+                </div>
+            </aside>
             <div class="admin-login-card">
                 <div class="admin-login-header">
-                    <img src="https://i.imgur.com/8zf86ss.png" alt="Logo Panza Verde" class="admin-logo">
-                    <h1>Panel Administrador</h1>
-                    <p>Acceso exclusivo para personal autorizado</p>
+                    <span class="admin-eyebrow">ESPACIO DE ADMINISTRACIÓN</span>
+                    <h1>Qué gusto verte.</h1>
+                    <p>Inicia sesión para seguir haciendo crecer<br class="admin-desktop-break"> el lado más rico de tu negocio.</p>
                 </div>
                 <form id="admin-login-form" class="admin-login-form">
                     <div class="form-group">
@@ -48,6 +65,7 @@
                     <a href="index.html" class="back-to-store">
                         <i class="fas fa-arrow-left"></i> Volver a la tienda
                     </a>
+                    <p class="admin-access-note"><i class="fas fa-lock" aria-hidden="true"></i> Acceso exclusivo para personal autorizado</p>
                 </div>
             </div>
         </div>
@@ -56,7 +74,7 @@
         <div class="admin-loading-screen" id="admin-loading-screen">
             <div class="loading-container">
                 <div class="loading-logo">
-                    <img src="https://i.imgur.com/8zf86ss.png" alt="Panza Verde Logo">
+                    <img src="assets/brand-mark.svg" alt="Panza Verde Logo">
                 </div>
                 <div class="loading-spinner">
                     <div class="spinner-ring"></div>
@@ -78,16 +96,16 @@
             <!-- Left Sidebar Navigation -->
             <aside class="admin-sidebar" id="admin-sidebar">
                 <div class="admin-sidebar-header">
-                    <img src="https://i.imgur.com/8zf86ss.png" alt="Logo" class="admin-sidebar-logo">
-                    <h2>Panza Verde</h2>
-                    <button class="admin-sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
-                        <i class="fas fa-bars"></i>
+                    <img src="assets/brand-mark.svg" alt="Logo" class="admin-sidebar-logo">
+                    <div class="admin-sidebar-brand"><h2>panza verde</h2><span>ESPACIO DE TRABAJO</span></div>
+                    <button class="admin-sidebar-toggle" id="sidebar-toggle" aria-label="Cerrar menú">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <nav class="admin-sidebar-nav">
+                <nav class="admin-sidebar-nav" aria-label="Administración">
                     <a href="#admin-stats-section" class="admin-nav-item active" data-section="stats">
                         <i class="fas fa-chart-bar"></i>
-                        <span>Dashboard</span>
+                        <span>Vista general</span>
                     </a>
                     <a href="#product-management" class="admin-nav-item" data-section="products">
                         <i class="fas fa-box"></i>
@@ -146,11 +164,11 @@
                 <header class="admin-header">
                     <div class="admin-header-content">
                         <div class="admin-header-left">
-                            <button class="admin-mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                            <button class="admin-mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de administración">
                                 <i class="fas fa-bars"></i>
                             </button>
                             <div>
-                                <h2>Panel Administrador</h2>
+                                <h2>Tu espacio, Panza Verde.</h2>
                                 <p id="admin-welcome-text" class="welcome-animation">Bienvenida, <span class="erandina-text">Erandina</span></p>
                             </div>
                         </div>
@@ -172,6 +190,10 @@
                 </header>
 
                 <main class="admin-main">
+                <div class="admin-workspace-intro">
+                    <div><span class="admin-eyebrow">TODO EN SU LUGAR</span><h1>Pequeños detalles.<br><em>Grandes antojos.</em></h1></div>
+                    <p>Productos, pedidos y personas.<br>Tu negocio, cuidado desde aquí.</p>
+                </div>
                 <!-- Stats Section -->
                 <section class="admin-stats" id="admin-stats-section" style="display: none;">
                     <div class="stat-card">
@@ -304,7 +326,7 @@
                             <button id="seed-catalog-btn" class="btn-seed-catalog">
                                 <i class="fas fa-bolt"></i> Importar catálogo base
                             </button>
-                            <input type="text" id="admin-search" class="admin-search" placeholder="Buscar productos...">
+                            <input type="text" id="admin-search" class="admin-search" placeholder="Buscar productos..." aria-label="Buscar productos">
                         </div>
                     </div>
                     <div id="admin-product-list" class="admin-product-list"></div>
@@ -347,7 +369,7 @@
                             <button id="new-order-btn" class="btn-new-product">
                                 <i class="fas fa-plus"></i> Crear pedido
                             </button>
-                            <input type="text" id="admin-order-search" class="admin-search" placeholder="Buscar pedidos...">
+                            <input type="text" id="admin-order-search" class="admin-search" placeholder="Buscar pedidos..." aria-label="Buscar pedidos">
                         </div>
                     </div>
                     
@@ -396,10 +418,10 @@
                                 </label>
                                 <div id="order-items-container" class="order-items-container">
                                     <div class="order-item-row">
-                                        <select class="order-product-select" required>
+                                        <select class="order-product-select" required aria-label="Producto del pedido">
                                             <option value="">Seleccionar producto</option>
                                         </select>
-                                        <input type="number" class="order-quantity-input" min="1" value="1" placeholder="Cantidad" required>
+                                        <input type="number" class="order-quantity-input" min="1" value="1" placeholder="Cantidad" required aria-label="Cantidad de producto">
                                         <button type="button" class="btn-remove-order-item" onclick="removeOrderItem(this)">
                                             <i class="fas fa-times"></i>
                                         </button>
@@ -780,7 +802,7 @@
                     <div class="admin-section-header">
                         <h2><i class="fas fa-envelope"></i> Formularios de Contacto</h2>
                         <div class="admin-actions">
-                            <input type="text" id="contact-search" class="admin-search" placeholder="Buscar contactos...">
+                            <input type="text" id="contact-search" class="admin-search" placeholder="Buscar contactos..." aria-label="Buscar contactos">
                         </div>
                     </div>
                     <div id="admin-contact-list" class="admin-orders-list"></div>
@@ -940,19 +962,19 @@ Alfajor argentino, 30, 5</pre>
 
     <!-- Admin Chatbot Widget -->
     <div id="admin-chatbot" class="panza-chatbot">
-        <div class="chatbot-toggle" id="admin-chatbot-toggle">
+        <button type="button" class="chatbot-toggle" id="admin-chatbot-toggle" aria-label="Abrir asistente de administración">
             <i class="fas fa-comments"></i>
-        </div>
+        </button>
         <div class="chatbot-window" id="admin-chatbot-window">
             <div class="chatbot-header">
                 <div class="chatbot-header-info">
-                    <img src="https://i.imgur.com/8zf86ss.png" alt="Panza Verde" class="chatbot-logo">
+                    <img src="assets/brand-mark.svg" alt="Panza Verde" class="chatbot-logo">
                     <div>
                         <h3>Panza Verde Admin</h3>
                         <p>Asistente Virtual</p>
                     </div>
                 </div>
-                <button class="chatbot-close" id="admin-chatbot-close">
+                <button class="chatbot-close" id="admin-chatbot-close" aria-label="Cerrar asistente">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -964,8 +986,8 @@ Alfajor argentino, 30, 5</pre>
                 </div>
             </div>
             <div class="chatbot-input-container">
-                <input type="text" id="admin-chatbot-input" placeholder="Escribe tu mensaje..." autocomplete="off">
-                <button id="admin-chatbot-send">
+                <input type="text" id="admin-chatbot-input" placeholder="Escribe tu mensaje..." autocomplete="off" aria-label="Mensaje al asistente">
+                <button id="admin-chatbot-send" aria-label="Enviar mensaje">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>

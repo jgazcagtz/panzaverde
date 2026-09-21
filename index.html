@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Panza Verde">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#2e7d32">
+    <meta name="theme-color" content="#163f32">
     <title>Panza Verde - Dulces y Botanas Artesanales Mexicanas | Envío CDMX</title>
     <meta name="description" content="Dulces y botanas artesanales mexicanas. Más de 120 productos únicos: dulces tradicionales, botanas gourmet y snacks picositos. Calidad premium, ingredientes naturales. Envío rápido en CDMX.">
     <meta name="keywords" content="dulces artesanales, botanas mexicanas, dulces picositos, botanas gourmet, envío CDMX, panza verde, dulces mexicanos">
@@ -23,20 +23,24 @@
     <meta name="twitter:description" content="Más de 120 productos artesanales únicos. Envío rápido en CDMX.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="storefront.css">
+    <link rel="icon" type="image/svg+xml" href="assets/brand-mark.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="storefront">
+    <a class="skip-link" href="#catalogo">Saltar al catálogo</a>
+    <div class="announcement"><span>Hecho en México, para disfrutar donde estés.</span><span><i class="fas fa-truck" aria-hidden="true"></i> Envíos en CDMX</span></div>
     <header class="site-header">
         <div class="header-content">
-            <img src="https://i.imgur.com/8zf86ss.png" alt="Logo Panza Verde" class="logo">
+            <a href="#hero" class="brand-symbol" aria-label="Panza Verde, inicio"><img src="assets/brand-mark.svg" alt="" class="logo" width="44" height="44"></a>
             <div class="header-text">
-                <h1>Panza Verde</h1>
+                <h1>panza verde<span aria-hidden="true">.</span></h1>
                 <p class="tagline" data-i18n="tagline">Dulces y botanas artesanales mexicanas</p>
             </div>
         </div>
-        <nav class="top-nav">
+        <nav class="top-nav" aria-label="Navegación principal">
             <a href="#hero" data-i18n="nav-home">Inicio</a>
             <a href="#featured" data-i18n="nav-favorites">Favoritos</a>
             <a href="#catalogo" data-i18n="nav-catalog">Catálogo</a>
@@ -53,122 +57,95 @@
         </nav>
     </header>
 
-    <main>
-        <section class="hero" id="hero">
+    <main id="main-content">
+        <section class="hero" id="hero" aria-labelledby="hero-title">
             <div class="hero-content">
-                <p class="eyebrow">Hecho en México · 100% Artesanal</p>
-                <h2>Sabores auténticos mexicanos que endulzan tu día</h2>
-                <p>Descubre más de 120 productos artesanales únicos: dulces tradicionales, botanas gourmet y snacks picositos. Calidad premium, ingredientes naturales y recetas familiares que conquistan paladares.</p>
-                <p class="highlight">Gomitas artesanales · Alfajores · Guayabates · Mangos enchilados · Botanas gourmet</p>
+                <p class="eyebrow"><span></span> ARTESANAL POR NATURALEZA</p>
+                <h2 id="hero-title">Un antojo.<br>Mil formas de<br><em>disfrutarlo.</em></h2>
+                <p>Dulces que apapachan, botanas que reúnen y ese toque picosito que nos encanta. El sabor de México, hecho con cariño.</p>
                 <div class="hero-cta">
-                    <button class="btn-primary" type="button" onclick="document.querySelector('#catalogo').scrollIntoView({ behavior: 'smooth' })">
-                        <i class="fas fa-shopping-bag"></i> Comprar ahora
-                    </button>
-                    <button class="btn-secondary" type="button" onclick="document.querySelector('#featured').scrollIntoView({ behavior: 'smooth' })">
-                        <i class="fas fa-star"></i> Ver favoritos
-                    </button>
+                    <button class="btn-primary" type="button" onclick="document.querySelector('#catalogo').scrollIntoView({ behavior: 'smooth' })">Explorar el catálogo <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+                    <button class="btn-secondary" type="button" onclick="document.querySelector('#featured').scrollIntoView({ behavior: 'smooth' })">Ver favoritos <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
                 </div>
+                <div class="hero-note"><span class="note-line"></span> Recetas familiares. Ingredientes naturales.</div>
             </div>
-            <div class="hero-metrics">
-                <div>
-                    <span>100%</span>
-                    <small>Ingredientes naturales</small>
-                </div>
-                <div>
-                    <span>Premium</span>
-                    <small>Calidad artesanal</small>
-                </div>
-                <div>
-                    <span>100%</span>
-                    <small>Hecho en México</small>
-                </div>
+            <div class="hero-art">
+                <img class="hero-photo" src="assets/hero-snacks.png" alt="Una mesa con dulces, mangos enchilados y botanas artesanales mexicanas" width="1024" height="1024" fetchpriority="high">
+                <div class="artisan-seal" aria-label="100 por ciento hecho en México"><span>HECHO EN</span><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3v34M3 20h34M8 8l24 24M8 32 32 8" stroke="currentColor" stroke-width="2"/></svg><span>MÉXICO</span></div>
+                <div class="photo-caption"><span>DE NUESTRA TIERRA, A TU MESA</span><i class="fas fa-heart" aria-hidden="true"></i></div>
             </div>
         </section>
-
+        <div class="hero-metrics" aria-label="Nuestra esencia">
+            <div><i class="fas fa-seedling" aria-hidden="true"></i><span>Ingredientes naturales</span><small>El sabor empieza en el origen</small></div>
+            <div><i class="fas fa-hand-holding-heart" aria-hidden="true"></i><span>Hecho artesanalmente</span><small>Recetas con historia y corazón</small></div>
+            <div><i class="fas fa-sun" aria-hidden="true"></i><span>Orgullosamente mexicano</span><small>Tradición en cada bocado</small></div>
+        </div>
+        <div class="collection-heading"><p class="eyebrow">PARA CADA ANTOJO</p><h2>¿Dulce, picosito <em>o un poquito de todo?</em></h2></div>
         <section class="experience-grid" id="beneficios">
             <article class="experience-card">
-                <i class="fas fa-candy-cane"></i>
+                <div class="category-card-top"><i class="fas fa-candy-cane" aria-hidden="true"></i><span>01 / LO DULCE</span></div>
                 <h3>Dulces Tradicionales</h3>
                 <p>Gomitas artesanales, alfajores, guayabates, palomas y más. Sabores auténticos mexicanos hechos con ingredientes naturales y recetas familiares que endulzan cada momento.</p>
+                <a class="category-card-link" href="#catalogo" onclick="if (window.filterProducts) window.filterProducts('Dulces');">Explorar <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
             </article>
             <article class="experience-card">
-                <i class="fas fa-pepper-hot"></i>
+                <div class="category-card-top"><i class="fas fa-pepper-hot" aria-hidden="true"></i><span>02 / LO PICOSITO</span></div>
                 <h3>Snacks Picositos</h3>
                 <p>Mangos enchilados, gomitas con chile, arándanos enchilados y tarugos rellenos. La combinación perfecta de dulce y picante que despierta tus sentidos.</p>
+                <a class="category-card-link" href="#catalogo" onclick="if (window.filterProducts) window.filterProducts('Dulces picositos');">Explorar <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
             </article>
             <article class="experience-card">
-                <i class="fas fa-seedling"></i>
+                <div class="category-card-top"><i class="fas fa-seedling" aria-hidden="true"></i><span>03 / LO SALADITO</span></div>
                 <h3>Botanas Gourmet</h3>
                 <p>Nueces de la india, pistaches enchilados, botanas gourmet y churritos de amaranto. Snacks premium artesanales para disfrutar en cualquier ocasión.</p>
+                <a class="category-card-link" href="#catalogo" onclick="if (window.filterProducts) window.filterProducts('Botanas');">Explorar <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
             </article>
         </section>
 
-        <div class="search-container">
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Buscar productos..." oninput="window.searchProducts(this.value)">
-                <i class="fas fa-times clear-search" onclick="document.getElementById('search-input').value = ''; window.searchProducts('')"></i>
-            </div>
-        </div>
 
-        <section class="auth-hub" id="pedidos" style="display: none;">
-            <div class="section-header">
-                <h2><i class="fas fa-history"></i> Mis Pedidos</h2>
-                <p>Historial de todos tus pedidos en Panza Verde</p>
-            </div>
-            <div id="pedidos-section" class="pedidos-container"></div>
-        </section>
 
-        <section class="auth-hub" id="account">
-            <div class="section-header">
-                <h2><i class="fas fa-user-circle"></i> Mi Cuenta</h2>
-                <p>Crea tu cuenta para guardar tus pedidos, ver tu historial y agilizar tus próximas compras.</p>
-            </div>
-            <div class="auth-grid">
-                <article class="auth-card status-card">
-                    <h3>Estado actual</h3>
-                    <p id="account-status">Navegas como invitado. Inicia sesión para desbloquear beneficios y agilizar tus compras.</p>
-                    <button id="signout-btn" type="button" class="ghost-btn">Cerrar sesión</button>
-                </article>
-                <article class="auth-card">
-                    <h3 data-i18n="create-account-title">Crear cuenta</h3>
-                    <form id="buyer-signup-form">
-                        <label for="signup-name" data-i18n="name-label">Nombre</label>
-                        <input type="text" id="signup-name" name="name" data-i18n-placeholder="name-placeholder" placeholder="Nombre completo" required>
-                        <label for="signup-email" data-i18n="email-label">Correo</label>
-                        <input type="email" id="signup-email" name="email" data-i18n-placeholder="email-placeholder" placeholder="email@panza.com" required>
-                        <label for="signup-password" data-i18n="password-label">Contraseña</label>
-                        <input type="password" id="signup-password" name="password" data-i18n-placeholder="password-placeholder" placeholder="8 caracteres mínimo" minlength="8" required>
-                        <button type="submit" class="btn-primary" data-i18n="signup-button">Registrarme</button>
-                    </form>
-                    <div class="divider"><span data-i18n="or-text">o</span></div>
-                    <button type="button" id="google-signup-btn" class="google-btn">
-                        <i class="fab fa-google"></i> <span data-i18n="continue-with-google">Continuar con Google</span>
-                    </button>
-                </article>
-                <article class="auth-card">
-                    <h3>Iniciar sesión</h3>
-                    <form id="buyer-signin-form">
-                        <label for="signin-email">Correo</label>
-                        <input type="email" id="signin-email" name="email" placeholder="tu_correo@dominio.com" required>
-                        <label for="signin-password">Contraseña</label>
-                        <input type="password" id="signin-password" name="password" placeholder="Tu contraseña" required>
-                        <button type="submit" class="btn-secondary">Entrar</button>
-                    </form>
-                    <div class="divider"><span>o</span></div>
-                    <button type="button" id="google-signin-btn" class="google-btn">
-                        <i class="fab fa-google"></i> Continuar con Google
-                    </button>
-                </article>
-            </div>
-        </section>
+
+
+
 
         <section class="featured-products" id="featured">
             <div class="section-header">
-                <h2><i class="fas fa-star"></i> Productos Destacados</h2>
+                <p class="eyebrow">SIEMPRE ES UN BUEN MOMENTO</p>
+                <h2>Favoritos que <em>se comparten.</em></h2>
                 <p>Los más populares y mejor valorados por nuestros clientes</p>
                 <div class="section-divider"></div>
             </div>
+            <a class="section-link" href="#catalogo">Ver todo el catálogo <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
             <div id="menu-horizontal" class="horizontal-product-grid"></div>
+        </section>
+
+        <section class="product-catalog" id="catalogo">
+            <div class="section-header">
+                <div class="category-selector">
+                    <p class="eyebrow">ENCUENTRA TU PRÓXIMO FAVORITO</p>
+                    <h2>Un mundo de <em>sabores.</em></h2>
+                    <p>Explora todos nuestros productos artesanales</p>
+                    <div class="category-dropdown">
+                        <button class="category-toggle" type="button"><i class="fas fa-filter"></i> Filtrar</button>
+                        <div class="category-menu">
+                            <a href="#" onclick="window.filterProducts('Todos'); event.preventDefault();">Todos</a>
+                            <a href="#" onclick="window.filterProducts('Dulces'); event.preventDefault();">Dulces</a>
+                            <a href="#" onclick="window.filterProducts('Dulces picositos'); event.preventDefault();">Dulces picositos</a>
+                            <a href="#" onclick="window.filterProducts('Botanas'); event.preventDefault();">Botanas</a>
+                            <a href="#" onclick="window.filterProducts('Otros'); event.preventDefault();">Otros</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-divider"></div>
+            </div>
+        <div class="search-container">
+            <div class="search-bar">
+                <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                <input aria-label="Buscar productos" type="search" id="search-input" placeholder="Buscar productos..." oninput="window.searchProducts(this.value)">
+                <button type="button" class="clear-search" aria-label="Limpiar búsqueda" onclick="document.getElementById('search-input').value = ''; window.searchProducts('')"><i class="fas fa-times" aria-hidden="true"></i></button>
+            </div>
+        </div>
+            <div id="menu-vertical" class="product-grid"></div>
         </section>
 
         <section class="blog-section" id="blog">
@@ -191,68 +168,69 @@
             </div>
         </section>
 
-        <section class="maria-assistant-section" id="maria-assistant">
-            <div class="maria-assistant-container">
-                <div class="maria-assistant-content">
-                    <div class="maria-assistant-header">
-                        <div class="maria-assistant-icon">
-                            <i class="fas fa-microphone-alt"></i>
-                        </div>
-                        <div class="maria-assistant-info">
-                            <h3>María AI Assistant</h3>
-                            <p class="maria-status">
-                                <span class="status-indicator"></span>
-                                Asistente de Voz con IA - Lista para ayudarte
-                            </p>
-                        </div>
-                    </div>
-                    <div class="maria-assistant-actions">
-                        <a href="tel:+18057020247" class="maria-call-btn">
-                            <i class="fas fa-phone"></i>
-                            <div class="btn-text">
-                                <span>Llamar a María</span>
-                                <small>+1 (805) 702-0247</small>
-                            </div>
-                        </a>
-                        <a href="https://zentix.solutions/voice-agent?slug=maria-9g4jbv" target="_blank" rel="noopener noreferrer" class="maria-web-btn">
-                            <i class="fas fa-headphones"></i>
-                            <div class="btn-text">
-                                <span>Agente Web en Vivo</span>
-                                <small>Abrir conversación de voz</small>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <section class="product-catalog" id="catalogo">
+
+
+
+        <section class="auth-hub" id="account">
             <div class="section-header">
-                <div class="category-selector">
-                    <h2><i class="fas fa-store"></i> Catálogo Completo</h2>
-                    <p>Explora todos nuestros productos artesanales</p>
-                    <div class="category-dropdown">
-                        <button class="category-toggle" type="button"><i class="fas fa-filter"></i> Filtrar</button>
-                        <div class="category-menu">
-                            <a href="#" onclick="window.filterProducts('Todos'); event.preventDefault();">Todos</a>
-                            <a href="#" onclick="window.filterProducts('Dulces'); event.preventDefault();">Dulces</a>
-                            <a href="#" onclick="window.filterProducts('Dulces picositos'); event.preventDefault();">Dulces picositos</a>
-                            <a href="#" onclick="window.filterProducts('Botanas'); event.preventDefault();">Botanas</a>
-                            <a href="#" onclick="window.filterProducts('Otros'); event.preventDefault();">Otros</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="section-divider"></div>
+                <p class="eyebrow">TU RINCÓN PANZA VERDE</p>
+                <h2>Qué gusto <em>tenerte aquí.</em></h2>
+                <p>Crea tu cuenta para guardar tus pedidos, ver tu historial y agilizar tus próximas compras.</p>
             </div>
-            <div id="menu-vertical" class="product-grid"></div>
+            <div class="auth-grid">
+                <article class="auth-card status-card">
+                    <span class="account-emblem" aria-hidden="true"><i class="fas fa-user"></i></span>
+                    <h3>Tu próximo antojo<br>empieza aquí.</h3>
+                    <p id="account-status">Navegas como invitado. Inicia sesión para desbloquear beneficios y agilizar tus compras.</p>
+                    <button id="signout-btn" type="button" class="ghost-btn">Cerrar sesión</button>
+                </article>
+                <article class="auth-card">
+                    <h3 data-i18n="create-account-title">Crear cuenta</h3>
+                    <form id="buyer-signup-form">
+                        <label for="signup-name" data-i18n="name-label">Nombre</label>
+                        <input type="text" id="signup-name" autocomplete="name" name="name" data-i18n-placeholder="name-placeholder" placeholder="Nombre completo" required>
+                        <label for="signup-email" data-i18n="email-label">Correo</label>
+                        <input type="email" id="signup-email" autocomplete="email" name="email" data-i18n-placeholder="email-placeholder" placeholder="email@panza.com" required>
+                        <label for="signup-password" data-i18n="password-label">Contraseña</label>
+                        <input type="password" id="signup-password" autocomplete="new-password" name="password" data-i18n-placeholder="password-placeholder" placeholder="8 caracteres mínimo" minlength="8" required>
+                        <button type="submit" class="btn-primary" data-i18n="signup-button">Registrarme</button>
+                    </form>
+                    <div class="divider"><span data-i18n="or-text">o</span></div>
+                    <button type="button" id="google-signup-btn" class="google-btn">
+                        <i class="fab fa-google"></i> <span data-i18n="continue-with-google">Continuar con Google</span>
+                    </button>
+                </article>
+                <article class="auth-card">
+                    <h3>Iniciar sesión</h3>
+                    <form id="buyer-signin-form">
+                        <label for="signin-email">Correo</label>
+                        <input type="email" id="signin-email" autocomplete="email" name="email" placeholder="tu_correo@dominio.com" required>
+                        <label for="signin-password">Contraseña</label>
+                        <input type="password" id="signin-password" autocomplete="current-password" name="password" placeholder="Tu contraseña" required>
+                        <button type="submit" class="btn-secondary">Entrar</button>
+                    </form>
+                    <div class="divider"><span>o</span></div>
+                    <button type="button" id="google-signin-btn" class="google-btn">
+                        <i class="fab fa-google"></i> Continuar con Google
+                    </button>
+                </article>
+            </div>
         </section>
 
+        <section class="auth-hub" id="pedidos" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Mis Pedidos</h2>
+                <p>Historial de todos tus pedidos en Panza Verde</p>
+            </div>
+            <div id="pedidos-section" class="pedidos-container"></div>
+        </section>
 
         <div class="cart-backdrop" id="cart-backdrop" onclick="window.toggleCart()"></div>
         <div id="cart" class="cart-panel">
             <div class="cart-header">
                 <h3><i class="fas fa-shopping-cart"></i> Carrito</h3>
-                <button class="close-cart-btn" onclick="window.toggleCart()"><i class="fas fa-times"></i></button>
+                <button type="button" aria-label="Cerrar carrito" class="close-cart-btn" onclick="window.toggleCart()"><i class="fas fa-times"></i></button>
             </div>
             <div id="cart-items" class="cart-items"></div>
             <div class="cart-footer">
@@ -290,26 +268,26 @@
             </div>
         </div>
 
-        <button id="cart-btn" class="floating-cart-btn" onclick="window.toggleCart()">
+        <button aria-label="Abrir carrito" id="cart-btn" class="floating-cart-btn" onclick="window.toggleCart()">
             <i class="fas fa-shopping-cart"></i>
             <span id="cart-count" class="cart-count">0</span>
         </button>
 
-        <div id="product-modal" class="modal">
+        <div id="product-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 id="product-modal-title"></h2>
-                    <span class="close" onclick="window.closeProductModal()">&times;</span>
+                    <button type="button" class="close" aria-label="Cerrar producto" onclick="window.closeProductModal()">&times;</button>
                 </div>
                 <div class="modal-body" id="product-modal-body"></div>
             </div>
         </div>
 
-        <div id="edit-modal" class="modal">
+        <div id="edit-modal" class="modal" role="dialog" aria-modal="true" aria-label="Editar carrito">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2><i class="fas fa-edit"></i> Editar Carrito</h2>
-                    <span class="close" onclick="window.toggleModal()">&times;</span>
+                    <button type="button" class="close" aria-label="Cerrar edición de carrito" onclick="window.toggleModal()">&times;</button>
                 </div>
                 <div class="modal-body" id="edit-cart-items"></div>
                 <div class="modal-footer">
@@ -324,13 +302,12 @@
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="https://i.imgur.com/8zf86ss.png" alt="Panza Verde Logo">
-                <h3>Panza Verde</h3>
+                <img src="assets/brand-mark.svg" alt="" width="56" height="56">
+                <h3>panza verde.</h3>
             </div>
+            <p class="footer-tagline">La vida sabe mejor<br><em>con un buen antojo.</em></p>
             <div class="footer-links">
                 <a href="https://wa.me/525526627851" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a href="tel:+18057020247"><i class="fas fa-phone"></i> Llamar a María</a>
-                <a href="https://zentix.solutions/voice-agent?slug=maria-9g4jbv" target="_blank" rel="noopener noreferrer"><i class="fas fa-headphones"></i> Agente Web</a>
                 <a href="#" onclick="window.toggleCart()"><i class="fas fa-shopping-cart"></i> Carrito</a>
             </div>
             <div class="footer-copyright">
@@ -362,13 +339,6 @@
     }
     </script>
     <script type="module" src="script.js"></script>
-    
-    <!-- Zentix AI Voice Agent Widget -->
-    <script 
-        src="https://zentix.solutions/widget.js" 
-        data-agent="maria-9g4jbv"
-        data-position="left"
-        data-color="#8b5cf6">
-    </script>
+    <script src="storefront-ui.js" defer></script>
 </body>
 </html>
